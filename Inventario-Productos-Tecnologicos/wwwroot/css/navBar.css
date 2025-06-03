@@ -1,0 +1,392 @@
+:root {
+    --darkGradient: linear-gradient(
+            var(--darkBlue) 0,
+            var(--dBlueEnphasis2) 100%
+    );
+    --lightgradient: linear-gradient(
+            92.83deg,
+            var(--TiffBlue) 0%,
+            var(--Azure) 100%
+    );
+    --darkBlue: #101935;
+    --dBlueEnphasis1: #1f273f;
+    --dBlueEnphasis2: #2c3550;
+    --dBlueEnphasis3: #3a425f;
+    --TiffBlue: #9ad4d6;
+    --Azure: #f2fdff;
+    --Twistle: #dbcbd8;
+    --ultraviolet: #564787;
+    --indianRed: #D36060;
+}
+nav{
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+.nav-principal {
+    background-color: var(--dBlueEnphasis1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--Azure);
+    display: flex;
+    justify-content: left;
+    width: 100vw;
+    padding: 0 10px 0 15px;
+    height: 100%;
+    top: 0;
+
+    & > ul {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        position: relative;
+        flex-grow: 1; /* Permite que la lista ocupe el espacio restante */
+
+        & li {
+            list-style: none;
+            margin: 0 10px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0 0 10px 10px;
+            width: auto; /* Ajusta el ancho automáticamente */
+            transition: all 0.3s ease; /* Transición general para el li si se añade algo más */
+            transition-delay: 10s;
+
+            /* Propiedades para el efecto ::after */
+            position: relative; /* Necesario para posicionar el ::after */
+            height: 100%;
+            overflow: hidden; /* Oculta el ::after cuando está fuera del li */
+            z-index: 1; /* Asegura que el contenido del li esté por encima del ::after */
+            line-height: 1;
+
+            &:hover {
+                background: var(--lightgradient); /* Cambia el color de fondo al hacer hover */
+                color: var(--darkBlue); /* Cambia el color del texto al hacer hover */
+                transition: background-color 0.3s ease, color 0.3s ease; /* Transición suave para el cambio de color */
+            }
+
+            /* Pseudo-elemento ::after que aparecerá desde arriba */
+            &::after {
+                content: ""; /* Obligatorio para que el pseudo-elemento se muestre */
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%; /* Cubre todo el li */
+                background-color: var(
+                        --TiffBlue
+                ); /* Color inicial del elemento que aparece */
+                transform: translateY(
+                        -100%
+                ); /* Posición inicial: 100% de su altura por encima del li */
+                transition: transform 0.4s ease-out, background-color 0.3s ease; /* Transición suave */
+                z-index: -1; /* Coloca el ::after detrás del contenido del li */
+                border-radius: 0 0 10px 10px; /* Coincide con el border-radius del li */
+            }
+            &:hover::after {
+                transform: translateY(-5%); /* Se mueve a su posición final (cubre el li) */
+                background: var(--darkBlue); /* Cambia de color al hacer hover */
+                transition: transform 0.4s ease-out, background-color 0.3s ease; /* Transición suave para el hover */
+            }
+
+            & > a {
+                text-decoration: none;
+                color: var(--Azure);
+                font-weight: 600;
+                font-size: clamp(1rem, 2vw, 1.2rem);
+                text-align: center;
+                padding: 10px 20px;
+                transition: all 0.3s ease;
+                height: 100%;
+                width: 100%;
+                display: grid;
+                justify-content: center;
+                align-items: center;
+
+                &:hover {
+                    transform: scale(1.05);
+                }
+            }
+        }
+    }
+    
+}
+
+.logo {
+    position: relative;
+    height: 70%;
+    cursor: pointer;
+    transition: all 0.5s ease;
+    scale: 1.5;
+    max-height: 100px;
+    
+    &:hover {
+        transform: scale(1.1);
+        transition: all 0.5s ease;
+    }
+}
+
+.nav-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 20%;
+    height: 100%;
+    text-align: center;
+}
+
+.nav-account {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 20%;
+    height: 100%;
+    padding-top: 20px;
+}
+
+.nav-icon {
+    fill: var(--Azure);
+    scale: 1.7;
+    transition: all 0.5s ease;
+    width: 2rem;
+    height: 3rem;
+    cursor: pointer;
+    
+    &:hover {
+        fill: var(--Twistle);
+        transform: scale(1.2);
+        transition: all 0.5s ease;
+    }
+}
+
+@media (width <= 685px) {
+    .nav-principal {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(50px, 1fr));
+        justify-content: center;
+        align-items: center;
+        height: fit-content;
+    }
+    .logo {
+        grid-row: 1;
+        justify-self: center;
+        align-self: center;
+        height: 100%;
+        scale: 2;
+        max-width: 70px;
+    }
+    .nav-account {
+        grid-column: 2;
+        grid-row: 1;
+        justify-self: center;
+        align-self: center;
+    }
+    .nav-principal > ul {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        gap: 0;
+        justify-self: center;
+        align-self: center;
+        & > li {
+            border-radius: 10px;
+            width: 100%;
+
+            &::after {
+                border-radius: 10px;
+            }
+        }
+    }
+
+    .search-bar {
+        grid-template-columns: 1fr;
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        grid-row: 2;
+        grid-column: 1/-1;
+    }
+}
+
+.search-bar {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 3fr 1fr 1fr;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-color: var(--dBlueEnphasis2);
+    gap: 20px;
+    & input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 1rem;
+        background-color: var(--dBlueEnphasis3);
+        color: var(--Azure);
+        font-size: 1rem;
+        background-image: var(--darkGradient);
+        border: 5px solid var(--TiffBlue);
+
+        &:focus {
+            outline: none;
+            border-color: var(--indianRed);
+        }
+    }
+}
+
+.nav-cart {
+    height: 100%;
+    transition: all 0.3s ease;
+    width: 100%;
+    
+    & label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: var(--Azure);
+        font-weight: 600;
+        font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+}
+
+.nav-cart-icon {
+    fill: var(--Azure);
+    transition: all 0.5s ease;
+    width: 100%;
+    height: 3rem;
+    margin: 0 auto;
+    display: block;
+    cursor: pointer;
+    
+    &:hover {
+        fill: var(--Twistle);
+        transform: scale(1.2);
+        transition: all 0.5s ease;
+    }
+}
+
+.button-78 {
+    align-items: center;
+    appearance: none;
+    background-clip: padding-box;
+    background-color: initial;
+    background-image: none;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    flex-direction: row;
+    flex-shrink: 0;
+    font-family: Eina01, sans-serif;
+    font-size: clamp(1rem, 1vw, 1.2rem);
+    font-weight: 800;
+    justify-content: center;
+    line-height: 24px;
+    margin: 0;
+    min-height: 64px;
+    outline: none;
+    overflow: visible;
+    padding: 19px 26px;
+    pointer-events: auto;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    width: auto;
+    word-break: keep-all;
+    z-index: 0;
+}
+
+.button-78:hover:not(:disabled) {
+    color: var(--darkBlue);
+}
+
+@media (min-width: 768px) {
+    .button-78 {
+        padding: 19px 32px;
+    }
+}
+
+.button-78:before,
+.button-78:after {
+    border-radius: 1rem;
+}
+
+.button-78:before {
+    background-image: var(--lightgradient);
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -2;
+}
+
+.button-78:after {
+    background-color: initial;
+    background-image: var(--darkGradient);
+    bottom: 4px;
+    content: "";
+    display: block;
+    left: 4px;
+    overflow: hidden;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    transition: all 100ms ease-out;
+    z-index: -1;
+}
+
+.button-78:hover:not(:disabled):before {
+    background: var(--lightgradient);
+}
+
+.button-78:hover:not(:disabled):after {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    transition-timing-function: ease-in;
+    opacity: 0;
+}
+
+.button-78:active:not(:disabled) {
+    color: var(--darkBlue);
+}
+
+.button-78:active:not(:disabled):before {
+    background-image: linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.2),
+            rgba(0, 0, 0, 0.2)
+    ),
+    var(--lightgradient);
+}
+
+.button-78:active:not(:disabled):after {
+    background-image: linear-gradient(
+            var(--darkBlue) 0,
+            var(--dBlueEnphasis2) 100%
+    );
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+}
+
+.button-78:disabled {
+    cursor: default;
+    opacity: 0.24;
+}

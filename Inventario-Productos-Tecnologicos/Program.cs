@@ -1,7 +1,12 @@
+using Inventario_Productos_Tecnologicos.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<TecnoCoreDbContext>(options => 
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefultConnection")));
 
 var app = builder.Build();
 
