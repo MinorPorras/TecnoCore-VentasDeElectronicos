@@ -24,6 +24,9 @@ public partial class Atributo
     [StringLength(100)]
     public string NombreAtributo { get; set; } = null!;
 
+    /// <summary>
+    /// Indica si el atributo está activo en el sistema.
+    /// </summary>
     public string Valor { get; set; } = null!;
 
     /// <summary>
