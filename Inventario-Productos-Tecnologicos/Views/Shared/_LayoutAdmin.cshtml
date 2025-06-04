@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - Inventario_Productos_Tecnologicos</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/adminNavBar.css" asp-append-version="true"/>
+    <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"/>
+</head>
+<body>
+<header>
+    <nav>
+        <div class="nav-principal">
+            <img src="~/img/LightLogo.png" asp-append-version="true" alt="Tecno_Core Logo" class="logo" asp-action="Mantenimiento" asp-controller="Home"/>
+            <ul>
+                <li><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
+                <li><a asp-action="Index" asp-controller="Usuarios">Usuarios</a></li>
+                <li><a asp-action="Index" asp-controller="Productos">Productos</a></li>
+                <li><a asp-action="Index" asp-controller="Ventas">Ventas</a></li>
+                <li><a asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
+            </ul>
+            <div class="nav-account" id="showLogin">
+                <img
+                    src="~/img/user-circle.svg"
+                    alt="cuenta"
+                    class="nav-icon"
+                    id="user-account"/>
+                <label for="user-account">Cuenta</label>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="main_container">
+    <main>
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="border-top footer text-muted">
+    <div class="container">
+        &copy; 2025 - Tecno Core - Num: 8888-8888 Dirección: Calle 123, Ciudad ...
+    </div>
+</footer>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/admin.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

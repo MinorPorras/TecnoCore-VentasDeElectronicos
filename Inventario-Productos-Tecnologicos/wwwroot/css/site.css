@@ -32,11 +32,20 @@ body {
     background-color: var(--darkBlue);
 }
 
-main {
+.main_container {
     position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+}
+
+main {
+    margin: auto;
+    position: relative;
+    width: 100%;
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(8, minmax(300px, 1fr));
+    grid-template-columns: repeat(4, minmax(190px, 1fr));
+    grid-auto-rows: minmax(300px, 1fr);
 }
 
 section {
@@ -51,6 +60,8 @@ section {
     flex-wrap: wrap;
     gap: 0.625rem;
     padding: 2rem;
+    min-height: 6rem;
+    min-width: 7rem;
 }
 
 .InicioCard {
@@ -138,7 +149,6 @@ section {
     position: absolute;
     width: 1.25rem;
     height: 1.25rem;
-    background-color: red;
 }
 
 .curve-three {
@@ -234,14 +244,13 @@ section {
     position: absolute;
     width: 1.25rem;
     height: 1.25rem;
-    content: "";
 }
 
 /*---Redondea el borde derecho inferior a la izquierda del botón
  en su parte interna de la tarjeta---*/
 .curve-one {
     background: transparent;
-    left: 12rem;
+    right: 12rem;
     bottom: 0.5rem;
     border-bottom-right-radius: 0.5rem;
     box-shadow: 0.375rem 0.375rem var(--dBlueEnphasis3);
@@ -251,7 +260,7 @@ section {
  en su parte externa de la tarjeta---*/
 .curve-two {
     background: transparent;
-    left: 12.4rem;
+    right: 11.5rem;
     bottom: 0;
     border-bottom-right-radius: 0.5rem;
     box-shadow: 0.375rem 0.375rem var(--darkBlue);
@@ -306,13 +315,11 @@ section {
     }
 }
 
-
 #loginModal {
-    position: fixed;
     z-index: -1;
-    margin: auto;
     top: 0;
     left: 0;
+    padding: 0;
     width: 100%;
     height: 100%;
     overflow: auto;
@@ -365,6 +372,7 @@ section {
             
             & .btnClose, .btnLogin {
                 width: 40%;
+                height: 100%;
             }
             
             & .btnClose{
@@ -416,4 +424,16 @@ section {
     from {top:-300px; opacity:0; transform: scale(.95);}
     to {top: 6.3rem ; opacity:1; transform: scale(1);}
 }
+
+@media (width <= 760px) {
+    main {
+        grid-template-columns: minmax(190px, 1fr);
+        grid-auto-rows: minmax(300px, 1fr);
+    }
+    #loginModal .modalContent{
+        width: 50vw;
+        margin: auto;
+    }
+}
+
 
