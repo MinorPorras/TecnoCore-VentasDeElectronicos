@@ -20,4 +20,18 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Productos\Componentes.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Productos\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Productos\Pc.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Productos\Perifericos.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Usuarios\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Usuarios\Informacion_Personal.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Usuarios\Lista_Deseos.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ventas\Carro_Compras.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ventas\Cupones.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ventas\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Ventas\Metodos_de_Pago.cshtml" />
+    </ItemGroup>
+
 </Project>

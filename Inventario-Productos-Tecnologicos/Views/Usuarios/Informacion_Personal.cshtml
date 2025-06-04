@@ -1,0 +1,8 @@
+@model Inventario_Productos_Tecnologicos.Models.Usuario
+
+@{
+    ViewBag.Title = "Información Personal";
+    Layout = Model.RolNavigation?.Name == "Admin" ? "_layoutAdmin" : "_Layout";
+}
+
+<h1>Información Personal</h1>
