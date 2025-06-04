@@ -13,7 +13,9 @@ public partial class TipoMovimientoKardex
     public int Id { get; set; }
 
     [StringLength(50)]
-    public string Tipo { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
+
+    public bool? Entrada { get; set; }
 
     public bool? Activo { get; set; }
 

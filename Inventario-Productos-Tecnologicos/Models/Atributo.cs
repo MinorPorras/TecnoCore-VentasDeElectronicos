@@ -14,6 +14,8 @@ public partial class Atributo
     [StringLength(100)]
     public string NombreAtributo { get; set; } = null!;
 
+    public string Valor { get; set; } = null!;
+
     public bool? Activo { get; set; }
 
     [InverseProperty("Atributo")]
