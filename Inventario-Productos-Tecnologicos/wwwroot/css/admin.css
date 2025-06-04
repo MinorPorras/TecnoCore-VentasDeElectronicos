@@ -1,0 +1,44 @@
+:root {
+    --darkGradient: linear-gradient(
+            var(--darkBlue) 0,
+            var(--dBlueEnphasis2) 100%
+    );
+    --lightgradient: linear-gradient(
+            92.83deg,
+            var(--TiffBlue) 0%,
+            var(--Azure) 100%
+    );
+    --darkBlue: #101935;
+    --darkBlueOpacity: #10193555;
+    --dBlueEnphasis1: #1f273f;
+    --dBlueEnphasis2: #2c3550;
+    --dBlueEnphasis3: #3a425f;
+    --TiffBlue: #9ad4d6;
+    --Azure: #f2fdff;
+    --Twistle: #dbcbd8;
+    --ultraviolet: #564787;
+    --indianRed: #d36060;
+}
+
+* {
+    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-image: var(--darkBlue);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--Azure);
+}
+
+h1{
+    font-size: clamp(14px, 2vw, 4vw);
+    text-align: center;
+    font-weight: bold;
+}
+
