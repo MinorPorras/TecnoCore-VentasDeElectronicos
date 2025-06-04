@@ -23,7 +23,9 @@ public partial class TipoMovimientoKardex
     /// Máximo 50 caracteres.
     /// </summary>
     [StringLength(50)]
-    public string Tipo { get; set; } = null!;
+    public string Nombre { get; set; } = null!;
+
+    public bool? Entrada { get; set; }
 
     /// <summary>
     /// Indica si el tipo de movimiento está activo en el sistema.

@@ -27,6 +27,8 @@ public partial class Atributo
     /// <summary>
     /// Indica si el atributo está activo en el sistema.
     /// </summary>
+    public string Valor { get; set; } = null!;
+
     public bool? Activo { get; set; }
 
     /// <summary>
