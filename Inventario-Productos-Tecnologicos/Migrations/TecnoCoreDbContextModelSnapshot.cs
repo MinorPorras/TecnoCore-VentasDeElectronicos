@@ -312,6 +312,27 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("ListaDeseos");
                 });
 
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Marcas", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Activo")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Marcas");
+                });
+
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.MetodosPago", b =>
                 {
                     b.Property<int>("Id")
@@ -415,6 +436,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int?>("MarcaId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -431,6 +455,8 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     b.HasKey("Id")
                         .HasName("PK__Producto__3214EC076A3D152D");
+
+                    b.HasIndex("MarcaId");
 
                     b.HasIndex("SubcategoriaId");
 
@@ -695,10 +721,16 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Producto", b =>
                 {
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Marcas", "Marca")
+                        .WithMany("Productos")
+                        .HasForeignKey("MarcaId");
+
                     b.HasOne("Inventario_Productos_Tecnologicos.Models.Subcategoria", "Subcategoria")
                         .WithMany("Productos")
                         .HasForeignKey("SubcategoriaId")
                         .HasConstraintName("FK__Productos__Subca__3E52440B");
+
+                    b.Navigation("Marca");
 
                     b.Navigation("Subcategoria");
                 });
@@ -758,6 +790,11 @@ namespace Inventario_Productos_Tecnologicos.Migrations
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.EstadosPedido", b =>
                 {
                     b.Navigation("Pedidos");
+                });
+
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Marcas", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.MetodosPago", b =>
