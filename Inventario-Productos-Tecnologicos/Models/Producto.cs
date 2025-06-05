@@ -48,6 +48,8 @@
         /// </summary>
         [StringLength(255)]
         public string? Imagen { get; set; }
+        
+        public int? MarcaId { get; set; }
     
         /// <summary>
         /// Identificador de la subcategoría a la que pertenece el producto.
@@ -82,6 +84,10 @@
         /// </summary>
         [InverseProperty("Producto")]
         public virtual ICollection<ProductoAtributo> ProductoAtributos { get; set; } = new List<ProductoAtributo>();
+        
+        [ForeignKey("MarcaId")]
+        [InverseProperty("Productos")]
+        public virtual Marcas? Marca { get; set; }
     
         /// <summary>
         /// Referencia a la subcategoría a la que pertenece el producto.
