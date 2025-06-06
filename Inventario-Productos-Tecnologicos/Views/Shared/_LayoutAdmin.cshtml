@@ -14,17 +14,42 @@
 <header>
     <nav>
         <div class="nav-principal">
-            <img src="~/img/LightLogo.png" asp-append-version="true" alt="Tecno_Core Logo" class="logo" asp-action="Mantenimiento" asp-controller="Home"/>
+            <a asp-action="Index" asp-controller="Home">
+                <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="logo"/>
+            </a>
             <ul>
                 <li><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
-                <li><a asp-action="Index" asp-controller="Usuarios">Usuarios</a></li>
-                <li><a asp-action="Index" asp-controller="Productos">Productos</a></li>
-                <li><a asp-action="Index" asp-controller="Ventas">Ventas</a></li>
-                <li><a asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
+                <li  class="dropdown-container">
+                    <a class="dropbtn" asp-action="Index" asp-controller="Usuarios">Usuarios</a>
+                    <div class="dropdown-content">
+                        <a asp-action="Index" asp-controller="Roles">Roles</a>
+                    </div>
+                </li>
+                <li class="dropdown-container">
+                    <a class="dropbtn" asp-action="Index" asp-controller="Productos">Productos</a>
+                    <div class="dropdown-content">
+                        <a asp-action="Index" asp-controller="Categorias">Categorías</a>
+                        <a asp-action="Index" asp-controller="Atributos">Atributos</a>
+                        <a asp-action="Index" asp-controller="Kardex">Kardex</a>
+                    </div>
+                </li>
+                <li class="dropdown-container">
+                    <a class="dropbtn" asp-action="Index" asp-controller="Ventas">Ventas</a>
+                    <div class="dropdown-content">
+                        <a asp-action="Cupones" asp-controller="Ventas">Cupones</a>
+                        <a asp-action="Metodos_de_Pago" asp-controller="Ventas">Métodos de pago</a>
+                    </div>
+                </li>
+                <li class="dropdown-container">
+                    <a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a>
+                    <div class="dropdown-content">
+                        <a asp-action="Estados_Pedidos" asp-controller="Pedidos">Estados</a>
+                    </div>
+                </li>
             </ul>
             <div class="nav-account" id="showLogin">
                 <img
-                    src="~/img/user-circle.svg"
+                    src="~/img/ICO_User.svg"
                     alt="cuenta"
                     class="nav-icon"
                     id="user-account"/>

@@ -25,4 +25,9 @@ public class PedidosController : Controller
     {
         return View();
     }
+
+    public IActionResult Estados_Pedidos()
+    {
+        return View();
+    }
 }

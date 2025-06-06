@@ -34,4 +34,9 @@ using Microsoft.AspNetCore.Mvc;
         {
             return View();
         }
+
+        public IActionResult Roles()
+        {
+            return View();
+        }
     }

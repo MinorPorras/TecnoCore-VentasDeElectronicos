@@ -13,8 +13,9 @@
 <header>
     <nav>
         <div class="nav-principal">
-            <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="logo"/>
-
+            <a asp-action="Index" asp-controller="Home">
+                <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="logo"/>
+            </a>
             <ul>
                 <li><a asp-action="index" asp-controller="Home">Inicio</a></li>
                 <li><a asp-action="Componentes" asp-controller="Productos">Componentes</a></li>
@@ -24,11 +25,10 @@
 
             <div class="nav-account" id="showLogin">
                 <img
-                    src="~/img/user-circle.svg"
+                    src="~/img/ICO_User.svg"
                     alt="cuenta"
                     class="nav-icon"
-                    id="user-account"
-                />
+                    id="user-account"/>
                 <label for="user-account">Cuenta</label>
             </div>
         </div>
@@ -39,7 +39,7 @@
             <div class="nav-cart">
                 <a asp-action="Carro_Compras" asp-controller="Ventas">
                     <img
-                        src="~/img/shopping-cart.svg"
+                        src="~/img/ICO_Cart.svg"
                         alt="compras"
                         class="nav-cart-icon"
                         id="shopping-cart"/>
