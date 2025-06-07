@@ -40,7 +40,7 @@
         /// Referencia a la categoría principal a la que pertenece esta subcategoría.
         /// </summary>
         [ForeignKey("CategoriaId")]
-        [InverseProperty("Subcategoria")]
+        [InverseProperty("Subcategorias")]
         public virtual Categoria? Categoria { get; set; }
     
         /// <summary>

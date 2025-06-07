@@ -755,7 +755,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategoria", b =>
                 {
                     b.HasOne("Inventario_Productos_Tecnologicos.Models.Categoria", "Categoria")
-                        .WithMany("Subcategoria")
+                        .WithMany("Subcategorias")
                         .HasForeignKey("CategoriaId")
                         .HasConstraintName("FK__Subcatego__Categ__3A81B327");
 
@@ -779,7 +779,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categoria", b =>
                 {
-                    b.Navigation("Subcategoria");
+                    b.Navigation("Subcategorias");
                 });
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Cupone", b =>

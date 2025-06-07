@@ -33,5 +33,5 @@ public partial class Categoria
     /// Colección de subcategorías pertenecientes a esta categoría.
     /// </summary>
     [InverseProperty("Categoria")]
-    public virtual ICollection<Subcategoria> Subcategoria { get; set; } = new List<Subcategoria>();
+    public virtual ICollection<Subcategoria> Subcategorias { get; set; } = new List<Subcategoria>();
 }

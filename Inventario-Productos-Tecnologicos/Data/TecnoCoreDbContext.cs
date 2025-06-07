@@ -181,7 +181,7 @@ public partial class TecnoCoreDbContext : DbContext
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
 
-            entity.HasOne(d => d.Categoria).WithMany(p => p.Subcategoria).HasConstraintName("FK__Subcatego__Categ__3A81B327");
+            entity.HasOne(d => d.Categoria).WithMany(p => p.Subcategorias).HasConstraintName("FK__Subcatego__Categ__3A81B327");
         });
 
         modelBuilder.Entity<TipoMovimientoKardex>(entity =>

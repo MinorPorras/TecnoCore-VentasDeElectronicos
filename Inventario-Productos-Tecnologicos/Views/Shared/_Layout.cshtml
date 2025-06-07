@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@model IEnumerable<Categoria>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8"/>
@@ -18,9 +19,7 @@
             </a>
             <ul>
                 <li><a asp-action="index" asp-controller="Home">Inicio</a></li>
-                <li><a asp-action="Componentes" asp-controller="Productos">Componentes</a></li>
-                <li><a asp-action="Pc" asp-controller="Productos">PC</a></li>
-                <li><a asp-action="Perifericos" asp-controller="Productos">Periféricos</a></li>
+                @await Component.InvokeAsync("Categories")
             </ul>
 
             <div class="nav-account" id="showLogin">
