@@ -1,0 +1,22 @@
+@model List<Categoria>
+
+@foreach (var cat in Model)
+{
+    if (cat.Subcategorias.ToList().Count <= 0)
+    {
+        <li><a asp-action="PorCategoria" asp-controller="Productos">@cat.Nombre</a></li>
+    }
+    else
+    {
+        <li class="dropdown-container">
+            <a class="dropbtn" asp-action="PorCategoria" asp-controller="Productos" asp-route-id="@cat.Id">@cat.Nombre</a>
+            <div class="dropdown-content">
+                @foreach (var subCat in cat.Subcategorias)
+                {
+                    <a asp-action="PorSubcategoria" asp-controller="Productos" asp-route-id="@subCat.Id">@subCat.Nombre</a>
+                }
+            </div>
+        </li>
+    }
+}
+

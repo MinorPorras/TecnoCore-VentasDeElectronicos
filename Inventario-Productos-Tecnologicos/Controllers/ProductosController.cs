@@ -1,9 +1,20 @@
+using Inventario_Productos_Tecnologicos.Data;
+using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
 public class ProductosController : Controller
 {
+    
+    private readonly TecnoCoreDbContext _context;
+
+    public ProductosController(TecnoCoreDbContext context)
+    {
+        _context = context;
+    }
+    
     /// <summary>
     /// Muestra la página principal de productos
     /// </summary>
@@ -13,31 +24,17 @@ public class ProductosController : Controller
         return View();
     }
     
-    /// <summary>
-    /// Muestra todos los productos categorizados como componentes al usuario
-    /// </summary>
-    /// <returns> View con un listado de todos los componentes</returns>
-    public IActionResult Componentes()
+    [HttpPost]
+    public async Task<IActionResult> PorCategoria(int id)
     {
-        return View();
+        var categoria = await _context.Categorias.Include(c => c.Subcategorias).FirstOrDefaultAsync(c => c.Id == id);
+        return View(categoria);
     }
     
-    /// <summary>
-    /// Muestra todos los productos categorizados como PC al usuario
-    /// </summary>
-    /// <returns> View con un listado de todos las computadoras ya armadas</returns>
-    public IActionResult Pc()
+    [HttpPost]
+    public  async Task<IActionResult> PorSubcategoria(int id)
     {
-        return View();
+        var subcategoria = await _context.Subcategorias.FirstOrDefaultAsync(s => s.Id == id);
+        return View(subcategoria);
     }
-    
-    /// <summary>
-    /// Muestra todos los productos categorizados como periféricos al usuario
-    /// </summary>
-    /// <returns> View con un listado de todos los periféricos disponibles en la tienda</returns>
-    public IActionResult Perifericos()
-    {
-        return View();
-    }
-    
 }
