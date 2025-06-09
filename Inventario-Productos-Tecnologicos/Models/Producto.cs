@@ -71,7 +71,7 @@
         /// Colección de registros de kardex asociados a este producto.
         /// </summary>
         [InverseProperty("Producto")]
-        public virtual ICollection<Kardex> Kardices { get; set; } = new List<Kardex>();
+        public virtual ICollection<Kardex> Kardex { get; set; } = new List<Kardex>();
     
         /// <summary>
         /// Colección de listas de deseos que incluyen este producto.

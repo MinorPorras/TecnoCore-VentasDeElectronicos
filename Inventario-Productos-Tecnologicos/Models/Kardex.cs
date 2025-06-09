@@ -65,13 +65,13 @@
         /// Referencia al producto asociado a este movimiento.
         /// </summary>
         [ForeignKey("ProductoId")]
-        [InverseProperty("Kardices")]
+        [InverseProperty("Kardex")]
         public virtual Producto? Producto { get; set; }
     
         /// <summary>
         /// Referencia al tipo de movimiento realizado.
         /// </summary>
         [ForeignKey("TipoMovimientoId")]
-        [InverseProperty("Kardices")]
-        public virtual TipoMovimientoKardex? TipoMovimiento { get; set; }
+        [InverseProperty("Kardex")]
+        public virtual TipoMovimientoKardex? TipoMovimientoKardex { get; set; }
     }

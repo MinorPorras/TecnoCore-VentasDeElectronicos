@@ -23,7 +23,7 @@ public partial class TipoMovimientoKardex
     /// Máximo 50 caracteres.
     /// </summary>
     [StringLength(50)]
-    public string Nombre { get; set; } = null!;
+    public string Tipo { get; set; } = null!;
 
     public bool? Entrada { get; set; }
 
@@ -35,6 +35,6 @@ public partial class TipoMovimientoKardex
     /// <summary>
     /// Colección de registros de kardex asociados a este tipo de movimiento.
     /// </summary>
-    [InverseProperty("TipoMovimiento")]
-    public virtual ICollection<Kardex> Kardices { get; set; } = new List<Kardex>();
+    [InverseProperty("TipoMovimientoKardex")]
+    public virtual ICollection<Kardex> Kardex { get; set; } = new List<Kardex>();
 }

@@ -42,7 +42,8 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     b.Property<string>("Valor")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.HasKey("Id")
                         .HasName("PK__Atributo__3214EC07AB1F465C");
@@ -568,7 +569,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Property<bool?>("Entrada")
                         .HasColumnType("bit");
 
-                    b.Property<string>("Nombre")
+                    b.Property<string>("Tipo")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
@@ -657,18 +658,18 @@ namespace Inventario_Productos_Tecnologicos.Migrations
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Kardex", b =>
                 {
                     b.HasOne("Inventario_Productos_Tecnologicos.Models.Producto", "Producto")
-                        .WithMany("Kardices")
+                        .WithMany("Kardex")
                         .HasForeignKey("ProductoId")
                         .HasConstraintName("FK__KARDEX__Producto__72C60C4A");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.TipoMovimientoKardex", "TipoMovimiento")
-                        .WithMany("Kardices")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.TipoMovimientoKardex", "TipoMovimientoKardex")
+                        .WithMany("Kardex")
                         .HasForeignKey("TipoMovimientoId")
                         .HasConstraintName("FK__KARDEX__TipoMovi__73BA3083");
 
                     b.Navigation("Producto");
 
-                    b.Navigation("TipoMovimiento");
+                    b.Navigation("TipoMovimientoKardex");
                 });
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ListaDeseo", b =>
@@ -811,7 +812,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                 {
                     b.Navigation("DetallePedidos");
 
-                    b.Navigation("Kardices");
+                    b.Navigation("Kardex");
 
                     b.Navigation("ListaDeseos");
 
@@ -830,7 +831,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.TipoMovimientoKardex", b =>
                 {
-                    b.Navigation("Kardices");
+                    b.Navigation("Kardex");
                 });
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuario", b =>

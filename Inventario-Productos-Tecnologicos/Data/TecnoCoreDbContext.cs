@@ -28,7 +28,7 @@ public partial class TecnoCoreDbContext : DbContext
 
     public virtual DbSet<EstadosPedido> EstadosPedidos { get; set; }
 
-    public virtual DbSet<Kardex> Kardices { get; set; }
+    public virtual DbSet<Kardex> Kardex { get; set; }
 
     public virtual DbSet<ListaDeseo> ListaDeseos { get; set; }
 
@@ -44,14 +44,23 @@ public partial class TecnoCoreDbContext : DbContext
 
     public virtual DbSet<Subcategoria> Subcategorias { get; set; }
 
-    public virtual DbSet<TipoMovimientoKardex> TipoMovimientoKardices { get; set; }
+    public virtual DbSet<TipoMovimientoKardex> TipoMovimientoKardex { get; set; }
 
     public virtual DbSet<Usuario> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-J4DG90L\\SQLEXPRESS;Database=TecnoCoreDB;Integrated Security=True;Encrypt=False;");
-
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true)
+                .Build();
+            var connectionString = configuration.GetConnectionString("defaultConn");
+            optionsBuilder.UseSqlServer(connectionString);
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Atributo>(entity =>
@@ -109,9 +118,9 @@ public partial class TecnoCoreDbContext : DbContext
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
 
-            entity.HasOne(d => d.Producto).WithMany(p => p.Kardices).HasConstraintName("FK__KARDEX__Producto__72C60C4A");
+            entity.HasOne(d => d.Producto).WithMany(p => p.Kardex).HasConstraintName("FK__KARDEX__Producto__72C60C4A");
 
-            entity.HasOne(d => d.TipoMovimiento).WithMany(p => p.Kardices).HasConstraintName("FK__KARDEX__TipoMovi__73BA3083");
+            entity.HasOne(d => d.TipoMovimientoKardex).WithMany(p => p.Kardex).HasConstraintName("FK__KARDEX__TipoMovi__73BA3083");
         });
 
         modelBuilder.Entity<ListaDeseo>(entity =>
