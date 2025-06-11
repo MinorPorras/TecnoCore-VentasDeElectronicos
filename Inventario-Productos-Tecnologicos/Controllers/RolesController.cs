@@ -23,7 +23,7 @@ public class RolesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Name", "Activo")] Role rol)
+    public async Task<IActionResult> Create([Bind("Name", "Activo")] Roles rol)
     {
         if (!ModelState.IsValid) return View(rol);
         try
@@ -48,7 +48,7 @@ public class RolesController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit([FromBody] Role rol)
+    public async Task<IActionResult> Edit([FromBody] Roles rol)
     {
         Console.WriteLine("llega aquí");
         try

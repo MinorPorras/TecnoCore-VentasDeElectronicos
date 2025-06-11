@@ -22,36 +22,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Atributo", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Activo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("NombreAtributo")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("Valor")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Atributo__3214EC07AB1F465C");
-
-                    b.ToTable("Atributos");
-                });
-
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categoria", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categorias", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -75,7 +46,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("Categorias");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Cupone", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Cupones", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -163,7 +134,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("DetallePedidos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Direccione", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Direcciones", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -210,7 +181,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("Direcciones");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.EstadosPedido", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.EstadosPedidos", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -279,7 +250,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("KARDEX");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ListaDeseo", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ListaDeseos", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -358,7 +329,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("MetodosPago");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedido", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedidos", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -416,7 +387,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("Pedidos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Producto", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Productos", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -464,7 +435,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("Productos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ProductoAtributo", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Roles", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -472,41 +443,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Activo")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<int?>("AtributoId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProductoId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Valor")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
-
-                    b.HasKey("Id")
-                        .HasName("PK__Producto__3214EC0764D268DC");
-
-                    b.HasIndex("AtributoId");
-
-                    b.HasIndex("ProductoId");
-
-                    b.ToTable("ProductoAtributos");
-                });
-
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Role", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool?>("Activo")
+                    b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -522,7 +459,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategoria", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategorias", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -580,7 +517,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.ToTable("TipoMovimientoKardex");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuario", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuarios", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -630,12 +567,12 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.DetallePedido", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Pedido", "Pedido")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Pedidos", "Pedido")
                         .WithMany("DetallePedidos")
                         .HasForeignKey("PedidoId")
                         .HasConstraintName("FK__DetallePe__Pedid__6B24EA82");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Producto", "Producto")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Productos", "Producto")
                         .WithMany("DetallePedidos")
                         .HasForeignKey("ProductoId")
                         .HasConstraintName("FK__DetallePe__Produ__6C190EBB");
@@ -645,9 +582,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Producto");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Direccione", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Direcciones", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuario", "Usuario")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuarios", "Usuario")
                         .WithMany("Direcciones")
                         .HasForeignKey("UsuarioId")
                         .HasConstraintName("FK__Direccion__Usuar__5629CD9C");
@@ -657,7 +594,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Kardex", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Producto", "Producto")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Productos", "Producto")
                         .WithMany("Kardex")
                         .HasForeignKey("ProductoId")
                         .HasConstraintName("FK__KARDEX__Producto__72C60C4A");
@@ -672,14 +609,14 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("TipoMovimientoKardex");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ListaDeseo", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ListaDeseos", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Producto", "Producto")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Productos", "Producto")
                         .WithMany("ListaDeseos")
                         .HasForeignKey("ProductoId")
                         .HasConstraintName("FK__ListaDese__Produ__5165187F");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuario", "Usuario")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuarios", "Usuario")
                         .WithMany("ListaDeseos")
                         .HasForeignKey("UsuarioId")
                         .HasConstraintName("FK__ListaDese__Usuar__5070F446");
@@ -689,14 +626,14 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedido", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedidos", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Cupone", "Cupon")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Cupones", "Cupon")
                         .WithMany("Pedidos")
                         .HasForeignKey("CuponId")
                         .HasConstraintName("FK__Pedidos__CuponId__6754599E");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.EstadosPedido", "EstadoPedido")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.EstadosPedidos", "EstadoPedido")
                         .WithMany("Pedidos")
                         .HasForeignKey("EstadoPedidoId")
                         .HasConstraintName("FK__Pedidos__EstadoP__66603565");
@@ -706,7 +643,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         .HasForeignKey("MetodoPagoId")
                         .HasConstraintName("FK__Pedidos__MetodoP__656C112C");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuario", "Usuario")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuarios", "Usuario")
                         .WithMany("Pedidos")
                         .HasForeignKey("UsuarioId")
                         .HasConstraintName("FK__Pedidos__Usuario__6477ECF3");
@@ -720,13 +657,13 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Producto", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Productos", b =>
                 {
                     b.HasOne("Inventario_Productos_Tecnologicos.Models.Marcas", "Marca")
                         .WithMany("Productos")
                         .HasForeignKey("MarcaId");
 
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Subcategoria", "Subcategoria")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Subcategorias", "Subcategoria")
                         .WithMany("Productos")
                         .HasForeignKey("SubcategoriaId")
                         .HasConstraintName("FK__Productos__Subca__3E52440B");
@@ -736,26 +673,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Subcategoria");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.ProductoAtributo", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategorias", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Atributo", "Atributo")
-                        .WithMany("ProductoAtributos")
-                        .HasForeignKey("AtributoId")
-                        .HasConstraintName("FK__ProductoA__Atrib__45F365D3");
-
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Producto", "Producto")
-                        .WithMany("ProductoAtributos")
-                        .HasForeignKey("ProductoId")
-                        .HasConstraintName("FK__ProductoA__Produ__44FF419A");
-
-                    b.Navigation("Atributo");
-
-                    b.Navigation("Producto");
-                });
-
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategoria", b =>
-                {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Categoria", "Categoria")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Categorias", "Categoria")
                         .WithMany("Subcategorias")
                         .HasForeignKey("CategoriaId")
                         .HasConstraintName("FK__Subcatego__Categ__3A81B327");
@@ -763,9 +683,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Categoria");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuario", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuarios", b =>
                 {
-                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Role", "RolNavigation")
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Roles", "RolNavigation")
                         .WithMany("Usuarios")
                         .HasForeignKey("Rol")
                         .HasConstraintName("FK__Usuarios__Rol__4CA06362");
@@ -773,22 +693,17 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("RolNavigation");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Atributo", b =>
-                {
-                    b.Navigation("ProductoAtributos");
-                });
-
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categoria", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categorias", b =>
                 {
                     b.Navigation("Subcategorias");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Cupone", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Cupones", b =>
                 {
                     b.Navigation("Pedidos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.EstadosPedido", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.EstadosPedidos", b =>
                 {
                     b.Navigation("Pedidos");
                 });
@@ -803,28 +718,26 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Pedidos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedido", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Pedidos", b =>
                 {
                     b.Navigation("DetallePedidos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Producto", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Productos", b =>
                 {
                     b.Navigation("DetallePedidos");
 
                     b.Navigation("Kardex");
 
                     b.Navigation("ListaDeseos");
-
-                    b.Navigation("ProductoAtributos");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Role", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Roles", b =>
                 {
                     b.Navigation("Usuarios");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategoria", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Subcategorias", b =>
                 {
                     b.Navigation("Productos");
                 });
@@ -834,7 +747,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Navigation("Kardex");
                 });
 
-            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuario", b =>
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuarios", b =>
                 {
                     b.Navigation("Direcciones");
 

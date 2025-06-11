@@ -35,5 +35,5 @@ public partial class Marcas
     /// Colección de productos asociados a esta marca.
     /// </summary>
     [InverseProperty("Marca")]
-    public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+    public virtual ICollection<Productos> Productos { get; set; } = new List<Productos>();
 }

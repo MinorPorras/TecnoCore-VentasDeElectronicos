@@ -34,5 +34,5 @@ public partial class MetodosPago
     /// Colección de pedidos que utilizan este método de pago.
     /// </summary>
     [InverseProperty("MetodoPago")]
-    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+    public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
 }

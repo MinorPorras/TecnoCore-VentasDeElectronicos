@@ -9,7 +9,7 @@
     /// <summary>
     /// Representa un pedido realizado en el sistema de inventario de productos tecnológicos.
     /// </summary>
-    public partial class Pedido
+    public partial class Pedidos
     {
         /// <summary>
         /// Identificador único del pedido.
@@ -84,7 +84,7 @@
         /// </summary>
         [ForeignKey("CuponId")]
         [InverseProperty("Pedidos")]
-        public virtual Cupone? Cupon { get; set; }
+        public virtual Cupones? Cupon { get; set; }
     
         /// <summary>
         /// Colección de detalles que componen el pedido.
@@ -97,7 +97,7 @@
         /// </summary>
         [ForeignKey("EstadoPedidoId")]
         [InverseProperty("Pedidos")]
-        public virtual EstadosPedido? EstadoPedido { get; set; }
+        public virtual EstadosPedidos? EstadoPedido { get; set; }
     
         /// <summary>
         /// Referencia al método de pago utilizado.
@@ -111,5 +111,5 @@
         /// </summary>
         [ForeignKey("UsuarioId")]
         [InverseProperty("Pedidos")]
-        public virtual Usuario? Usuario { get; set; }
+        public virtual Usuarios? Usuario { get; set; }
     }

@@ -9,7 +9,7 @@ namespace Inventario_Productos_Tecnologicos.Models;
 /// <summary>
 /// Representa una categoría de productos en el sistema.
 /// </summary>
-public partial class Categoria
+public partial class Categorias
 {
     /// <summary>
     /// Identificador único de la categoría.
@@ -33,5 +33,5 @@ public partial class Categoria
     /// Colección de subcategorías pertenecientes a esta categoría.
     /// </summary>
     [InverseProperty("Categoria")]
-    public virtual ICollection<Subcategoria> Subcategorias { get; set; } = new List<Subcategoria>();
+    public virtual ICollection<Subcategorias> Subcategorias { get; set; } = new List<Subcategorias>();
 }

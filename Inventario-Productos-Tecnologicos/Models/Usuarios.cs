@@ -9,7 +9,7 @@
     /// <summary>
     /// Representa un usuario del sistema de inventario.
     /// </summary>
-    public partial class Usuario
+    public partial class Usuarios
     {
         /// <summary>
         /// Identificador único del usuario.
@@ -66,24 +66,24 @@
         /// Colección de direcciones asociadas al usuario.
         /// </summary>
         [InverseProperty("Usuario")]
-        public virtual ICollection<Direccione> Direcciones { get; set; } = new List<Direccione>();
+        public virtual ICollection<Direcciones> Direcciones { get; set; } = new List<Direcciones>();
     
         /// <summary>
         /// Colección de listas de deseos del usuario.
         /// </summary>
         [InverseProperty("Usuario")]
-        public virtual ICollection<ListaDeseo> ListaDeseos { get; set; } = new List<ListaDeseo>();
+        public virtual ICollection<ListaDeseos> ListaDeseos { get; set; } = new List<ListaDeseos>();
     
         /// <summary>
         /// Colección de pedidos realizados por el usuario.
         /// </summary>
         [InverseProperty("Usuario")] 
-        public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
     
         /// <summary>
         /// Referencia al rol asignado al usuario.
         /// </summary>
         [ForeignKey("Rol")]
         [InverseProperty("Usuarios")]
-        public virtual Role? RolNavigation { get; set; }
+        public virtual Roles? RolNavigation { get; set; }
     }

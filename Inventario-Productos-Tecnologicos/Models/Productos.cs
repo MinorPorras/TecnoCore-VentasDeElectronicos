@@ -1,15 +1,12 @@
-﻿using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
+﻿    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
     
     namespace Inventario_Productos_Tecnologicos.Models;
     
     /// <summary>
     /// Representa un producto en el inventario del sistema.
     /// </summary>
-    public partial class Producto
+    public partial class Productos
     {
         /// <summary>
         /// Identificador único del producto.
@@ -77,14 +74,8 @@
         /// Colección de listas de deseos que incluyen este producto.
         /// </summary>
         [InverseProperty("Producto")]
-        public virtual ICollection<ListaDeseo> ListaDeseos { get; set; } = new List<ListaDeseo>();
-    
-        /// <summary>
-        /// Colección de atributos específicos asociados a este producto.
-        /// </summary>
-        [InverseProperty("Producto")]
-        public virtual ICollection<ProductoAtributo> ProductoAtributos { get; set; } = new List<ProductoAtributo>();
-        
+        public virtual ICollection<ListaDeseos> ListaDeseos { get; set; } = new List<ListaDeseos>();
+
         [ForeignKey("MarcaId")]
         [InverseProperty("Productos")]
         public virtual Marcas? Marca { get; set; }
@@ -94,5 +85,5 @@
         /// </summary>
         [ForeignKey("SubcategoriaId")]
         [InverseProperty("Productos")]
-        public virtual Subcategoria? Subcategoria { get; set; }
+        public virtual Subcategorias? Subcategoria { get; set; }
     }

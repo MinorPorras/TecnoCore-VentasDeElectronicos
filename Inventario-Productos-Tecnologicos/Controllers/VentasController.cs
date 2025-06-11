@@ -35,7 +35,7 @@ using Inventario_Productos_Tecnologicos.Models;
                 return View();
             }
 
-            public IActionResult Carro_Compras(List<Producto> listaCompras)
+            public IActionResult Carro_Compras(List<Productos> listaCompras)
             {
                 return View();
             }

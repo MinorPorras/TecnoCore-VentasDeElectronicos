@@ -15,38 +15,32 @@ public partial class TecnoCoreDbContext : DbContext
         : base(options)
     {
     }
+    
+    public virtual DbSet<Categorias> Categorias { get; set; }
 
-    public virtual DbSet<Atributo> Atributos { get; set; }
-
-    public virtual DbSet<Categoria> Categorias { get; set; }
-
-    public virtual DbSet<Cupone> Cupones { get; set; }
+    public virtual DbSet<Cupones> Cupones { get; set; }
 
     public virtual DbSet<DetallePedido> DetallePedidos { get; set; }
 
-    public virtual DbSet<Direccione> Direcciones { get; set; }
+    public virtual DbSet<Direcciones> Direcciones { get; set; }
 
-    public virtual DbSet<EstadosPedido> EstadosPedidos { get; set; }
+    public virtual DbSet<EstadosPedidos> EstadosPedidos { get; set; }
 
     public virtual DbSet<Kardex> Kardex { get; set; }
 
-    public virtual DbSet<ListaDeseo> ListaDeseos { get; set; }
+    public virtual DbSet<ListaDeseos> ListaDeseos { get; set; }
 
     public virtual DbSet<MetodosPago> MetodosPagos { get; set; }
 
-    public virtual DbSet<Pedido> Pedidos { get; set; }
+    public virtual DbSet<Pedidos> Pedidos { get; set; }
 
-    public virtual DbSet<Producto> Productos { get; set; }
-
-    public virtual DbSet<ProductoAtributo> ProductoAtributos { get; set; }
-
-    public virtual DbSet<Role> Roles { get; set; }
-
-    public virtual DbSet<Subcategoria> Subcategorias { get; set; }
+    public virtual DbSet<Productos> Productos { get; set; }
+    public virtual DbSet<Roles> Roles { get; set; }
+    public virtual DbSet<Subcategorias> Subcategorias { get; set; }
 
     public virtual DbSet<TipoMovimientoKardex> TipoMovimientoKardex { get; set; }
 
-    public virtual DbSet<Usuario> Usuarios { get; set; }
+    public virtual DbSet<Usuarios> Usuarios { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -63,21 +57,15 @@ public partial class TecnoCoreDbContext : DbContext
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.Entity<Atributo>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Atributo__3214EC07AB1F465C");
 
-            entity.Property(e => e.Activo).HasDefaultValue(true);
-        });
-
-        modelBuilder.Entity<Categoria>(entity =>
+        modelBuilder.Entity<Categorias>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Categori__3214EC07D5CFA9CB");
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
         });
 
-        modelBuilder.Entity<Cupone>(entity =>
+        modelBuilder.Entity<Cupones>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Cupones__3214EC0789F96FE7");
 
@@ -96,7 +84,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.HasOne(d => d.Producto).WithMany(p => p.DetallePedidos).HasConstraintName("FK__DetallePe__Produ__6C190EBB");
         });
 
-        modelBuilder.Entity<Direccione>(entity =>
+        modelBuilder.Entity<Direcciones>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Direccio__3214EC074E055094");
 
@@ -105,7 +93,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.HasOne(d => d.Usuario).WithMany(p => p.Direcciones).HasConstraintName("FK__Direccion__Usuar__5629CD9C");
         });
 
-        modelBuilder.Entity<EstadosPedido>(entity =>
+        modelBuilder.Entity<EstadosPedidos>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__EstadosP__3214EC07B7070AF0");
 
@@ -123,7 +111,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.HasOne(d => d.TipoMovimientoKardex).WithMany(p => p.Kardex).HasConstraintName("FK__KARDEX__TipoMovi__73BA3083");
         });
 
-        modelBuilder.Entity<ListaDeseo>(entity =>
+        modelBuilder.Entity<ListaDeseos>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__ListaDes__3214EC0724A5DC3E");
 
@@ -142,7 +130,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.Property(e => e.Activo).HasDefaultValue(true);
         });
 
-        modelBuilder.Entity<Pedido>(entity =>
+        modelBuilder.Entity<Pedidos>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Pedidos__3214EC074497B4A2");
 
@@ -157,7 +145,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.HasOne(d => d.Usuario).WithMany(p => p.Pedidos).HasConstraintName("FK__Pedidos__Usuario__6477ECF3");
         });
 
-        modelBuilder.Entity<Producto>(entity =>
+        modelBuilder.Entity<Productos>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC076A3D152D");
 
@@ -166,25 +154,14 @@ public partial class TecnoCoreDbContext : DbContext
             entity.HasOne(d => d.Subcategoria).WithMany(p => p.Productos).HasConstraintName("FK__Productos__Subca__3E52440B");
         });
 
-        modelBuilder.Entity<ProductoAtributo>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PK__Producto__3214EC0764D268DC");
-
-            entity.Property(e => e.Activo).HasDefaultValue(true);
-
-            entity.HasOne(d => d.Atributo).WithMany(p => p.ProductoAtributos).HasConstraintName("FK__ProductoA__Atrib__45F365D3");
-
-            entity.HasOne(d => d.Producto).WithMany(p => p.ProductoAtributos).HasConstraintName("FK__ProductoA__Produ__44FF419A");
-        });
-
-        modelBuilder.Entity<Role>(entity =>
+        modelBuilder.Entity<Roles>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC07CA43B814");
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
         });
 
-        modelBuilder.Entity<Subcategoria>(entity =>
+        modelBuilder.Entity<Subcategorias>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Subcateg__3214EC07A314AFA0");
 
@@ -200,7 +177,7 @@ public partial class TecnoCoreDbContext : DbContext
             entity.Property(e => e.Activo).HasDefaultValue(true);
         });
 
-        modelBuilder.Entity<Usuario>(entity =>
+        modelBuilder.Entity<Usuarios>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Usuarios__3214EC07B49ACA59");
 

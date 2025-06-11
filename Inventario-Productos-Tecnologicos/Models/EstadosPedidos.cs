@@ -10,7 +10,7 @@ namespace Inventario_Productos_Tecnologicos.Models;
 /// Representa los posibles estados que puede tener un pedido en el sistema.
 /// </summary>
 [Table("EstadosPedido")]
-public partial class EstadosPedido
+public partial class EstadosPedidos
 {
     /// <summary>
     /// Identificador único del estado de pedido.
@@ -34,5 +34,5 @@ public partial class EstadosPedido
     /// Colección de pedidos que se encuentran en este estado.
     /// </summary>
     [InverseProperty("EstadoPedido")]
-    public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+    public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
 }

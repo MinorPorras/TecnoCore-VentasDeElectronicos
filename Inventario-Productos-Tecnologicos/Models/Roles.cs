@@ -9,7 +9,7 @@ namespace Inventario_Productos_Tecnologicos.Models;
 /// <summary>
 /// Representa un rol de usuario en el sistema de inventario.
 /// </summary>
-public partial class Role
+public partial class Roles
 {
     /// <summary>
     /// Identificador único del rol.
@@ -33,5 +33,5 @@ public partial class Role
     /// Colección de usuarios que tienen asignado este rol.
     /// </summary>
     [InverseProperty("RolNavigation")]
-    public virtual ICollection<Usuario> Usuarios { get; set; } = new List<Usuario>();
+    public virtual ICollection<Usuarios> Usuarios { get; set; } = new List<Usuarios>();
 }

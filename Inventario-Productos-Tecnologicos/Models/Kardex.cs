@@ -66,7 +66,7 @@
         /// </summary>
         [ForeignKey("ProductoId")]
         [InverseProperty("Kardex")]
-        public virtual Producto? Producto { get; set; }
+        public virtual Productos? Producto { get; set; }
     
         /// <summary>
         /// Referencia al tipo de movimiento realizado.

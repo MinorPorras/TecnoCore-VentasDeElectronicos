@@ -48,12 +48,12 @@
         /// </summary>
         [ForeignKey("PedidoId")]
         [InverseProperty("DetallePedidos")]
-        public virtual Pedido? Pedido { get; set; }
+        public virtual Pedidos? Pedido { get; set; }
     
         /// <summary>
         /// Referencia al producto incluido en este detalle.
         /// </summary>
         [ForeignKey("ProductoId")]
         [InverseProperty("DetallePedidos")]
-        public virtual Producto? Producto { get; set; }
+        public virtual Productos? Producto { get; set; }
     }

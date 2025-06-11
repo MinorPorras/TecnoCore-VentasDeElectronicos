@@ -9,7 +9,7 @@
     /// <summary>
     /// Representa una subcategoría de productos en el sistema de inventario.
     /// </summary>
-    public partial class Subcategoria
+    public partial class Subcategorias
     {
         /// <summary>
         /// Identificador único de la subcategoría.
@@ -41,11 +41,11 @@
         /// </summary>
         [ForeignKey("CategoriaId")]
         [InverseProperty("Subcategorias")]
-        public virtual Categoria? Categoria { get; set; }
+        public virtual Categorias? Categoria { get; set; }
     
         /// <summary>
         /// Colección de productos que pertenecen a esta subcategoría.
         /// </summary>
         [InverseProperty("Subcategoria")]
-        public virtual ICollection<Producto> Productos { get; set; } = new List<Producto>();
+        public virtual ICollection<Productos> Productos { get; set; } = new List<Productos>();
     }

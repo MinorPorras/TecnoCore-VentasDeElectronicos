@@ -9,7 +9,7 @@
     /// <summary>
     /// Representa un elemento de la lista de deseos de un usuario.
     /// </summary>
-    public partial class ListaDeseo
+    public partial class ListaDeseos
     {
         /// <summary>
         /// Identificador único del elemento en la lista de deseos.
@@ -43,12 +43,12 @@
         /// </summary>
         [ForeignKey("ProductoId")]
         [InverseProperty("ListaDeseos")]
-        public virtual Producto? Producto { get; set; }
+        public virtual Productos? Producto { get; set; }
     
         /// <summary>
         /// Referencia al usuario propietario de esta lista de deseos.
         /// </summary>
         [ForeignKey("UsuarioId")]
         [InverseProperty("ListaDeseos")]
-        public virtual Usuario? Usuario { get; set; }
+        public virtual Usuarios? Usuario { get; set; }
     }

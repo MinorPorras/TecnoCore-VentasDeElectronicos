@@ -10,7 +10,7 @@
     /// Representa un cupón de descuento que puede ser aplicado a pedidos.
     /// </summary>
     [Index("Codigo", Name = "UQ__Cupones__06370DACEA3BF6E0", IsUnique = true)]
-    public partial class Cupone
+    public partial class Cupones
     {
         /// <summary>
         /// Identificador único del cupón.
@@ -76,5 +76,5 @@
         /// Colección de pedidos que han utilizado este cupón.
         /// </summary>
         [InverseProperty("Cupon")]
-        public virtual ICollection<Pedido> Pedidos { get; set; } = new List<Pedido>();
+        public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
     }

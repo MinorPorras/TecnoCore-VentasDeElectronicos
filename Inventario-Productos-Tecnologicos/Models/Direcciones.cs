@@ -9,7 +9,7 @@
     /// <summary>
     /// Representa una dirección de envío asociada a un usuario.
     /// </summary>
-    public partial class Direccione
+    public partial class Direcciones
     {
         /// <summary>
         /// Identificador único de la dirección.
@@ -67,5 +67,5 @@
         /// </summary>
         [ForeignKey("UsuarioId")]
         [InverseProperty("Direcciones")]
-        public virtual Usuario? Usuario { get; set; }
+        public virtual Usuarios? Usuario { get; set; }
     }
