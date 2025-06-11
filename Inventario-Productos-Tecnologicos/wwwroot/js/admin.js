@@ -81,7 +81,7 @@ function deleteElement() {
     const btnCancel = document.querySelector('.btnCancel');
 
     showModalBtn.forEach(btn => {
-        btn.addEventListener('click', event => {
+        btn.addEventListener('click', () => {
             console.log("Entra aquí");
             const id = btn.getAttribute('data-id');
             const name = btn.getAttribute('value');
