@@ -1,8 +1,69 @@
-@model dynamic
+@model List<Inventario_Productos_Tecnologicos.Models.Role>
 
 @{
     ViewBag.Title = "Roles";
     Layout = "_LayoutAdmin";
 }
 
-<h2>Roles</h2>
+<div>
+    <h2 class="pageTitle">Roles</h2>
+
+    <form asp-action="Index" method="GET">
+        <label for="txtSearch">Buscar:</label>
+        <input type="text" id="txtSearch" name="txtSearch">
+        <button type="submit">Buscar</button>
+    </form>
+    <a asp-action="Create">Crear</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Count == 0)
+        {
+            <tr>
+                <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var rol in Model)
+            {
+                <tr>
+                    <td>@rol.Id</td>
+                    <td>@rol.Name</td>
+                    <td>
+                        @if (rol.Activo == true)
+                        {
+                            <span class="badge text-bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@rol.Id">Edit</a>
+                        <button type="button" class="showModal" data-id="@rol.Id" value="@rol.Name">Eliminar</button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+    <dialog class="deleteDialog">
+        <h1>¿Desea eliminar este elemento?</h1>
+        <form asp-action="Delete" method="post" class="deleteform">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="Id">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+        <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
+    </dialog>
+</div>

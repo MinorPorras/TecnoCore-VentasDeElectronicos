@@ -27,7 +27,7 @@ public partial class Role
     /// <summary>
     /// Indica si el rol está activo en el sistema.
     /// </summary>
-    public bool? Activo { get; set; }
+    public bool Activo { get; set; }
 
     /// <summary>
     /// Colección de usuarios que tienen asignado este rol.
