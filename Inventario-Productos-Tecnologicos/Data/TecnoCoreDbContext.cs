@@ -33,6 +33,8 @@ public partial class TecnoCoreDbContext : DbContext
     public virtual DbSet<MetodosPago> MetodosPagos { get; set; }
 
     public virtual DbSet<Pedidos> Pedidos { get; set; }
+    
+    public virtual DbSet<Marcas> Marcas { get; set; }
 
     public virtual DbSet<Productos> Productos { get; set; }
     public virtual DbSet<Roles> Roles { get; set; }
