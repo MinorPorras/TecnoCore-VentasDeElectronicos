@@ -176,7 +176,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.HasKey("Id")
                         .HasName("PK__Direccio__3214EC074E055094");
 
-                    b.HasIndex("UsuarioId");
+                    b.HasIndex("UsuarioId")
+                        .IsUnique()
+                        .HasFilter("[UsuarioId] IS NOT NULL");
 
                     b.ToTable("Direcciones");
                 });
@@ -360,6 +362,11 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Property<int?>("MetodoPagoId")
                         .HasColumnType("int");
 
+                    b.Property<string>("NumTarjeta")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("nvarchar(16)");
+
                     b.Property<decimal?>("Subtotal")
                         .HasColumnType("decimal(10, 2)");
 
@@ -415,6 +422,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<bool>("Novedad")
+                        .HasColumnType("bit");
 
                     b.Property<decimal>("Precio")
                         .HasColumnType("decimal(10, 2)");
@@ -585,8 +595,8 @@ namespace Inventario_Productos_Tecnologicos.Migrations
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Direcciones", b =>
                 {
                     b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuarios", "Usuario")
-                        .WithMany("Direcciones")
-                        .HasForeignKey("UsuarioId")
+                        .WithOne("Direccion")
+                        .HasForeignKey("Inventario_Productos_Tecnologicos.Models.Direcciones", "UsuarioId")
                         .HasConstraintName("FK__Direccion__Usuar__5629CD9C");
 
                     b.Navigation("Usuario");
@@ -749,7 +759,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuarios", b =>
                 {
-                    b.Navigation("Direcciones");
+                    b.Navigation("Direccion");
 
                     b.Navigation("ListaDeseos");
 

@@ -66,7 +66,7 @@
         /// Colección de direcciones asociadas al usuario.
         /// </summary>
         [InverseProperty("Usuario")]
-        public virtual ICollection<Direcciones> Direcciones { get; set; } = new List<Direcciones>();
+        public virtual Direcciones? Direccion { get; set; }
     
         /// <summary>
         /// Colección de listas de deseos del usuario.

@@ -1,4 +1,4 @@
-﻿    using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
     
     namespace Inventario_Productos_Tecnologicos.Models;
@@ -45,6 +45,11 @@
         /// </summary>
         [StringLength(255)]
         public string? Imagen { get; set; }
+
+        /// <summary>
+        /// Indica si el producto es una novedad en el catálogo.
+        /// </summary>
+        public bool Novedad { get; set; } = false;
         
         public int? MarcaId { get; set; }
     

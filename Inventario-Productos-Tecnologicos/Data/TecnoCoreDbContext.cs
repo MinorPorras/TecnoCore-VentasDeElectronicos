@@ -92,7 +92,7 @@ public partial class TecnoCoreDbContext : DbContext
 
             entity.Property(e => e.Activo).HasDefaultValue(true);
 
-            entity.HasOne(d => d.Usuario).WithMany(p => p.Direcciones).HasConstraintName("FK__Direccion__Usuar__5629CD9C");
+            entity.HasOne(d => d.Usuario).WithOne(p => p.Direccion).HasConstraintName("FK__Direccion__Usuar__5629CD9C");
         });
 
         modelBuilder.Entity<EstadosPedidos>(entity =>

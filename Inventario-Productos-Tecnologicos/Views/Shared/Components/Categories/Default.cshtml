@@ -1,22 +1,26 @@
-@model List<Categorias>
+@model IEnumerable<Inventario_Productos_Tecnologicos.Models.Categorias>
 
-@foreach (var cat in Model)
+@foreach (var categoria in Model)
 {
-    if (cat.Subcategorias.ToList().Count <= 0)
-    {
-        <li><a asp-action="PorCategoria" asp-controller="Productos">@cat.Nombre</a></li>
-    }
-    else
+    @if (categoria.Subcategorias != null && categoria.Subcategorias.Any())
     {
         <li class="dropdown-container">
-            <a class="dropbtn" asp-action="PorCategoria" asp-controller="Productos" asp-route-id="@cat.Id">@cat.Nombre</a>
+            <a asp-controller="Productos"
+               asp-action="PorCategoria"
+               asp-route-id="@categoria.Id"
+               class="dropbtn">
+                @categoria.Nombre
+            </a>
             <div class="dropdown-content">
-                @foreach (var subCat in cat.Subcategorias)
+                @foreach (var subcategoria in categoria.Subcategorias)
                 {
-                    <a asp-action="PorSubcategoria" asp-controller="Productos" asp-route-id="@subCat.Id">@subCat.Nombre</a>
+                    <a asp-controller="Productos"
+                       asp-action="PorSubcategoria"
+                       asp-route-id="@subcategoria.Id">
+                        @subcategoria.Nombre
+                    </a>
                 }
             </div>
         </li>
     }
 }
-

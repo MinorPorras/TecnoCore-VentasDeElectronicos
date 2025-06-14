@@ -66,6 +66,6 @@
         /// Referencia al usuario propietario de esta dirección.
         /// </summary>
         [ForeignKey("UsuarioId")]
-        [InverseProperty("Direcciones")]
+        [InverseProperty("Direccion")]
         public virtual Usuarios? Usuario { get; set; }
     }

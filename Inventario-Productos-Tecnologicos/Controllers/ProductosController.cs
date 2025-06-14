@@ -31,10 +31,23 @@ public class ProductosController : Controller
         return View(categoria);
     }
     
-    [HttpPost]
-    public  async Task<IActionResult> PorSubcategoria(int id)
+    // GET: Productos/PorSubcategoria/5
+    public async Task<IActionResult> PorSubcategoria(int? id)
     {
-        var subcategoria = await _context.Subcategorias.FirstOrDefaultAsync(s => s.Id == id);
-        return View(subcategoria);
+        if (id == null)
+        {
+            return NotFound();
+        }
+
+        var productos = await _context.Productos
+            .Include(p => p.Subcategoria)
+            .Include(p => p.Marca)
+            .Where(p => p.SubcategoriaId == id && p.Activo == true)
+            .ToListAsync();
+
+        ViewBag.SubcategoriaActual = await _context.Subcategorias
+            .FirstOrDefaultAsync(s => s.Id == id);
+
+        return View("Index", productos);
     }
 }

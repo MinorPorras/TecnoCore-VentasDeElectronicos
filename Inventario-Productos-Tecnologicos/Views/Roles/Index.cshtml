@@ -8,10 +8,14 @@
 <div>
     <h2 class="pageTitle">Roles del sistema</h2>
 
-    <form asp-action="Index" method="GET">
-        <label for="txtSearch">Buscar:</label>
-        <input type="text" id="txtSearch" name="txtSearch">
-        <button type="submit">Buscar</button>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+        <div class="radio-group">
+            <input type="radio" name="Active" id="active" value="true" checked>
+            <input type="radio" name="Active" id="Inactive" value="false" checked>
+        </div>
     </form>
     <a asp-action="Create">Crear</a>
 
@@ -39,7 +43,7 @@
                     <td>@rol.Id</td>
                     <td>@rol.Name</td>
                     <td>
-                        @if (rol.Activo == true)
+                        @if (rol.Activo)
                         {
                             <span class="badge text-bg-success">Activo</span>
                         }
@@ -67,3 +71,4 @@
         <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
     </dialog>
 </div>
+

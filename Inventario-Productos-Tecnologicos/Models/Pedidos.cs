@@ -1,8 +1,5 @@
-﻿using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-    using Microsoft.EntityFrameworkCore;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
     
     namespace Inventario_Productos_Tecnologicos.Models;
     
@@ -26,6 +23,9 @@
         /// Identificador del método de pago utilizado.
         /// </summary>
         public int? MetodoPagoId { get; set; }
+        
+        [StringLength(16)]
+        public string NumTarjeta { get; set; } = null!;
     
         /// <summary>
         /// Identificador del estado actual del pedido.

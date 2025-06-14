@@ -13,8 +13,25 @@ public class RolesController : Controller
     // GET
     public async Task<IActionResult> Index()
     {
-        var roles = await _context.Roles.ToListAsync();
-        return View(roles);
+        return View(await _context.Roles.ToListAsync());
+    }
+
+    public async Task<IActionResult> Search(string searchElement)
+    {
+        Console.WriteLine(searchElement);
+        ViewBag.CurrentSearch = searchElement;
+
+        if (string.IsNullOrEmpty(searchElement))
+        {
+            return RedirectToAction("Index");
+        }
+
+        var roles = await _context.Roles
+            .Where(r => r.Name.Contains(searchElement) 
+                    || r.Id.ToString().Contains(searchElement))
+            .ToListAsync();
+
+        return View("Index", roles);
     }
 
     public ViewResult Create()

@@ -1,8 +1,78 @@
-@model Inventario_Productos_Tecnologicos.Models.Usuarios
+@model List<Usuarios>
 
 @{
     ViewBag.Title = "Usuarios";
     Layout = "_LayoutAdmin";
 }
+<div>
+    <h2 class="pageTitle">@ViewBag.Title</h2>
 
-<h1>Usuario</h1>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+    </form>
+    <a asp-action="Create">Crear</a>
+    
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Apellidos</th>
+            <th>email</th>
+            <th>Teléfono</th>
+            <th>Rol</th>
+            <th>Estado</th>
+            <th>Opciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        @if (Model.Count == 0)
+        {
+            <tr>
+                <td colspan="8" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
+            </tr>
+        }
+        else
+        {
+            @foreach (var usuario in Model)
+            {
+                <tr>
+                    <td>@usuario.Id</td>
+                    <td>@usuario.Nombre</td>
+                    <td>@usuario.Apellidos</td>
+                    <td>@usuario.Email</td>
+                    <td>@usuario.Telefono</td>
+                    <td>@usuario.Rol</td>
+                    <td>
+                        @if (usuario.Activo == true)
+                        {
+                            <span class="badge text-bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@usuario.Id">Edit</a>
+                        <button type="button" class="showModal" data-id="@usuario.Id" value="@usuario.Nombre">Eliminar
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+    <dialog class="deleteDialog">
+        <h1>¿Desea eliminar este elemento?</h1>
+        <form asp-action="Delete" method="post" class="deleteform">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="Id">
+            <button type="submit" class="btn btn-danger">Eliminar</button>
+        </form>
+        <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
+    </dialog>
+</div>
