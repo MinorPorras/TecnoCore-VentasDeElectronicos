@@ -16,21 +16,26 @@ public class RolesController : Controller
         return View(await _context.Roles.ToListAsync());
     }
 
-    public async Task<IActionResult> Search(string searchElement)
+    public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
-        Console.WriteLine(searchElement);
-        ViewBag.CurrentSearch = searchElement;
+        ViewBag.SearchString = searchElement;
+        ViewBag.ActiveFilter = activeFilter;
 
-        if (string.IsNullOrEmpty(searchElement))
+        var query = _context.Roles.AsQueryable();
+
+        // Aplicar filtro de búsqueda si existe
+        if (!string.IsNullOrEmpty(searchElement))
+            query = query.Where(r => r.Name.Contains(searchElement)
+                                     || r.Id.ToString().Contains(searchElement));
+
+        // Aplicar filtro de estado si no es "all"
+        if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
         {
-            return RedirectToAction("Index");
+            var isActive = activeFilter == "true";
+            query = query.Where(r => r.Activo == isActive);
         }
 
-        var roles = await _context.Roles
-            .Where(r => r.Name.Contains(searchElement) 
-                    || r.Id.ToString().Contains(searchElement))
-            .ToListAsync();
-
+        var roles = await query.ToListAsync();
         return View("Index", roles);
     }
 

@@ -13,8 +13,15 @@
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search">Buscar</button>
         <div class="radio-group">
-            <input type="radio" name="Active" id="active" value="true" checked>
-            <input type="radio" name="Active" id="Inactive" value="false" checked>
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "true" ? "" : "checked")>
         </div>
     </form>
     <a asp-action="Create">Crear</a>
@@ -71,4 +78,5 @@
         <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
     </dialog>
 </div>
+
 

@@ -11,9 +11,45 @@
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search">Buscar</button>
+        <div class="radio-group">
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "true" ? "" : "checked")>
+        </div>
+        <label for="rol">Roles:</label>
+        <select name="rol" id="rol">
+            @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
+            {
+                <option value="all" selected>Todos</option>
+            }
+            else
+            {
+                <option value="all">Todos</option>
+            }
+            @if (ViewBag.Roles != null)
+            {
+                @foreach (var rol in ViewBag.Roles)
+                {
+                    if (ViewBag.Rol == rol.Id.ToString())
+                    {
+                        <option value="@rol.Id" selected>@rol.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@rol.Id">@rol.Name</option>
+                    }
+                }
+            }
+        </select>
     </form>
     <a asp-action="Create">Crear</a>
-    
+
 
     <table>
         <thead>
@@ -45,7 +81,7 @@
                     <td>@usuario.Apellidos</td>
                     <td>@usuario.Email</td>
                     <td>@usuario.Telefono</td>
-                    <td>@usuario.Rol</td>
+                    <td>@(usuario.RolNavigation?.Name ?? "Sin Rol")</td>
                     <td>
                         @if (usuario.Activo == true)
                         {

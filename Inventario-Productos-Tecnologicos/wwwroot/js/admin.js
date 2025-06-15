@@ -13,36 +13,41 @@ function modifyElement() {
         e.preventDefault()
         const form = document.querySelector('.modifyElement');
         const controller = document.getElementById('controller').value
-        console.log(controller)
+        console.log('Controller:' + controller)
         const values = {};
 
         form.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
-            switch (el.type) {
-                case 'checkbox':
-                    values[el.name] = el.checked;
-                    break;
-                case 'radio':
-                    if (el.checked) values[el.name] = el.value;
-                    break;
+            // Ignorar ciertos campos
+            if (el.name === 'controller' || el.name === '__RequestVerificationToken') {
+                return;
             }
-            switch (el.name) {
-                case 'controller':
-                    return;
-                case '__RequestVerificationToken':
-                    return;
-                case 'Id':
-                    values[el.name] = parseInt(el.value);
-                    break;
-                case 'Activo':
-                    values[el.name] = el.value === "true";
-                    break;
-                default:
-                    values[el.name] = el.value;
+
+            // Manejar diferentes tipos de inputs
+            if (el.type === 'checkbox') {
+                values[el.name] = el.checked;
+            } else if (el.type === 'radio') {
+                if (el.checked) {
+                    values[el.name] = el.value === 'true';
+                }
+            } else {
+                // Manejar casos especiales
+                switch (el.name) {
+                    case 'Id':
+                        values[el.name] = parseInt(el.value);
+                        break;
+                    case 'Activo':
+                        console.log('Activo:', el.value);
+                        values[el.name] = el.value === "true";
+                        break;
+                    default:
+                        values[el.name] = el.value;
+                }
             }
-            console.log(el.name);
+            console.log(`${el.name}: ${values[el.name]}`);
         });
+
         try {
-            console.log(values);
+            console.log('Valores a enviar:', values);
             const bodyRequest = JSON.stringify(values);
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             const response = await fetch(`/${controller}/Edit`, {
@@ -63,11 +68,11 @@ function modifyElement() {
                 } catch {
                     error = {message: text || "Error desconocido"};
                 }
-                console.error("Error al actualizar" + error);
+                console.log("Error al actualizar:", error);
                 alert("Error al actualizar: " + (error.message || JSON.stringify(error)));
             }
         } catch (e) {
-            console.error('Error:', e);
+            console.log('Error:', e + "Controller: " + controller);
             alert('Error al procesar la solicitud');
         }
     })
@@ -103,5 +108,3 @@ function deleteElement() {
         }
     });
 }
-
-
