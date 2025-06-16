@@ -62,11 +62,15 @@ section {
     padding: 2rem;
     min-height: 6rem;
     min-width: 7rem;
+    max-height: 400px;
 }
 
 .InicioCard {
     position: relative;
     padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
 }
 
 .card-image {
@@ -315,6 +319,236 @@ section {
     }
 }
 
+.perifericos{
+    grid-column: span 2;
+    /*Just color changes for the componentes card*/
+
+    .card-image {
+        border: .5rem solid var(--Twistle);
+    }
+
+    .title, .seeMore {
+        border-color: var(--Twistle);
+    }
+
+    .curve-one {
+        box-shadow: 0.375rem 0.375rem var(--Twistle);
+    }
+
+    .curve-four {
+        box-shadow: -0.375rem -0.375rem var(--Twistle);
+    }
+
+    .title {
+        &:hover {
+            color: var(--Twistle);
+        }
+
+        &::before {
+            box-shadow: -0.375rem -0.375rem var(--Twistle);
+        }
+    }
+
+    .seeMore {
+        &::before {
+            box-shadow: 0.375rem 0.375rem var(--Twistle);
+        }
+
+        & a {
+            border: 5px solid var(--Twistle);
+
+            &:active {
+                border: 5px solid var(--TiffBlue);
+            }
+        }
+    }
+}
+
+.Novedades{
+    grid-column: span 2;
+    
+    & .title{
+        border-bottom: 0.5rem solid var(--TiffBlue);
+        border-right: 0.5rem solid var(--TiffBlue);
+        color: var(--Azure);
+        left: 0;
+        width: 10rem;
+        
+        &:hover{
+            color: var(--TiffBlue);
+        }
+
+        &::after {
+            background-color: transparent;
+            top: 0;
+            left: 9.5rem;
+            border-top-left-radius: 0.8rem;
+            box-shadow: -0.275rem -0.275rem var(--darkBlue);
+        }
+
+        &::before {
+            background-color: transparent;
+            left: 10rem;
+            top: .5rem;
+            border-top-left-radius: 0.8rem;
+            box-shadow: -0.375rem -0.375rem var(--TiffBlue);
+        }
+    }
+    & .curve-three {
+        background: transparent;
+        left: .5rem;
+        top: 3rem;
+        border-top-left-radius: 0.5rem;
+        box-shadow: -0.375rem -0.375rem var(--TiffBlue);
+    }
+    & .curve-four {
+        background: transparent;
+        left: 0;
+        top: 2.5rem;
+        border-top-left-radius: 0.5rem;
+        box-shadow: -0.375rem -0.375rem var(--darkBlue);
+    }
+}
+#NewsCarousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 0.8rem;
+    border: 0.5rem solid var(--TiffBlue);
+    overflow: hidden; /* Para mantener las imágenes dentro del contenedor */
+    background: var(--darkGradient);
+}
+
+#NewsCarousel .carousel-control-prev,
+#NewsCarousel .carousel-control-next {
+    width: 3rem;
+    height: 3rem;
+    background: var(--darkGradient);
+    border: 3px solid var(--TiffBlue);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.8;
+    transition: all 0.3s ease;
+}
+
+#NewsCarousel .carousel-control-prev {
+    left: 1rem;
+}
+
+#NewsCarousel .carousel-control-next {
+    right: 1rem;
+}
+
+#NewsCarousel .carousel-control-prev:hover,
+#NewsCarousel .carousel-control-next:hover {
+    background: var(--TiffBlue);
+    opacity: 1;
+    scale: 1.1;
+}
+
+#NewsCarousel .carousel-control-prev-icon,
+#NewsCarousel .carousel-control-next-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+/* Estilo para los indicadores */
+#NewsCarousel .carousel-indicators {
+    margin-bottom: 0.5rem;
+}
+
+#NewsCarousel .carousel-indicators button {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    border: 2px solid var(--TiffBlue);
+    background: var(--darkBlue);
+    opacity: 0.8;
+    margin: 0 0.3rem;
+    transition: all 0.3s ease;
+}
+
+#NewsCarousel .carousel-indicators button.active {
+    background: var(--TiffBlue);
+    scale: 1.2;
+}
+
+#NewsCarousel .carousel-indicators button:hover {
+    opacity: 1;
+    scale: 1.1;
+}
+
+#NewsCarousel .carousel-inner {
+    width: 100%;
+    height: 100%;
+}
+
+#NewsCarousel .carousel-item {
+    width: 100%;
+    height: 100%;
+    
+    & img {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 0.8rem;
+        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        transition: all 0.3s ease;
+
+        &:hover{
+            transform: scale(1.05);
+            transition: all 0.3s ease;
+        }
+    }
+    
+}
+
+#NewsCarousel .carousel-caption {
+    background: rgba(16, 25, 53, 0.9);
+    bottom: 0;
+    padding: 1rem;
+    width: fit-content;
+    border-radius: 0.8rem 0.8rem 0 0;
+    justify-self: center;
+    z-index: 1;
+}
+.carousel-indicators {
+    margin-bottom: 0;
+}
+
+#NewsCarousel .carousel-caption h5 {
+    color: var(--TiffBlue);
+    font-size: clamp(0.8rem, 1.8vw, 1.8rem);
+    margin-bottom: 1rem;
+    font-weight: bold;
+}
+
+#NewsCarousel .carousel-caption p {
+    color: var(--Azure);
+    font-size: 1rem;
+    margin-bottom: 0.7rem;
+}
+
+/* Ajustes para dispositivos móviles */
+@media (max-width: 760px) {
+    
+    #NewsCarousel .carousel-caption {
+        padding: 0.5rem;
+    }
+    
+    #NewsCarousel .carousel-caption h5 {
+        font-size: 1rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    #NewsCarousel .carousel-caption p {
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+}
+
 #loginModal {
     z-index: -1;
     top: 0;
@@ -439,6 +673,4 @@ section {
         margin: auto;
     }
 }
-
-
 
