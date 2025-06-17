@@ -5,19 +5,78 @@
     Layout = "_LayoutAdmin";
 }
 
-<h2>Editar Categoría</h2>
+<div>
+    <h2>Editar Categoría</h2>
+    <form asp-action="Edit" method="post" class="modifyElement">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="controller" id="controller" value="Categorias">
+        <input type="hidden" name="action" id="action" value="Edit">
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
-    <div class="form-group">
-        <label asp-for="Nombre" class="control-label"></label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Activo" class="control-label"></label>
-        <input asp-for="Activo" class="form-check-input" />
-    </div>
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <div class="formgroup">
+            <label for="Nombre">Nombre:</label>
+            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre">
+        </div>
+        <div class="formgroup">
+            <label for="Activo">Estado:</label>
+            <select name="Activo" id="Activo">
+                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(Model.Activo ? null : "selected")">Inactivo</option>
+            </select>
+        </div>
+        <div>
+            <h3>Subcategorías</h3>
+            <a asp-action="CreateSubcategoria" asp-route-idCategoria="@Model.Id">Crear</a>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Estado</th>
+                    <th>Opciones</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if (ViewBag.Subcategorias.Count == 0)
+                {
+                    <tr>
+                        <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
+                    </tr>
+                }
+                else
+                {
+                    @foreach (var sub in ViewBag.Subcategorias)
+                    {
+                        <tr>
+                            <td>@sub.Id</td>
+                            <td>@sub.Nombre</td>
+                            <td>
+                                @if (sub.Activo)
+                                {
+                                    <span class="badge text-bg-success">Activo</span>
+                                }
+                                else
+                                {
+                                    <span class="badge text-bg-danger">Inactivo</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-action="EditSubcategoria" asp-route-id="@sub.Id">Edit</a>
+                                <button type="button" class="showModal" data-id="@sub.Id" value="@sub.Nombre">Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        </div>
+        <div class="btngroup">
+            <button type="submit" id="updateBtn">Actualizar</button>
+            <a asp-action="Index">Regresar</a>
+        </div>
+        <p class="pageTitle" hidden>subcategoría</p>
+    </form>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "DeleteSubcategoria", controllerName = "Categorias" })
+
+</div>

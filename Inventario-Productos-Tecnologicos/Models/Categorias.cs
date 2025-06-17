@@ -27,7 +27,7 @@ public partial class Categorias
     /// <summary>
     /// Indica si la categoría está activa en el sistema.
     /// </summary>
-    public bool? Activo { get; set; }
+    public bool Activo { get; set; }
 
     /// <summary>
     /// Colección de subcategorías pertenecientes a esta categoría.

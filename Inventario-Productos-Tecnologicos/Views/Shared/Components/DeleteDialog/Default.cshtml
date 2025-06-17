@@ -1,0 +1,14 @@
+@{
+    var actionName = (string)ViewBag.ActionName;
+    var controllerName = (string)ViewBag.ControllerName;
+}
+
+<dialog class="deleteDialog">
+    <h1>¿Desea eliminar este elemento?</h1>
+    <form asp-action="@actionName" asp-controller="@controllerName" method="post" class="deleteform">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="id" id="idDelete">
+        <button type="submit" class="btn btn-danger">Eliminar</button>
+    </form>
+    <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
+</dialog>

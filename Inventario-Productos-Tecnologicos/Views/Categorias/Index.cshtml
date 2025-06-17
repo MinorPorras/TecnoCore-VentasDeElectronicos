@@ -4,34 +4,61 @@
     ViewBag.Title = "Categorías";
     Layout = "_LayoutAdmin";
 }
-
-<h2>Categorías</h2>
-
-<p>
+<div>
+    <h2 class="pageTitle">Categorías</h2>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+        <div class="radio-group">
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        </div>
+    </form>
     <a class="btn btn-primary" asp-action="Create">Nueva Categoría</a>
-</p>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Nombre</th>
-        <th>Activo</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var item in Model)
-    {
+
+    <table class="table">
+        <thead>
         <tr>
-            <td>@item.Nombre</td>
-            <td>@(item.Activo == true ? "Sí" : "No")</td>
-            <td>
-                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a> |
-                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-            </td>
+            <th>Nombre</th>
+            <th>Activo</th>
+            <th></th>
         </tr>
-    }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+        @foreach (var categoria in Model)
+        {
+            <tr>
+                <td>@categoria.Id</td>
+                <td>@categoria.Nombre</td>
+                <td>
+                    @if (categoria.Activo)
+                    {
+                        <span class="badge text-bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-danger">Inactivo</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@categoria.Id">Editar</a> |
+                    <button type="button" class="showModal" data-id="@categoria.Id" value="@categoria.Nombre">Eliminar
+                    </button>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Categorias"  })
+
+</div>
 

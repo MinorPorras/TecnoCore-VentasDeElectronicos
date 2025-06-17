@@ -1,0 +1,33 @@
+@model Inventario_Productos_Tecnologicos.Models.Subcategorias
+
+@{
+    ViewBag.Title = "Actualizar Subcategoría";
+    Layout = "_LayoutAdmin";
+}
+
+<div>
+    <h2>Editar Subcategoría</h2>
+    <form asp-action="EditSubcategoria" method="post" class="modifyElement">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="controller" id="controller" value="Categorias">
+        <input type="hidden" name="action" id="action" value="EditSubcategoria">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <div class="formgroup">
+            <label for="Nombre">Nombre:</label>
+            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre">
+        </div>
+        <input type="hidden" name="CategoriaId" id="CategoriaId" value="@Model.CategoriaId">
+        <div class="formgroup">
+            <label for="Activo">Estado:</label>
+            <select name="Activo" id="Activo">
+                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(Model.Activo ? null : "selected")">Inactivo</option>
+            </select>
+        </div>
+        <div class="btngroup">
+            <button type="submit" id="updateBtn">Actualizar</button>
+            <a type="button" asp-action="Edit" asp-route-id="@Model.CategoriaId">Regresar</a>
+        </div>
+    </form>
+</div>
+
