@@ -1,0 +1,23 @@
+﻿@model Inventario_Productos_Tecnologicos.Models.Categorias
+
+@{
+    ViewBag.Title = "Editar Categoría";
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Editar Categoría</h2>
+
+<form asp-action="Edit">
+    <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Nombre" class="control-label"></label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="form-group">
+        <label asp-for="Activo" class="control-label"></label>
+        <input asp-for="Activo" class="form-check-input" />
+    </div>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

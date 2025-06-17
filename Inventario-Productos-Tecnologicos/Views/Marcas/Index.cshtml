@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Inventario_Productos_Tecnologicos.Models.Marcas>
+
+@{
+    ViewBag.Title = "Listado de Marcas";
+    Layout = "_LayoutAdmin";
+}
+
+<h2>Marcas</h2>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">Crear Nueva Marca</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var marca in Model)
+        {
+            <tr>
+                <td>
+                    <a asp-controller="Productos" asp-action="Index" asp-route-marcaId="@marca.Id">
+                        @marca.Nombre
+                    </a>
+                </td>
+                <td>@(marca.Activo == true ? "Sí" : "No")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@marca.Id" class="btn btn-secondary btn-sm">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@marca.Id" class="btn btn-info btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@marca.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-controller="Productos" asp-action="Index" class="btn btn-secondary">Volver al listado de productos</a>
+</p>

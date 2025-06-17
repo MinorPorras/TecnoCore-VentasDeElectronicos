@@ -1,8 +1,46 @@
-@model List<Productos>
+@model List<Inventario_Productos_Tecnologicos.Models.Productos>
 
 @{
     ViewBag.Title = "Productos";
     Layout = "_LayoutAdmin";
 }
 
-<h1>Mantenimiento de productos</h1>
+<h1>Mantenimiento de Productos</h1>
+
+<p>
+    <a href="@Url.Action("Create")" class="btn btn-primary">Crear nuevo producto</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Marca</th>
+            <th>Subcategoría</th>
+            <th>Precio</th>
+            <th>Stock</th>
+            <th>Novedad</th>
+            <th>Activo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.Nombre</td>
+                <td>@item.Marca?.Nombre</td>
+                <td>@item.Subcategoria?.Nombre</td>
+                <td>@item.Precio.ToString("C")</td>
+                <td>@item.Stock</td>
+                <td>@(item.Novedad ? "Sí" : "No")</td>
+                <td>@(item.Activo == true ? "Sí" : "No")</td>
+                <td>
+                    <a class="btn btn-info btn-sm" href="@Url.Action("Details", new { id = item.Id })">Detalles</a> |
+                    <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", new { id = item.Id })">Editar</a> |
+                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = item.Id })">Eliminar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

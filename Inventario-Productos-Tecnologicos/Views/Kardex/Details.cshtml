@@ -1,0 +1,41 @@
+﻿@model Inventario_Productos_Tecnologicos.Models.Kardex
+
+@{
+    ViewBag.Title = "Detalle Movimiento de Kardex";
+    Layout = "_LayoutAdmin";
+}
+
+<h2>@ViewBag.Title</h2>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Producto</dt>
+            <dd class="col-sm-9">@Model.Producto?.Nombre ?? "—"</dd>
+
+            <dt class="col-sm-3">Fecha</dt>
+            <dd class="col-sm-9">@Model.Fecha?.ToString("dd/MM/yyyy") ?? "—"</dd>
+
+            <dt class="col-sm-3">Cantidad</dt>
+            <dd class="col-sm-9">@Model.Cantidad ?? 0</dd>
+
+            <dt class="col-sm-3">Stock Anterior</dt>
+            <dd class="col-sm-9">@Model.StockAnterior ?? 0</dd>
+
+            <dt class="col-sm-3">Stock Actual</dt>
+            <dd class="col-sm-9">@Model.StockActual ?? 0</dd>
+
+            <dt class="col-sm-3">Movimiento</dt>
+            <dd class="col-sm-9">@Model.TipoMovimientoKardex?.Tipo ?? "—"</dd>
+
+            <dt class="col-sm-3">Descripción</dt>
+            <dd class="col-sm-9">@Model.Descripcion ?? "—"</dd>
+
+            <dt class="col-sm-3">Activo</dt>
+            <dd class="col-sm-9">@((Model.Activo == true) ? "Sí" : "No")</dd>
+        </dl>
+
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-info">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    </div>
+</div>
