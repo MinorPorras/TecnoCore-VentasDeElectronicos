@@ -2,7 +2,7 @@
 
 @foreach (var categoria in Model)
 {
-    @if (categoria.Subcategorias != null && categoria.Subcategorias.Any())
+    @if (categoria.Subcategorias.Any())
     {
         <li class="dropdown-container">
             <a asp-controller="Productos"

@@ -4,41 +4,65 @@
     ViewBag.Title = "Listado de Marcas";
     Layout = "_LayoutAdmin";
 }
+<div>
+    <h2 class="pageTitle">Marcas</h2>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+        <div class="radio-group">
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        </div>
+    </form>
 
-<h2>Marcas</h2>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Crear Nueva Marca</a>
+    </p>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Crear Nueva Marca</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
+    <table class="table table-striped">
+        <thead>
         <tr>
+            <th>ID</th>
             <th>Nombre</th>
             <th>Activo</th>
             <th>Acciones</th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (var marca in Model)
         {
             <tr>
                 <td>
-                    <a asp-controller="Productos" asp-action="Index" asp-route-marcaId="@marca.Id">
-                        @marca.Nombre
-                    </a>
+                    @marca.Id
                 </td>
-                <td>@(marca.Activo == true ? "Sí" : "No")</td>
                 <td>
-                    <a asp-action="Details" asp-route-id="@marca.Id" class="btn btn-secondary btn-sm">Detalles</a>
+                    @marca.Nombre
+                </td>
+                <td>
+                    @if (marca.Activo)
+                    {
+                        <span class="badge text-bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-danger">Inactivo</span>
+                    }
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@marca.Id" class="btn btn-info btn-sm">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@marca.Id" class="btn btn-danger btn-sm">Eliminar</a>
+                    <button type="button" class="showModal" data-id="@marca.Id" value="@marca.Nombre">Eliminar</button>
                 </td>
             </tr>
         }
-    </tbody>
-</table>
-
-<p>
-    <a asp-controller="Productos" asp-action="Index" class="btn btn-secondary">Volver al listado de productos</a>
-</p>
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete" })
+</div>

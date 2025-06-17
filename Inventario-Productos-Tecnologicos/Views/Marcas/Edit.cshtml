@@ -1,0 +1,30 @@
+@model Marcas
+
+@{
+    ViewBag.Title = "Actualizar Marca";
+    Layout = "_LayoutAdmin";
+}
+
+<div>
+    <h2>Actualizar Marca</h2>
+    <form asp-action="Edit" method="post" class="modifyElement">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="controller" id="controller" value="Marcas">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <div class="formgroup">
+            <label for="Nombre">Nombre:</label>
+            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre" required>
+        </div>
+        <div class="formgroup">
+            <label for="Activo">Estado:</label>
+            <select name="Activo" id="Activo">
+                <option value="true" selected="@(Model.Activo ? "selected" : "")">Activo</option>
+                <option value="false" selected="@(!Model.Activo ? "selected" : "")">Inactivo</option>
+            </select>
+        </div>
+        <div class="btngroup">
+            <button type="submit" id="updateBtn">Actualizar</button>
+            <a type="button" asp-action="Index">Regresar</a>
+        </div>
+    </form>
+</div>

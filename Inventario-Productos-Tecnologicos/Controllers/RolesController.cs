@@ -7,8 +7,12 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 
 public class RolesController : Controller
 {
-    private readonly TecnoCoreDbContext _context = new();
+    private readonly TecnoCoreDbContext _context;
 
+    public RolesController(TecnoCoreDbContext context)
+    {
+        _context = context;
+    }
 
     // GET
     public async Task<IActionResult> Index()
@@ -76,12 +80,13 @@ public class RolesController : Controller
         Console.WriteLine("llega aquí");
         try
         {
+            Console.WriteLine(ModelState.IsValid);
             if (!ModelState.IsValid) return BadRequest(new { message = "Datos inválidos enviados al servidor." });
             var existingRol = await _context.Roles.FirstOrDefaultAsync(r => r.Id == rol.Id);
             if (existingRol == null) return NotFound();
+            Console.WriteLine(rol.Name, rol.Activo);
             existingRol.Name = rol.Name;
             existingRol.Activo = rol.Activo;
-            _context.Roles.Update(existingRol);
             await _context.SaveChangesAsync();
             return Ok();
         }
