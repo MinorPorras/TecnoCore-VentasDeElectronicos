@@ -1,4 +1,4 @@
-@model dynamic
+@model List<Inventario_Productos_Tecnologicos.Models.Kardex>
 
 @{
     ViewBag.Title = "Kardex General";
@@ -6,3 +6,48 @@
 }
 
 <h2>Kardex General</h2>
+
+<p>
+    <a class="btn btn-primary" asp-action="Create">Nuevo Movimiento</a>
+</p>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Fecha</th>
+            <th>Cantidad</th>
+            <th>Stock Anterior</th>
+            <th>Stock Actual</th>
+            <th>Movimiento</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@(item.Producto?.Nombre ?? "—")</td>
+                    <td>@(item.Fecha.HasValue? item.Fecha.Value.ToString("dd/MM/yyyy") : "—")</td>
+                    <td>@(item.Cantidad ?? 0)</td>
+                    <td>@(item.StockAnterior ?? 0)</td>
+                    <td>@(item.StockActual ?? 0)</td>
+                    <td>@(item.TipoMovimientoKardex?.Tipo ?? "—")</td>
+                    <td>
+                        <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                        <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a>
+                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="7" class="text-center">No hay movimientos en el kardex.</td>
+            </tr>
+        }
+    </tbody>
+</table>
