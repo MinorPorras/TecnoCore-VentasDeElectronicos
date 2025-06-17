@@ -4711,23 +4711,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\tayra\\.nuget\\packages\\": {},
+    "C:\\Users\\minor\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\tayra\\Desktop\\VirtualStore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
+      "projectUniqueName": "C:\\Users\\minor\\RiderProjects\\TecnoCore-VentasDeElectronicos\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
       "projectName": "Inventario-Productos-Tecnologicos",
-      "projectPath": "C:\\Users\\tayra\\Desktop\\VirtualStore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
-      "packagesPath": "C:\\Users\\tayra\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\tayra\\Desktop\\VirtualStore\\Inventario-Productos-Tecnologicos\\obj\\",
+      "projectPath": "C:\\Users\\minor\\RiderProjects\\TecnoCore-VentasDeElectronicos\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
+      "packagesPath": "C:\\Users\\minor\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\minor\\RiderProjects\\TecnoCore-VentasDeElectronicos\\Inventario-Productos-Tecnologicos\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\tayra\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\minor\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -4736,7 +4736,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

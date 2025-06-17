@@ -13,24 +13,25 @@
 
 <table class="table">
     <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Activo</th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>Nombre</th>
+        <th>Activo</th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Nombre</td>
-                <td>@(item.Activo == true ? "Sí" : "No")</td>
-                <td>
-                    <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
-                    <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a> |
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
-                </td>
-            </tr>
-        }
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Nombre</td>
+            <td>@(item.Activo == true ? "Sí" : "No")</td>
+            <td>
+                <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a> |
+                <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a> |
+                <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+            </td>
+        </tr>
+    }
     </tbody>
 </table>
+

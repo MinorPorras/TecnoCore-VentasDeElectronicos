@@ -10,7 +10,12 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 /// </summary>
 public class UsuariosController : Controller
 {
-    private readonly TecnoCoreDbContext _context = new();
+    private readonly TecnoCoreDbContext _context;
+
+    public UsuariosController(TecnoCoreDbContext context)
+    {
+        _context = context;
+    }
 
     /// <summary>
     /// Muestra la vista principal de usuarios.

@@ -20,7 +20,7 @@
                    @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
             <label for="Inactive">Inactivo</label>
             <input type="radio" name="activeFilter" id="Inactive" value="false"
-                   @(ViewBag.ActiveFilter == "true" ? "" : "checked")>
+                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
         </div>
         <label for="rol">Roles:</label>
         <select name="rol" id="rol">
@@ -102,13 +102,5 @@
         }
         </tbody>
     </table>
-    <dialog class="deleteDialog">
-        <h1>¿Desea eliminar este elemento?</h1>
-        <form asp-action="Delete" method="post" class="deleteform">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="id" id="Id">
-            <button type="submit" class="btn btn-danger">Eliminar</button>
-        </form>
-        <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
-    </dialog>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete" })
 </div>

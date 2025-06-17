@@ -1,0 +1,29 @@
+@model dynamic
+
+@{
+    ViewBag.Title = "Crear Marca";  
+    Layout = "_LayoutAdmin";
+}
+
+<div>
+    <h2>Crear Marca</h2>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div class="formgroup">
+            <label for="Nombre">Nombre:</label>
+            <input type="text" name="Nombre" id="Nombre">
+        </div>
+        <div class="formgroup">
+            <label for="Activo">Estado:</label>
+            <select name="Activo" id="Activo">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+        </div>
+        <div class="btngroup">
+            <button type="submit">Guardar</button>
+            <button type="button" asp-action="Index">Regresar</button>
+        </div>
+    </form>
+</div>

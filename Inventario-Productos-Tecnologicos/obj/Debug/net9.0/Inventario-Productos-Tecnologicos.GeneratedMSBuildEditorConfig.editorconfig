@@ -17,185 +17,197 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = Inventario_Productos_Tecnologicos
 build_property.RootNamespace = Inventario_Productos_Tecnologicos
-build_property.ProjectDir = C:\Users\tayra\Desktop\VirtualStore\Inventario-Productos-Tecnologicos\
+build_property.ProjectDir = C:\Users\minor\RiderProjects\TecnoCore-VentasDeElectronicos\Inventario-Productos-Tecnologicos\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 9.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\tayra\Desktop\VirtualStore\Inventario-Productos-Tecnologicos
+build_property.MSBuildProjectDirectory = C:\Users\minor\RiderProjects\TecnoCore-VentasDeElectronicos\Inventario-Productos-Tecnologicos
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 9.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Categorias/Create.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Categorias/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Categorias/Delete.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Categorias/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xEZWxldGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Categorias/Details.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Categorias/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xEZXRhaWxzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Categorias/Edit.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Categorias/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Categorias/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Categorias/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Home/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Home/Mantenimiento.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Home/Mantenimiento.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxNYW50ZW5pbWllbnRvLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Home/Privacy.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Kardex/Create.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Kardex/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FyZGV4XENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Kardex/Delete.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Kardex/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FyZGV4XERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Kardex/Details.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Kardex/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FyZGV4XERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Kardex/Edit.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Kardex/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FyZGV4XEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Kardex/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Kardex/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcS2FyZGV4XEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Marcas/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Marcas/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FzXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Marcas/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FzXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Marcas/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Pedidos/Estados_Pedidos.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Pedidos/Estados_Pedidos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xFc3RhZG9zX1BlZGlkb3MuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Pedidos/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Pedidos/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Pedidos/Pedidos_Usuario.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Pedidos/Pedidos_Usuario.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGVkaWRvc1xQZWRpZG9zX1VzdWFyaW8uY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/Create.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXENyZWF0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/Delete.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/Delete.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXERlbGV0ZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/Details.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXERldGFpbHMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/Edit.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/PorCategoria.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/PorCategoria.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXFBvckNhdGVnb3JpYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Productos/PorSubcategoria.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Productos/PorSubcategoria.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZHVjdG9zXFBvclN1YmNhdGVnb3JpYS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Roles/Create.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Roles/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Roles/Edit.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Roles/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Roles/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Roles/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUm9sZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Shared/Components/Categories/Default.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/Components/Categories/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcQ2F0ZWdvcmllc1xEZWZhdWx0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Shared/Error.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/Components/DeleteDialog/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVsZXRlRGlhbG9nXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Usuarios/Create.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Usuarios/Create.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcQ3JlYXRlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Usuarios/Edit.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Usuarios/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Usuarios/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Usuarios/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Usuarios/Informacion_Personal.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Usuarios/Informacion_Personal.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcSW5mb3JtYWNpb25fUGVyc29uYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Usuarios/Lista_Deseos.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Usuarios/Lista_Deseos.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVXN1YXJpb3NcTGlzdGFfRGVzZW9zLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Ventas/Carro_Compras.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Ventas/Carro_Compras.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXENhcnJvX0NvbXByYXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Ventas/Cupones.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Ventas/Cupones.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXEN1cG9uZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Ventas/Index.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Ventas/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXEluZGV4LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Ventas/Metodos_de_Pago.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Ventas/Metodos_de_Pago.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVmVudGFzXE1ldG9kb3NfZGVfUGFnby5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/_ViewImports.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/_ViewStart.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Shared/_Layout.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-q1x9pa35bl
 
-[C:/Users/tayra/Desktop/VirtualStore/Inventario-Productos-Tecnologicos/Views/Shared/_LayoutAdmin.cshtml]
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Shared/_LayoutAdmin.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXRBZG1pbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = b-ucpzsbr5v8

@@ -142,5 +142,15 @@ namespace Inventario_Productos_Tecnologicos.Controllers
         {
             return _context.Productos.Any(p => p.Id == id);
         }
+
+        public IActionResult PorCategoria()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IActionResult PorSubcategoria()
+        {
+            throw new NotImplementedException();
+        }
     }
 }
