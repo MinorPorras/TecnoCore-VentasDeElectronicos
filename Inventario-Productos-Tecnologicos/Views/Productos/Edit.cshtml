@@ -24,7 +24,9 @@
 
     <div class="form-group">
         <label asp-for="Precio"></label>
-        <input asp-for="Precio" class="form-control" />
+        <input asp-for="Precio" class="form-control" 
+               value="@Model.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" 
+               step="0.01" min="0" type="number"/>
         <span asp-validation-for="Precio" class="text-danger"></span>
     </div>
 
@@ -36,9 +38,9 @@
 
     <div class="form-group">
         <label asp-for="Imagen"></label>
-        <input asp-for="Imagen" class="form-control" />
-        <small>Coloca la URL de la imagen</small>
-        <span asp-validation-for="Imagen" class="text-danger"></span>
+        <input name="imagen" class="form-control" type="file" accept="image/*" 
+               onchange="mostrarImagen(this)" id="imgSelector" value="@Model.Imagen"/>
+        <img id="preview" src="@Model.Imagen" alt="@Model.Nombre" style="max-width: 200px; margin-top: 10px; @(string.IsNullOrEmpty(Model.Imagen) ? "display: none" : "")" />
     </div>
 
     <div class="form-group form-check">
@@ -46,9 +48,15 @@
         <label asp-for="Novedad" class="form-check-label"></label>
     </div>
 
-    <div class="form-group form-check">
-        <input asp-for="Activo" class="form-check-input" />
-        <label asp-for="Activo" class="form-check-label"></label>
+    <div class="formgroup">
+        <label>Estado:</label>
+        <div>
+            <input type="radio" name="Activo" id="active" value="true" @(Model.Activo == true ? "checked" : "")>
+            <label for="active">Activo</label>
+
+            <input type="radio" name="Activo" id="inactive" value="false" @(Model.Activo == false ? "checked" : "")>
+            <label for="inactive">Inactivo</label>
+        </div>
     </div>
 
     <div class="form-group">
@@ -68,9 +76,9 @@
     </div>
 
     <button type="submit" class="btn btn-primary">Guardar</button>
-    <a href="@Url.Action("Index")" class="btn btn-secondary">Cancelar</a>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
 </form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

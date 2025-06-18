@@ -1,11 +1,29 @@
 document.addEventListener("DOMContentLoaded", function () {
     if (document.querySelector('.modifyElement')) {
         modifyElement();
+        if(document.querySelector('#imgSelector')) {
+            let imgForm = document.querySelector('#imgSelector');
+            imgForm.addEventListener('change', mostrarImagen(imgForm));
+        }
     }
     if (document.querySelector('.deleteDialog')) {
         deleteElement()
     }
 })
+
+function mostrarImagen(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+
+        reader.onload = function(e) {
+            var preview = document.getElementById('preview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 
 function modifyElement() {
     const updateBtn = document.getElementById('updateBtn')

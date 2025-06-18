@@ -3,6 +3,7 @@ using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers
 {
@@ -21,8 +22,9 @@ namespace Inventario_Productos_Tecnologicos.Controllers
             var productos = await _context.Productos
                 .Include(p => p.Marca)
                 .Include(p => p.Subcategoria)
-                .Where(p => p.Activo == true)
                 .ToListAsync();
+            ViewBag.Marcas = new SelectList(_context.Marcas, "Id", "Nombre");
+            ViewBag.Subcategorias = new SelectList(_context.Subcategorias, "Id", "Nombre");
             return View(productos);
         }
 
@@ -52,8 +54,32 @@ namespace Inventario_Productos_Tecnologicos.Controllers
         // POST: Productos/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Nombre,Descripcion,Precio,Stock,Imagen,Novedad,MarcaId,SubcategoriaId")] Productos producto)
+        public async Task<IActionResult> Create([Bind("Nombre,Descripcion,Precio,Stock,Novedad,MarcaId,SubcategoriaId")] Productos producto, IFormFile imagen)
         {
+            if (imagen.Length > 0)
+            {
+                // Genera un nombre único para el archivo
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+    
+                // Define la ruta donde se guardará
+                var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/productos");
+                var rutaGuardado = Path.Combine(uploadPath, fileName);
+    
+                // Crear el directorio si no existe
+                if (!Directory.Exists(uploadPath))
+                {
+                    Directory.CreateDirectory(uploadPath);
+                }
+    
+                // Guarda el archivo físicamente
+                await using (var stream = new FileStream(rutaGuardado, FileMode.Create))
+                {
+                    await imagen.CopyToAsync(stream);
+                }
+    
+                // Guarda la ruta relativa en el modelo
+                producto.Imagen = "/img/productos/" + fileName;
+            }
             if (ModelState.IsValid)
             {
                 producto.Activo = true;
@@ -82,7 +108,7 @@ namespace Inventario_Productos_Tecnologicos.Controllers
         // POST: Productos/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Precio,Stock,Imagen,Novedad,MarcaId,SubcategoriaId,Activo")] Productos producto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Descripcion,Precio,Stock,Imagen,Novedad,MarcaId,SubcategoriaId,Activo")] Productos producto, IFormFile? imagen)
         {
             if (id != producto.Id) return NotFound();
 
@@ -90,8 +116,45 @@ namespace Inventario_Productos_Tecnologicos.Controllers
             {
                 try
                 {
+                    // Si se subió una nueva imagen
+                    if (imagen != null && imagen.Length > 0)
+                    {
+                        // Genera un nombre único para el archivo
+                        var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+    
+                        // Define la ruta donde se guardará
+                        var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/productos");
+                        var rutaGuardado = Path.Combine(uploadPath, fileName);
+    
+                        // Crear el directorio si no existe
+                        if (!Directory.Exists(uploadPath))
+                        {
+                            Directory.CreateDirectory(uploadPath);
+                        }
+    
+                        // Guarda el archivo físicamente
+                        await using (var stream = new FileStream(rutaGuardado, FileMode.Create))
+                        {
+                            await imagen.CopyToAsync(stream);
+                        }
+    
+                        // Guarda la ruta relativa en el modelo
+                        producto.Imagen = "/img/productos/" + fileName;
+                    }
+                    else
+                    {
+                        // Obtener el producto existente para mantener la imagen actual
+                        var existingProduct = await _context.Productos.AsNoTracking()
+                            .FirstOrDefaultAsync(p => p.Id == id);
+                        if (existingProduct != null)
+                        {
+                            producto.Imagen = existingProduct.Imagen;
+                        }
+                    }
+
                     _context.Update(producto);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -100,7 +163,6 @@ namespace Inventario_Productos_Tecnologicos.Controllers
                     else
                         throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["MarcaId"] = new SelectList(_context.Marcas.Where(m => m.Activo == true), "Id", "Nombre", producto.MarcaId);
             ViewData["SubcategoriaId"] = new SelectList(_context.Subcategorias.Where(s => s.Activo == true), "Id", "Nombre", producto.SubcategoriaId);
@@ -151,6 +213,48 @@ namespace Inventario_Productos_Tecnologicos.Controllers
         public IActionResult PorSubcategoria()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IActionResult> Search(string searchElement, string marcas, string subcategorias, string activeFilter)
+        {
+            ViewBag.SearchString = searchElement;
+            ViewBag.SelectedMarca = marcas ?? "all";
+            ViewBag.SelectedSubcategoria = subcategorias ?? "all";
+            ViewBag.ActiveFilter = activeFilter;
+
+            // Obtener las listas para los dropdowns
+            ViewBag.marcas = new SelectList(await _context.Marcas.Where(m => m.Activo == true).ToListAsync(), "Id", "Nombre");
+            ViewBag.subcategorias = new SelectList(await _context.Subcategorias.Where(s => s.Activo == true).ToListAsync(), "Id", "Nombre");
+
+            IQueryable<Productos> query = _context.Productos
+                .Include(p => p.Marca)
+                .Include(p => p.Subcategoria)
+                .Where(p => p.Activo == true);  // Filtro inicial de productos activos
+
+            // Aplicar filtro de búsqueda si existe
+            if (!string.IsNullOrEmpty(searchElement))
+                query = query.Where(p => p.Nombre.ToLower().Contains(searchElement.ToLower())
+                        || p.Id.ToString().Contains(searchElement));
+
+            // Aplicar filtro de estado si no es "all"
+            if (marcas != "all" && !string.IsNullOrEmpty(marcas))
+            {
+                query = query.Where(p => p.MarcaId == int.Parse(marcas));
+            }
+
+            // Aplicar filtro de rol si no es "all"
+            if (subcategorias != "all" && !string.IsNullOrEmpty(subcategorias))
+            {
+                query = query.Where(p => p.SubcategoriaId == int.Parse(subcategorias));
+            }
+            
+            if(activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
+            {
+                var isActive = activeFilter == "true";
+                query = query.Where(p => p.Activo == isActive);
+            }
+            var productos = await query.ToListAsync();
+            return View("Index", productos);
         }
     }
 }

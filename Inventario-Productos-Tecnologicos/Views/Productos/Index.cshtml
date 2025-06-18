@@ -4,15 +4,72 @@
     ViewBag.Title = "Productos";
     Layout = "_LayoutAdmin";
 }
+<div>
+    <h1>Mantenimiento de Productos</h1>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+        <div class="radio-group">
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        </div>
+        <label for="marcas">Marcas:</label>
+        <select name="marcas" id="marcas">
+            @if(ViewBag.SelectedMarca == "all")
+            {
+                <option value="all" selected>Todos</option>
+            }
+            else
+            {
+                <option value="all">Todos</option>
+            }
+            @foreach(var marca in ViewBag.marcas)
+            {
+                @if(ViewBag.SelectedMarca == marca.Value)
+                {
+                    <option value="@marca.Value" selected>@marca.Text</option>
+                }
+                else
+                {
+                    <option value="@marca.Value">@marca.Text</option>
+                }
+            }
+        </select>
+        <label for="subcategorias">Subcategorias:</label>
+        <select name="subcategorias" id="subcategorias">
+            @if(ViewBag.SelectedSubcategoria == "all")
+            {
+                <option value="all" selected>Todos</option>
+            }
+            else
+            {
+                <option value="all">Todos</option>
+            }
+            @foreach(var sub in ViewBag.Subcategorias)
+            {
+                @if(ViewBag.SelectedSubcategoria == sub.Value)
+                {
+                    <option value="@sub.Value" selected>@sub.Text</option>
+                }
+                else
+                {
+                    <option value="@sub.Value">@sub.Text</option>
+                }
+            }
+        </select>
+    </form>
+    <a asp-action="Create">Crear</a>
 
-<h1>Mantenimiento de Productos</h1>
-
-<p>
-    <a href="@Url.Action("Create")" class="btn btn-primary">Crear nuevo producto</a>
-</p>
-
-<table class="table table-striped">
-    <thead>
+    <table class="table table-striped">
+        <thead>
         <tr>
             <th>Nombre</th>
             <th>Marca</th>
@@ -23,8 +80,8 @@
             <th>Activo</th>
             <th></th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         @foreach (var item in Model)
         {
             <tr>
@@ -34,13 +91,32 @@
                 <td>@item.Precio.ToString("C")</td>
                 <td>@item.Stock</td>
                 <td>@(item.Novedad ? "Sí" : "No")</td>
-                <td>@(item.Activo == true ? "Sí" : "No")</td>
                 <td>
-                    <a class="btn btn-info btn-sm" href="@Url.Action("Details", new { id = item.Id })">Detalles</a> |
-                    <a class="btn btn-warning btn-sm" href="@Url.Action("Edit", new { id = item.Id })">Editar</a> |
-                    <a class="btn btn-danger btn-sm" href="@Url.Action("Delete", new { id = item.Id })">Eliminar</a>
+                    @if (item.Novedad == true)
+                    {
+                        <span class="badge text-bg-info">Novedad</span>
+                    }
+                </td>
+                <td>
+                    @if (item.Activo == true)
+                    {
+                        <span class="badge text-bg-success">Activo</span>
+                    }
+                    else
+                    {
+                        <span class="badge text-bg-danger">Inactivo</span>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <button type="button" class="showModal" data-id="@item.Id" value="@item.Nombre">Eliminar
+                    </button>
                 </td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Productos"  })
+
+</div>
