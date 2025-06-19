@@ -58,11 +58,14 @@
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@marca.Id" class="btn btn-info btn-sm">Editar</a>
-                    <button type="button" class="showModal" data-id="@marca.Id" value="@marca.Nombre">Eliminar</button>
+                    <button type="button" class="showModal" data-id="@marca.Id"
+                            data-active="@marca.Activo" value="@marca.Nombre">
+                        @(marca.Activo ? "Desactivar" : "Activar")
+                    </button>
                 </td>
             </tr>
         }
         </tbody>
     </table>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Marcas"  })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Marcas" })
 </div>

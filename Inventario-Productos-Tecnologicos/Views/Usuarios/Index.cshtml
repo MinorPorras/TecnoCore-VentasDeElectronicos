@@ -83,7 +83,7 @@
                     <td>@usuario.Telefono</td>
                     <td>@(usuario.RolNavigation?.Name ?? "Sin Rol")</td>
                     <td>
-                        @if (usuario.Activo == true)
+                        @if (usuario.Activo)
                         {
                             <span class="badge text-bg-success">Activo</span>
                         }
@@ -94,7 +94,9 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@usuario.Id">Edit</a>
-                        <button type="button" class="showModal" data-id="@usuario.Id" value="@usuario.Nombre">Eliminar
+                        <button type="button" class="showModal" data-id="@usuario.Id"
+                                data-active="@usuario.Activo" value="@usuario.Nombre">
+                            @(usuario.Activo ? "Desactivar" : "Activar")
                         </button>
                     </td>
                 </tr>
@@ -102,5 +104,5 @@
         }
         </tbody>
     </table>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Usuarios"  })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Usuarios" })
 </div>

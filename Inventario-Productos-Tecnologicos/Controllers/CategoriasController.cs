@@ -107,19 +107,20 @@ public class CategoriasController : Controller
     // POST: Categorias/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> SwitchActive(int id)
     {
-        Console.WriteLine("Pasa por aquí delete");
-
         var categoria = await _context.Categorias.FindAsync(id);
         var subcategorias = await _context.Subcategorias.Where(s => s.CategoriaId == id).ToListAsync();
         if (categoria != null)
         {
             foreach (var sub in subcategorias)
             {
-                _context.Subcategorias.Remove(sub);
+                sub.Activo = !sub.Activo; // Cambia el estado de cada subcategoría
+                _context.Subcategorias.Update(sub);
             }
-            _context.Categorias.Remove(categoria);
+
+            categoria.Activo = !categoria.Activo;
+            _context.Categorias.Update(categoria);
             await _context.SaveChangesAsync();
         }
 

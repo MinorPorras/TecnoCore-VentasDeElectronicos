@@ -98,11 +98,12 @@ public class RolesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> SwitchActive(int id)
     {
         var rol = await _context.Roles.FindAsync(id);
         if (rol == null) return NotFound();
-        _context.Roles.Remove(rol);
+        rol.Activo = !rol.Activo; // Cambia el estado de activo a inactivo o viceversa
+        _context.Roles.Update(rol);
         await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }

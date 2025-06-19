@@ -8,11 +8,11 @@
 <h1>Editar Producto</h1>
 
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Id"/>
 
     <div class="form-group">
         <label asp-for="Nombre"></label>
-        <input asp-for="Nombre" class="form-control" />
+        <input asp-for="Nombre" class="form-control"/>
         <span asp-validation-for="Nombre" class="text-danger"></span>
     </div>
 
@@ -24,27 +24,27 @@
 
     <div class="form-group">
         <label asp-for="Precio"></label>
-        <input asp-for="Precio" class="form-control" 
-               value="@Model.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)" 
+        <input asp-for="Precio" class="form-control"
+               value="@Model.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)"
                step="0.01" min="0" type="number"/>
         <span asp-validation-for="Precio" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Stock"></label>
-        <input asp-for="Stock" class="form-control" />
-        <span asp-validation-for="Stock" class="text-danger"></span>
+        <label asp-for="Stock">Gestión de inventario</label>
+        <a asp-controller="Kardex" asp-action="Create" asp-route-id="@Model.Id">Modificar stock</a>
     </div>
 
     <div class="form-group">
         <label asp-for="Imagen"></label>
-        <input name="imagen" class="form-control" type="file" accept="image/*" 
+        <input name="imagen" class="form-control" type="file" accept="image/*"
                onchange="mostrarImagen(this)" id="imgSelector" value="@Model.Imagen"/>
-        <img id="preview" src="@Model.Imagen" alt="@Model.Nombre" style="max-width: 200px; margin-top: 10px; @(string.IsNullOrEmpty(Model.Imagen) ? "display: none" : "")" />
+        <img id="preview" src="@Model.Imagen" alt="@Model.Nombre"
+             style="max-width: 200px; margin-top: 10px; @(string.IsNullOrEmpty(Model.Imagen) ? "display: none" : "")"/>
     </div>
 
     <div class="form-group form-check">
-        <input asp-for="Novedad" class="form-check-input" />
+        <input asp-for="Novedad" class="form-check-input"/>
         <label asp-for="Novedad" class="form-check-label"></label>
     </div>
 
@@ -80,5 +80,5 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

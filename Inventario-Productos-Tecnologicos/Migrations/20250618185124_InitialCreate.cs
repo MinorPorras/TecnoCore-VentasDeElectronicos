@@ -18,7 +18,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -109,7 +109,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Tipo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    Entrada = table.Column<bool>(type: "bit", nullable: true),
+                    Entrada = table.Column<bool>(type: "bit", nullable: false),
                     Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
                 },
                 constraints: table =>
@@ -125,7 +125,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NOMBRE = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     CategoriaID = table.Column<int>(type: "int", nullable: true),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -273,7 +273,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     StockAnterior = table.Column<int>(type: "int", nullable: true),
                     StockActual = table.Column<int>(type: "int", nullable: true),
                     TipoMovimientoId = table.Column<int>(type: "int", nullable: true),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {

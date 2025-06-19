@@ -1,39 +1,13 @@
 using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-// Detectar automáticamente la instancia de SQL Server disponible
-string GetAvailableConnection(IConfiguration configuration)
-{
-    var connections = new[] { "SQLExpress", "SQLServer", "LocalDB" };
-    
-    foreach (var conn in connections)
-    {
-        try
-        {
-            var connectionString = configuration.GetConnectionString(conn);
-            if (string.IsNullOrEmpty(connectionString)) continue;
-            
-            using var connection = new SqlConnection(connectionString);
-            connection.Open();
-            return connectionString;
-        }
-        catch
-        {
-            continue;
-        }
-    }
-    
-    throw new Exception("No se encontró ninguna instancia de SQL Server disponible");
-}
-
 builder.Services.AddDbContext<TecnoCoreDbContext>(options => 
-    options.UseSqlServer(GetAvailableConnection(builder.Configuration)));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLExpress")));
 
 var app = builder.Build();
 

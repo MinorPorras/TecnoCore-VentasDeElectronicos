@@ -59,8 +59,8 @@
         /// <summary>
         /// Indica si el registro del kardex está activo en el sistema.
         /// </summary>
-        public bool? Activo { get; set; }
-    
+        public bool Activo { get; set; } = true;
+
         /// <summary>
         /// Referencia al producto asociado a este movimiento.
         /// </summary>
