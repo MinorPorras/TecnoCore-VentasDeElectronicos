@@ -62,7 +62,8 @@
                     <td>
                         <a asp-action="Edit" asp-route-id="@rol.Id">Edit</a>
                         <button type="button" class="showModal" data-id="@rol.Id"
-                                value="@rol.Name" data-active="@rol.Activo">
+                                value="@rol.Name" data-active="@rol.Activo"
+                                class="showModal btn btn-sm @(rol.Activo ? "btn-danger" : "btn-success")">
                             @(rol.Activo ? "Desactivar" : "Activar")
                         </button>
                     </td>

@@ -1,0 +1,66 @@
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.KardexViewModel
+
+@{
+    ViewBag.Title = "Agregar Salida de Kardex";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="kardexForm">
+    <h2>@ViewBag.Title</h2>
+    <form asp-action="CreateKardexExit" method="Post">
+        <div class="form-group">
+            <input type="hidden" asp-for="ProductoId" value="@ViewBag.Producto.Id"/>
+            <label asp-for="ProductoNombre" class="control-label">Producto</label>
+            <input class="form-control" asp-for="ProductoNombre" readonly value="@ViewBag.Producto.Nombre"/>
+        </div>
+        <div>
+            <label asp-for="Fecha">Fecha:</label>
+            <input type="date" asp-for="Fecha" class="form-control" required/>
+            <span asp-validation-for="Fecha" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TipoMovimientoId">Tipo de Movimiento</label>
+            <select asp-for="TipoMovimientoId" class="form-control"
+                    asp-items="@ViewBag.TipoMovimientoId" required>
+                <option value="">-- Seleccione Movimiento --</option>
+            </select>
+            <span asp-validation-for="TipoMovimientoId" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StockAnterior">Stock Anterior</label>
+            <input asp-for="StockAnterior" class="form-control" readonly min="0" value="@ViewBag.Producto.Stock"/>
+            <span asp-validation-for="StockAnterior" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Cantidad">Cantidad</label>
+            <input asp-for="Cantidad" class="form-control" required id="CantidadExit" min="0"/>
+            <span asp-validation-for="Cantidad" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="StockActual">Stock Nuevo</label>
+            <input asp-for="StockActual" class="form-control" readonly min="0" value="@ViewBag.Producto.Stock"/>
+            <span asp-validation-for="StockActual" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Descripcion">Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label>Estado:</label>
+            <div>
+                <input type="radio" asp-for="Activo" id="active" value="true" checked>
+                <label for="active">Activo</label>
+
+                <input type="radio" asp-for="Activo" id="inactive" value="false">
+                <label for="inactive">Inactivo</label>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Edit" asp-route-id="@ViewBag.Producto.Id" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

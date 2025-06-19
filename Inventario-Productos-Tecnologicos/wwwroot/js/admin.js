@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", function () {
         deleteElement();
     }
     if (document.querySelector('.kardexForm')) {
-        openSearchModal();
         kardexHandlers();
+        openSearchModal();
     }
 });
 
