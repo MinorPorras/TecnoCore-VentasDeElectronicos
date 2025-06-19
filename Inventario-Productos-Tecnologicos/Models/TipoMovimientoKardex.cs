@@ -25,7 +25,7 @@ public partial class TipoMovimientoKardex
     [StringLength(50)]
     public string Tipo { get; set; } = null!;
 
-    public bool? Entrada { get; set; }
+    public bool Entrada { get; set; }
 
     /// <summary>
     /// Indica si el tipo de movimiento está activo en el sistema.

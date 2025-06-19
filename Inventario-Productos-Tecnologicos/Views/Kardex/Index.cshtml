@@ -4,41 +4,99 @@
     ViewBag.Title = "Kardex General";
     Layout = "_LayoutAdmin";
 }
+<div>
+    <h2>Kardex General</h2>
 
-<h2>Kardex General</h2>
+    <form asp-action="Search" method="GET">
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre de producto:"
+               value="@ViewBag.SearchString"/>
+        <button type="submit" asp-action="Search">Buscar</button>
+        <label>Fecha:</label>
+        <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
+               value="@ViewBag.SearchDate"/>
+        <div class="radio-group">
+            <label for="todos">Todos</label>
+            <input type="radio" name="activeFilter" id="todos" value="all"
+                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+            <label for="active">Activo</label>
+            <input type="radio" name="activeFilter" id="active" value="true"
+                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+            <label for="Inactive">Inactivo</label>
+            <input type="radio" name="activeFilter" id="Inactive" value="false"
+                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        </div>
+        <label for="TipoMovimientoId">Tipo de movimiento:</label>
+        <select name="TipoMovimientoId" id="TipoMovimientoId">
+            @if (ViewBag.SelectedTipoMovimiento == "all")
+            {
+                <option value="all" selected>Todos</option>
+            }
+            else
+            {
+                <option value="all">Todos</option>
+            }
+            @foreach (var tMovimiento in ViewBag.TiposMovimiento)
+            {
+                if (ViewBag.SelectedTipoMovimiento == tMovimiento.Id.ToString())
+                {
+                    <option value="@tMovimiento.Id" selected>@tMovimiento.Tipo</option>
+                }
+                else
+                {
+                    <option value="@tMovimiento.Id">@tMovimiento.Tipo</option>
+                }
+            }
+        </select>
+    </form>
+    <a class="btn btn-primary" asp-action="CreateEntry">Nuevo Entrada</a>
+    <a class="btn btn-warning" asp-action="CreateExit">Nueva Salida</a>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Nuevo Movimiento</a>
-</p>
 
-<table class="table table-striped table-bordered">
-    <thead>
+
+    <table class="table table-striped table-bordered">
+        <thead>
         <tr>
+            <th>Id</th>
             <th>Producto</th>
             <th>Fecha</th>
             <th>Cantidad</th>
             <th>Stock Anterior</th>
             <th>Stock Actual</th>
             <th>Movimiento</th>
+            <th>Activo</th>
             <th>Acciones</th>
         </tr>
-    </thead>
-    <tbody>
-        @if (Model != null && Model.Any())
+        </thead>
+        <tbody>
+        @if (Model.Any())
         {
             foreach (var item in Model)
             {
                 <tr>
-                    <td>@(item.Producto?.Nombre ?? "—")</td>
-                    <td>@(item.Fecha.HasValue? item.Fecha.Value.ToString("dd/MM/yyyy") : "—")</td>
+                    <td>@(item.Producto?.Id)</td>
+                    <td>@(item.Producto?.Nombre ?? "")</td>
+                    <td>@(item.Fecha.HasValue ? item.Fecha.Value.ToString("dd/MM/yyyy") : "")</td>
                     <td>@(item.Cantidad ?? 0)</td>
                     <td>@(item.StockAnterior ?? 0)</td>
                     <td>@(item.StockActual ?? 0)</td>
-                    <td>@(item.TipoMovimientoKardex?.Tipo ?? "—")</td>
+                    <td>@(item.TipoMovimientoKardex?.Tipo ?? "ï¿½")</td>
                     <td>
-                        <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
-                        <a class="btn btn-secondary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalle</a>
-                        <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@item.Id">Eliminar</a>
+                        @if (item.Activo)
+                        {
+                            <span class="badge text-bg-success">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="badge text-bg-danger">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
+                        <button type="button" class="showModal btn btn-danger btn-sm"
+                                data-id="@item.Id" data-active="@item.Activo"
+                                value="@item.Producto?.Nombre">
+                            @(item.Activo ? "Desactivar" : "Activar")
+                        </button>
                     </td>
                 </tr>
             }
@@ -46,8 +104,10 @@
         else
         {
             <tr>
-                <td colspan="7" class="text-center">No hay movimientos en el kardex.</td>
+                <td colspan="8" class="text-center">No hay movimientos en el kardex.</td>
             </tr>
         }
-    </tbody>
-</table>
+        </tbody>
+    </table>
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Kardex" })
+</div>

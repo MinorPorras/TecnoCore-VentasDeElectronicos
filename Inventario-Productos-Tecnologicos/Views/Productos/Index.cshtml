@@ -23,7 +23,7 @@
         </div>
         <label for="marcas">Marcas:</label>
         <select name="marcas" id="marcas">
-            @if(ViewBag.SelectedMarca == "all")
+            @if (ViewBag.SelectedMarca == "all")
             {
                 <option value="all" selected>Todos</option>
             }
@@ -31,9 +31,9 @@
             {
                 <option value="all">Todos</option>
             }
-            @foreach(var marca in ViewBag.marcas)
+            @foreach (var marca in ViewBag.marcas)
             {
-                @if(ViewBag.SelectedMarca == marca.Value)
+                @if (ViewBag.SelectedMarca == marca.Value)
                 {
                     <option value="@marca.Value" selected>@marca.Text</option>
                 }
@@ -45,7 +45,7 @@
         </select>
         <label for="subcategorias">Subcategorias:</label>
         <select name="subcategorias" id="subcategorias">
-            @if(ViewBag.SelectedSubcategoria == "all")
+            @if (ViewBag.SelectedSubcategoria == "all")
             {
                 <option value="all" selected>Todos</option>
             }
@@ -53,9 +53,9 @@
             {
                 <option value="all">Todos</option>
             }
-            @foreach(var sub in ViewBag.Subcategorias)
+            @foreach (var sub in ViewBag.Subcategorias)
             {
-                @if(ViewBag.SelectedSubcategoria == sub.Value)
+                @if (ViewBag.SelectedSubcategoria == sub.Value)
                 {
                     <option value="@sub.Value" selected>@sub.Text</option>
                 }
@@ -110,13 +110,15 @@
                 <td>
                     <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <button type="button" class="showModal" data-id="@item.Id" value="@item.Nombre">Eliminar
+                    <button type="button" class="showModal" data-id="@item.Id"
+                            data-active="@item.Activo" value="@item.Nombre">
+                        @(item.Activo ? "Desactivar" : "Activar")
                     </button>
                 </td>
             </tr>
         }
         </tbody>
     </table>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Productos"  })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Productos" })
 
 </div>

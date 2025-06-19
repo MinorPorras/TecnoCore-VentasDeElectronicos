@@ -4,141 +4,279 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace Inventario_Productos_Tecnologicos.Controllers
+namespace Inventario_Productos_Tecnologicos.Controllers;
+
+public class KardexController : Controller
 {
-    public class KardexController : Controller
+    private readonly TecnoCoreDbContext _context;
+
+    public KardexController(TecnoCoreDbContext context)
     {
-        private readonly TecnoCoreDbContext _context;
+        _context = context;
+    }
 
-        public KardexController(TecnoCoreDbContext context)
+    // GET: Kardex
+// En KardexController.cs
+    public async Task<IActionResult> Index()
+    {
+        var kardexes = await _context.Kardex
+            .Include(k => k.Producto)
+            .Include(k => k.TipoMovimientoKardex)
+            .ToListAsync();
+
+        // Enviar la lista de tipos de movimiento directamente
+        ViewBag.TiposMovimiento = await _context.TipoMovimientoKardex
+            .Where(t => t.Activo == true)
+            .ToListAsync();
+
+        return View(kardexes);
+    }
+
+    // GET: Kardex/Details/5
+    public async Task<IActionResult> Details(int? id)
+    {
+        if (id == null) return NotFound();
+
+        var kardex = await _context.Kardex
+            .Include(k => k.Producto)
+            .Include(k => k.TipoMovimientoKardex)
+            .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (kardex == null) return NotFound();
+
+        return View(kardex);
+    }
+
+    public async Task<IActionResult> CreateEntry()
+    {
+        var viewModel = new Models.ViewModels.KardexViewModel
         {
-            _context = context;
-        }
+            Fecha = DateTime.Now,
+            ProductosDisponibles = await _context.Productos
+                .Where(p => p.Activo == true)
+                .ToListAsync()
+        };
 
-        // GET: Kardex
-        public async Task<IActionResult> Index()
-        {
-            var kardexes = await _context.Kardex
-                .Include(k => k.Producto)
-                .Include(k => k.TipoMovimientoKardex)
-                .ToListAsync();
-            return View(kardexes);
-        }
+        ViewData["TipoMovimientoId"] =
+            new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                await _context.TipoMovimientoKardex.Where(t => t.Activo == true && t.Entrada).ToListAsync(),
+                "Id", "Tipo");
 
-        // GET: Kardex/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null) return NotFound();
+        return View(viewModel);
+    }
 
-            var kardex = await _context.Kardex
-                .Include(k => k.Producto)
-                .Include(k => k.TipoMovimientoKardex)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (kardex == null) return NotFound();
-
-            return View(kardex);
-        }
-
-        // GET: Kardex/Create
-        public IActionResult Create()
-        {
-            ViewData["ProductoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Productos.Where(p => p.Activo == true), "Id", "Nombre");
-            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.TipoMovimientoKardex.Where(t => t.Activo == true), "Id", "Tipo");
-            return View();
-        }
-
-        // POST: Kardex/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,ProductoId,Cantidad,Descripcion,Fecha,StockAnterior,StockActual,TipoMovimientoId,Activo")] Kardex kardex)
-        {
-            if (ModelState.IsValid)
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateEntry(Models.ViewModels.KardexViewModel viewModel)
+    {
+        if (ModelState.IsValid)
+            try
             {
-                // Se puede agregar l�gica para calcular stock anterior y actual, si aplica
+                var kardex = new Kardex
+                {
+                    ProductoId = viewModel.ProductoId,
+                    Fecha = viewModel.Fecha,
+                    TipoMovimientoId = viewModel.TipoMovimientoId,
+                    Cantidad = viewModel.Cantidad,
+                    Descripcion = viewModel.Descripcion,
+                    Activo = viewModel.Activo
+                };
+
+                if (kardex.ProductoId.HasValue)
+                {
+                    var producto = await _context.Productos.FindAsync(kardex.ProductoId);
+                    if (producto != null)
+                    {
+                        kardex.StockAnterior = producto.Stock;
+                        var tipoMovimiento = await _context.TipoMovimientoKardex.FindAsync(kardex.TipoMovimientoId);
+                        if (tipoMovimiento != null && tipoMovimiento.Entrada)
+                        {
+                            producto.Stock += kardex.Cantidad ?? 0;
+                            kardex.StockActual = producto.Stock;
+                            _context.Update(producto);
+                        }
+                    }
+                }
 
                 _context.Add(kardex);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Productos.Where(p => p.Activo == true), "Id", "Nombre", kardex.ProductoId);
-            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.TipoMovimientoKardex.Where(t => t.Activo == true), "Id", "Tipo", kardex.TipoMovimientoId);
-            return View(kardex);
-        }
-
-        // GET: Kardex/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var kardex = await _context.Kardex.FindAsync(id);
-            if (kardex == null) return NotFound();
-
-            ViewData["ProductoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Productos.Where(p => p.Activo == true), "Id", "Nombre", kardex.ProductoId);
-            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.TipoMovimientoKardex.Where(t => t.Activo == true), "Id", "Tipo", kardex.TipoMovimientoId);
-            return View(kardex);
-        }
-
-        // POST: Kardex/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,ProductoId,Cantidad,Descripcion,Fecha,StockAnterior,StockActual,TipoMovimientoId,Activo")] Kardex kardex)
-        {
-            if (id != kardex.Id) return NotFound();
-
-            if (ModelState.IsValid)
+            catch (Exception ex)
             {
-                try
+                ModelState.AddModelError("", "Ocurrió un error al guardar el movimiento de kardex: " + ex.Message);
+            }
+
+        viewModel.ProductosDisponibles = await _context.Productos
+            .Where(p => p.Activo == true)
+            .ToListAsync();
+
+        ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+            await _context.TipoMovimientoKardex.Where(t => t.Activo == true && t.Entrada).ToListAsync(),
+            "Id", "Tipo", viewModel.TipoMovimientoId);
+
+        return View(viewModel);
+    }
+
+    public async Task<IActionResult> CreateExit()
+    {
+        var viewModel = new Models.ViewModels.KardexViewModel
+        {
+            Fecha = DateTime.Now,
+            ProductosDisponibles = await _context.Productos
+                .Where(p => p.Activo == true)
+                .ToListAsync()
+        };
+
+        ViewData["TipoMovimientoId"] =
+            new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                await _context.TipoMovimientoKardex.Where(t => t.Activo == true && !t.Entrada).ToListAsync(),
+                "Id", "Tipo");
+
+        return View(viewModel);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> CreateExit(Models.ViewModels.KardexViewModel viewModel)
+    {
+        if (ModelState.IsValid)
+            try
+            {
+                var kardex = new Kardex
                 {
-                    _context.Update(kardex);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
+                    ProductoId = viewModel.ProductoId,
+                    Fecha = viewModel.Fecha,
+                    TipoMovimientoId = viewModel.TipoMovimientoId,
+                    Cantidad = viewModel.Cantidad,
+                    Descripcion = viewModel.Descripcion,
+                    Activo = viewModel.Activo
+                };
+
+                if (kardex.ProductoId.HasValue)
                 {
-                    if (!KardexExists(kardex.Id))
-                        return NotFound();
-                    else
-                        throw;
+                    var producto = await _context.Productos.FindAsync(kardex.ProductoId);
+                    if (producto != null)
+                    {
+                        kardex.StockAnterior = producto.Stock;
+                        var tipoMovimiento = await _context.TipoMovimientoKardex.FindAsync(kardex.TipoMovimientoId);
+                        if (tipoMovimiento != null && !tipoMovimiento.Entrada)
+                        {
+                            producto.Stock += kardex.Cantidad ?? 0;
+                            kardex.StockActual = producto.Stock;
+                            _context.Update(producto);
+                        }
+                    }
                 }
+
+                _context.Add(kardex);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ProductoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.Productos.Where(p => p.Activo == true), "Id", "Nombre", kardex.ProductoId);
-            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.TipoMovimientoKardex.Where(t => t.Activo == true), "Id", "Tipo", kardex.TipoMovimientoId);
-            return View(kardex);
-        }
-
-        // GET: Kardex/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null) return NotFound();
-
-            var kardex = await _context.Kardex
-                .Include(k => k.Producto)
-                .Include(k => k.TipoMovimientoKardex)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (kardex == null) return NotFound();
-
-            return View(kardex);
-        }
-
-        // POST: Kardex/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var kardex = await _context.Kardex.FindAsync(id);
-            if (kardex != null)
+            catch (Exception ex)
             {
-                _context.Kardex.Remove(kardex);
-                await _context.SaveChangesAsync();
+                ModelState.AddModelError("", "Ocurrió un error al guardar el movimiento de kardex: " + ex.Message);
             }
-            return RedirectToAction(nameof(Index));
+
+        viewModel.ProductosDisponibles = await _context.Productos
+            .Where(p => p.Activo == true)
+            .ToListAsync();
+
+        ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+            await _context.TipoMovimientoKardex.Where(t => t.Activo == true && !t.Entrada).ToListAsync(),
+            "Id", "Tipo", viewModel.TipoMovimientoId);
+
+        return View(viewModel);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetProductoStock(int id)
+    {
+        var stock = await _context.Productos
+            .Where(p => p.Id == id)
+            .Select(p => new { stock = p.Stock })
+            .FirstOrDefaultAsync();
+
+        if (stock == null) return NotFound();
+        return Json(stock);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetTipoMovimiento(int id)
+    {
+        var tipoMovimiento = await _context.TipoMovimientoKardex
+            .Where(t => t.Id == id)
+            .Select(t => new { esEntrada = t.Entrada })
+            .FirstOrDefaultAsync();
+
+        if (tipoMovimiento == null) return NotFound();
+        return Json(tipoMovimiento);
+    }
+
+    // POST: Kardex/Delete/5
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> SwitchActive(int id)
+    {
+        var kardex = await _context.Kardex.FindAsync(id);
+        if (kardex != null)
+        {
+            kardex.Activo = !kardex.Activo;
+            _context.Kardex.Update(kardex);
+            await _context.SaveChangesAsync();
         }
 
-        private bool KardexExists(int id)
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool KardexExists(int id)
+    {
+        return _context.Kardex.Any(e => e.Id == id);
+    }
+
+    public async Task<IActionResult> Search(string searchElement, string searchDate, string activeFilter = "all",
+        string TipoMovimientoId = "all")
+    {
+        // Guardar los parámetros de búsqueda en ViewBag
+        ViewBag.SearchString = searchElement;
+        ViewBag.SearchDate = searchDate;
+        ViewBag.ActiveFilter = activeFilter;
+        ViewBag.SelectedTipoMovimiento = TipoMovimientoId;
+
+        // Crear la consulta base
+        var query = _context.Kardex
+            .Include(k => k.Producto)
+            .Include(k => k.TipoMovimientoKardex)
+            .AsQueryable();
+
+        // Filtrar por nombre de producto o descripción
+        if (!string.IsNullOrEmpty(searchElement))
+            query = query.Where(k =>
+                (k.Producto != null && k.Producto.Nombre.Contains(searchElement)) ||
+                (k.Descripcion != null && k.Descripcion.Contains(searchElement)));
+
+        // Filtrar por fecha
+        if (!string.IsNullOrEmpty(searchDate) && DateTime.TryParse(searchDate, out var date))
+            query = query.Where(k => k.Fecha.HasValue && k.Fecha.Value.Date == date.Date);
+
+        // Filtrar por estado activo/inactivo
+        if (activeFilter != "all")
         {
-            return _context.Kardex.Any(e => e.Id == id);
+            var isActive = activeFilter == "true";
+            query = query.Where(k => k.Activo == isActive);
         }
+
+        // Filtrar por tipo de movimiento
+        if (TipoMovimientoId != "all" && int.TryParse(TipoMovimientoId, out var tipoMovimientoId))
+            query = query.Where(k => k.TipoMovimientoId == tipoMovimientoId);
+
+        // Cargar los tipos de movimiento para el dropdown
+        ViewBag.TiposMovimiento = await _context.TipoMovimientoKardex
+            .Where(t => t.Activo == true)
+            .ToListAsync();
+
+        // Ejecutar la consulta
+        var kardexes = await query.ToListAsync();
+        return View("Index", kardexes);
     }
 }

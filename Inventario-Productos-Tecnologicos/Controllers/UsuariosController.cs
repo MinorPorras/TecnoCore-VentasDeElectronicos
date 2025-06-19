@@ -139,13 +139,14 @@ public class UsuariosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> SwitchActive(int id)
     {
         var usuario = await _context.Usuarios.FindAsync(id);
         if (usuario == null) return NotFound();
         try
         {
-            _context.Usuarios.Remove(usuario);
+            usuario.Activo = !usuario.Activo;
+            _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
