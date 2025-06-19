@@ -52,7 +52,8 @@
                 <td>
                     <a class="btn btn-info btn-sm" asp-action="Edit" asp-route-id="@categoria.Id">Editar</a> |
                     <button type="button" class="showModal" data-id="@categoria.Id"
-                            data-active="@categoria.Activo" value="@categoria.Nombre">
+                            data-active="@categoria.Activo" value="@categoria.Nombre"
+                            class="showModal btn btn-sm @(categoria.Activo ? "btn-danger" : "btn-success")">
                         @(categoria.Activo ? "Desactivar" : "Activar")
                     </button>
                 </td>

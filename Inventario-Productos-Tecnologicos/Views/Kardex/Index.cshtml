@@ -59,8 +59,8 @@
             <th>Id</th>
             <th>Producto</th>
             <th>Fecha</th>
-            <th>Cantidad</th>
             <th>Stock Anterior</th>
+            <th>Cantidad</th>
             <th>Stock Actual</th>
             <th>Movimiento</th>
             <th>Activo</th>
@@ -76,8 +76,8 @@
                     <td>@(item.Producto?.Id)</td>
                     <td>@(item.Producto?.Nombre ?? "")</td>
                     <td>@(item.Fecha.HasValue ? item.Fecha.Value.ToString("dd/MM/yyyy") : "")</td>
-                    <td>@(item.Cantidad ?? 0)</td>
                     <td>@(item.StockAnterior ?? 0)</td>
+                    <td>@(item.Cantidad ?? 0)</td>
                     <td>@(item.StockActual ?? 0)</td>
                     <td>@(item.TipoMovimientoKardex?.Tipo ?? "�")</td>
                     <td>
@@ -92,7 +92,7 @@
                     </td>
                     <td>
                         <a class="btn btn-primary btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
-                        <button type="button" class="showModal btn btn-danger btn-sm"
+                        <button type="button" class="showModal btn btn-sm @(item.Activo ? "btn-danger" : "btn-success")"
                                 data-id="@item.Id" data-active="@item.Activo"
                                 value="@item.Producto?.Nombre">
                             @(item.Activo ? "Desactivar" : "Activar")

@@ -92,13 +92,13 @@
                 <td>@item.Stock</td>
                 <td>@(item.Novedad ? "Sí" : "No")</td>
                 <td>
-                    @if (item.Novedad == true)
+                    @if (item.Novedad)
                     {
                         <span class="badge text-bg-info">Novedad</span>
                     }
                 </td>
                 <td>
-                    @if (item.Activo == true)
+                    @if (item.Activo)
                     {
                         <span class="badge text-bg-success">Activo</span>
                     }
@@ -110,8 +110,8 @@
                 <td>
                     <a class="btn btn-info btn-sm" asp-action="Details" asp-route-id="@item.Id">Detalles</a>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-                    <button type="button" class="showModal" data-id="@item.Id"
-                            data-active="@item.Activo" value="@item.Nombre">
+                    <button type="button" class="showModal btn btn-sm @(item.Activo ? "btn-danger" : "btn-success")"
+                            data-id="@item.Id" data-active="@item.Activo" value="@item.Nombre">
                         @(item.Activo ? "Desactivar" : "Activar")
                     </button>
                 </td>

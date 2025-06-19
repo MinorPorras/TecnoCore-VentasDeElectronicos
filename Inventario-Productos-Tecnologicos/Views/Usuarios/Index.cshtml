@@ -94,8 +94,8 @@
                     </td>
                     <td>
                         <a asp-action="Edit" asp-route-id="@usuario.Id">Edit</a>
-                        <button type="button" class="showModal" data-id="@usuario.Id"
-                                data-active="@usuario.Activo" value="@usuario.Nombre">
+                        <button type="button" class="showModal btn btn-sm @(usuario.Activo ? "btn-danger" : "btn-success")"
+                                data-id="@usuario.Id" data-active="@usuario.Activo" value="@usuario.Nombre">
                             @(usuario.Activo ? "Desactivar" : "Activar")
                         </button>
                     </td>
