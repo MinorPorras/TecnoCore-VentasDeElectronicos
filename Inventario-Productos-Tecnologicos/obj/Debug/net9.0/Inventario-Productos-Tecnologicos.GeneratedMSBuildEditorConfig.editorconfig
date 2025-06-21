@@ -48,6 +48,18 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ2F0ZWdvcmlhc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Cupones/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3Vwb25lc1xDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Cupones/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3Vwb25lc1xFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Cupones/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQ3Vwb25lc1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -86,6 +98,10 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Marcas/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWFyY2FzXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/MetodosPago/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWV0b2Rvc1BhZ29cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos/Inventario-Productos-Tecnologicos/Views/Pedidos/Estados_Pedidos.cshtml]

@@ -37,9 +37,21 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--Azure);
 }
 
-h1{
+h1 {
     font-size: clamp(14px, 2vw, 4vw);
     text-align: center;
     font-weight: bold;
 }
 
+#alertContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1050;
+    max-width: 350px;
+}
+
+#alertContainer .alert {
+    margin-bottom: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}

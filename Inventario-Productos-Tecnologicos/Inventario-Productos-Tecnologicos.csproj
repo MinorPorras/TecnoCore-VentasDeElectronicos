@@ -8,30 +8,31 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="wwwroot\img\" />
+        <Folder Include="Pages\"/>
+        <Folder Include="wwwroot\img\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.5"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.5">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="Pages\Productos\Componentes.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Productos\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Productos\Pc.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Productos\Perifericos.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Usuarios\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Usuarios\Informacion_Personal.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Usuarios\Lista_Deseos.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Ventas\Carro_Compras.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Ventas\Cupones.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Ventas\Index.cshtml" />
-      <_ContentIncludedByDefault Remove="Pages\Ventas\Metodos_de_Pago.cshtml" />
+        <_ContentIncludedByDefault Remove="Pages\Productos\Componentes.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Productos\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Productos\Pc.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Productos\Perifericos.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Usuarios\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Usuarios\Informacion_Personal.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Usuarios\Lista_Deseos.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Ventas\Carro_Compras.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Ventas\Cupones.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Ventas\Index.cshtml"/>
+        <_ContentIncludedByDefault Remove="Pages\Ventas\Metodos_de_Pago.cshtml"/>
     </ItemGroup>
 
 </Project>

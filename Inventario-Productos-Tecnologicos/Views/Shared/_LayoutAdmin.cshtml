@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Inventario_Productos_Tecnologicos.Models.ViewModels
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8"/>
@@ -19,7 +20,7 @@
             </a>
             <ul>
                 <li><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
-                <li  class="dropdown-container">
+                <li class="dropdown-container">
                     <a class="dropbtn" asp-action="Index" asp-controller="Usuarios">Usuarios</a>
                     <div class="dropdown-content">
                         <a asp-action="Index" asp-controller="Roles">Roles</a>
@@ -36,8 +37,8 @@
                 <li class="dropdown-container">
                     <a class="dropbtn" asp-action="Index" asp-controller="Ventas">Ventas</a>
                     <div class="dropdown-content">
-                        <a asp-action="Cupones" asp-controller="Ventas">Cupones</a>
-                        <a asp-action="Metodos_de_Pago" asp-controller="Ventas">Métodos de pago</a>
+                        <a asp-action="Index" asp-controller="Cupones">Cupones</a>
+                        <a asp-action="Index" asp-controller="MetodosPago">Métodos de pago</a>
                     </div>
                 </li>
                 <li><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
@@ -54,9 +55,19 @@
     </nav>
 </header>
 <div class="main_container">
-    <main>
+    <div id="alertContainer"></div>
+    @if (TempData["Alert"] != null)
+    {
+        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"].ToString()!);
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showAlert('@Html.Raw(alert.Message)', '@alert.Type');
+            });
+        </script>
+    }
+    <div class="container-fluid">
         @RenderBody()
-    </main>
+    </div>
 </div>
 
 <footer class="border-top footer text-muted">
@@ -67,6 +78,6 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/admin.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

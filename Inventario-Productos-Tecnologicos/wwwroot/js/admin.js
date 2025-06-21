@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
         kardexHandlers();
         openSearchModal();
     }
+    if (document.querySelector('.cuponesForm')) {
+        handleCuponesForm(true);
+    }
+    if (document.querySelector('.cuponesFormEdit')) {
+        handleCuponesForm(false);
+    }
 });
 
 function mostrarImagen(input) {
@@ -27,6 +33,24 @@ function mostrarImagen(input) {
     }
 }
 
+function showAlert(message, type = 'success') {
+    const alertContainer = document.getElementById('alertContainer');
+    const alert = document.createElement('div');
+    alert.className = `alert alert-${type} alert-dismissible fade show`;
+    alert.role = 'alert';
+    alert.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    alertContainer.appendChild(alert);
+
+    // Auto-cerrar la alerta después de 5 segundos
+    setTimeout(() => {
+        alert.classList.remove('show');
+        setTimeout(() => alert.remove(), 150);
+    }, 5000);
+}
+
 function modifyElement() {
     const updateBtn = document.getElementById('updateBtn')
     updateBtn.addEventListener('click', async (e) => {
@@ -34,7 +58,6 @@ function modifyElement() {
         const form = document.querySelector('.modifyElement');
         const controller = document.getElementById('controller').value
         const action = document.getElementById('action').value
-        console.log('Controller:' + controller)
         const values = {};
 
         form.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
@@ -70,7 +93,6 @@ function modifyElement() {
         });
 
         try {
-            console.log('Valores a enviar:', values);
             const bodyRequest = JSON.stringify(values);
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             const response = await fetch(`/${controller}/${action}`, {
@@ -81,28 +103,20 @@ function modifyElement() {
                 },
                 body: bodyRequest
             })
+
+            const data = await response.json();
+
             if (response.ok) {
-                // Redirigir según la acción realizada
-                if (action === 'EditSubcategoria') {
-                    // Redirigir a la página de edición de la categoría padre
-                    window.location.href = `/${controller}/Edit/${values.CategoriaId}`;
-                } else {
+                showAlert('Operación realizada con éxito', 'success');
+                setTimeout(() => {
                     window.location.href = `/${controller}/Index`;
-                }
+                }, 1500);
             } else {
-                const text = await response.text();
-                let error;
-                try {
-                    error = text ? JSON.parse(text) : {message: "Error desconocido"};
-                } catch {
-                    error = {message: text || "Error desconocido"};
-                }
-                console.log("Error al actualizar:", error);
-                alert("Error al actualizar: " + (error.message || JSON.stringify(error)));
+                showAlert(data.message || 'Ha ocurrido un error', data.type || 'danger');
             }
         } catch (e) {
-            console.log('Error:', e + "Controller: " + controller);
-            alert('Error al procesar la solicitud');
+            showAlert('Error en la operación', 'danger');
+            console.error('Error:', e);
         }
     })
 }
@@ -119,28 +133,44 @@ function deleteElement() {
         btn.addEventListener('click', () => {
             const id = btn.getAttribute('data-id');
             const name = btn.getAttribute('value');
-            const isActive = btn.getAttribute('data-active').toLowerCase() === 'true';
+            const isActive = btn.getAttribute('data-active').toLowerCase();
             const idInput = deleteDialog.querySelector('#idDelete');
             const activeInput = deleteDialog.querySelector('#active');
-            
+
             // Establecer valores en el formulario
             idInput.value = id;
             activeInput.value = !isActive; // Invertimos el valor actual
 
             // Actualizar el título y el botón del diálogo
             const dialogTitle = deleteDialog.querySelector('h1');
-            const accion = isActive ? 'desactivar' : 'activar';
-            dialogTitle.textContent = `¿Desea ${accion} ${name}?`;
-
-            if (isActive) {
-                btnSubmit.classList.add('btn-danger');
-                btnSubmit.classList.remove('btn-success');
-                btnSubmit.textContent = 'Desactivar';
-            } else {
-                btnSubmit.classList.add('btn-success');
-                btnSubmit.classList.remove('btn-danger');
-                btnSubmit.textContent = 'Activar';
+            let accion;
+            switch (isActive) {
+                case 'true':
+                    accion = 'desactivar';
+                    btnSubmit.classList.add('btn-danger');
+                    btnSubmit.classList.remove('btn-success');
+                    btnSubmit.textContent = 'Desactivar';
+                    break;
+                case 'false':
+                    accion = 'activar';
+                    btnSubmit.classList.add('btn-success');
+                    btnSubmit.classList.remove('btn-danger');
+                    btnSubmit.textContent = 'Activar';
+                    break;
+                case 'delete':
+                    accion = 'eliminar';
+                    btnSubmit.classList.add('btn-danger');
+                    btnSubmit.classList.remove('btn-success');
+                    btnSubmit.textContent = 'Eliminar';
+                    break;
+                default:
+                    accion = 'realizar esta acción sobre';
+                    btnSubmit.classList.add('btn-success');
+                    btnSubmit.classList.remove('btn-danger');
+                    btnSubmit.textContent = 'Confirmar';
+                    break;
             }
+            dialogTitle.textContent = `¿Desea ${accion}: ${name}?`;
 
             deleteDialog.showModal();
         });
@@ -220,4 +250,59 @@ function kardexHandlers() {
             document.getElementById('StockActual').value = stockAnterior - cantidad;
         });
     }
+}
+
+function handleCuponesForm(create = true) {
+    const fechaInicio = document.querySelector('#FechaInicio');
+    const fechaFin = document.querySelector('#FechaFin');
+    const today = new Date();
+    const tomorrow = new Date(today);
+    console.log(create);
+
+    if (create) {
+        // Obtener fecha de hoy
+        fechaInicio.value = today.toISOString().split('T')[0];
+    }
+    if (create) {
+        // Obtener fecha de mañana
+        tomorrow.setDate(today.getDate() + 1);
+        fechaFin.value = tomorrow.toISOString().split('T')[0];
+    }
+
+    // Actualizar fecha mínima de fin cuando cambie la fecha de inicio
+    fechaInicio.addEventListener('change', function () {
+        if (fechaInicio.value) {
+            const selectedDate = new Date(fechaInicio.value);
+            const minDate = new Date(selectedDate);
+            minDate.setDate(selectedDate.getDate() + 1);
+
+            const year = minDate.getFullYear();
+            const month = String(minDate.getMonth() + 1).padStart(2, '0');
+            const day = String(minDate.getDate()).padStart(2, '0');
+            fechaFin.min = `${year}-${month}-${day}`;
+        }
+    });
+
+    // Manejar la visualización de símbolos según el tipo de descuento
+    const tipoDescuento = document.querySelector('#TipoDescuento');
+    const symbolColon = document.getElementById('symbolColon');
+    const symbolPorc = document.getElementById('symbolPorc');
+
+    if (tipoDescuento.value === "1") { // Porcentaje
+        symbolColon.style.display = 'none';
+        symbolPorc.style.display = 'inline';
+    } else if (tipoDescuento.value === "2") { // Fijo
+        symbolColon.style.display = 'inline';
+        symbolPorc.style.display = 'none';
+    }
+
+    tipoDescuento.addEventListener('change', function () {
+        if (this.value === "1") { // Porcentaje
+            symbolColon.style.display = 'none';
+            symbolPorc.style.display = 'inline';
+        } else if (this.value === "2") { // Fijo
+            symbolColon.style.display = 'inline';
+            symbolPorc.style.display = 'none';
+        }
+    });
 }
