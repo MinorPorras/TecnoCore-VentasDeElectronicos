@@ -1,0 +1,75 @@
+@model Cupones
+
+@{
+    ViewBag.Title = "Editar cupón";
+    Layout = "_LayoutAdmin";
+}
+
+<div class="cuponesFormEdit">
+    <h2>@ViewBag.Title</h2>
+    <form class="modifyElement">
+        @Html.AntiForgeryToken()
+        <input type="hidden" id="controller" name="controller" value="Cupones"/>
+        <input type="hidden" id="action" name="action" value="Edit"/>
+        <div class="form-group">
+            <input type="hidden" asp-for="Id"/>
+            <label asp-for="Codigo" class="control-label">Código</label>
+            <input class="form-control" asp-for="Codigo" placeholder="Código que usaran los clientes" type="text"/>
+            <span asp-validation-for="Codigo" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Descripcion">Descripción</label>
+            <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+            <span asp-validation-for="Descripcion" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TipoDescuento">Tipo de Descuento</label>
+            <select asp-for="TipoDescuento" class="form-control"
+                    asp-items="@ViewBag.TipoDescuento" required>
+            </select>
+            <span asp-validation-for="TipoDescuento" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Valor" class="control-label">Valor</label>
+            <span id="symbolColon">₡</span> <input class="form-control" asp-for="Valor" type="number"/> <span
+                id="symbolPorc">%</span>
+        </div>
+        <div>
+            <label asp-for="FechaInicio">Fecha de inicio:</label>
+            <input type="date" asp-for="FechaInicio" class="form-control" min="@DateTime.Today" required/>
+            <span asp-validation-for="FechaInicio" class="text-danger"></span>
+        </div>
+        <div>
+            <label asp-for="FechaFin">Fecha de finalización:</label>
+            <input type="date" asp-for="FechaFin" class="form-control" min="@DateTime.Today.AddDays(1)" required/>
+            <span asp-validation-for="FechaFin" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UsosMaximos">Usos máximos</label>
+            <input asp-for="UsosMaximos" class="form-control"/>
+            <span asp-validation-for="UsosMaximos" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="UsosActuales">Usos Actuales</label>
+            <input asp-for="UsosActuales" class="form-control"/>
+            <span asp-validation-for="UsosActuales" class="text-danger"></span>
+
+        </div>
+        <div class="formgroup">
+            <label>Estado:</label>
+            <div>
+                <input type="radio" asp-for="Activo" id="active" value="true">
+                <label for="active">Activo</label>
+
+                <input type="radio" asp-for="Activo" id="inactive" value="false">
+                <label for="inactive">Inactivo</label>
+            </div>
+        </div>
+        <button type="button" id="updateBtn" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
