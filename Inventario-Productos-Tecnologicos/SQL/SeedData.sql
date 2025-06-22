@@ -104,3 +104,9 @@ INSERT INTO TipoMovimientoKardex (Tipo, Entrada, Activo) VALUES
 (N'Devolución', 0, 1),
 (N'Dañado', 0, 1),
 ('Ajuste', 1, 1);
+
+INSERT INTO Usuarios (Email, Nombre, Apellidos, Contrasena, Telefono, Rol, Activo) VALUES 
+('minorp1415@gmail.com','Minor','Porras','1234','12345678',1,true),
+('1', 'cliente', 'cliente', '1', '12345678', 1, true),
+('cliente', 'cliente', 'cliente', '1', '12345678', 2, true),
+('admin', 'admin', 'admin', '1', '12345678', 1, true);
