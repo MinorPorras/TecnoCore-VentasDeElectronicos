@@ -22,6 +22,29 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.CarritoCompras", b =>
+                {
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(0);
+
+                    b.Property<int>("ProductoId")
+                        .HasColumnType("int")
+                        .HasColumnOrder(1);
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("PrecioUnitario")
+                        .HasColumnType("decimal(10, 2)");
+
+                    b.HasKey("UsuarioId", "ProductoId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("CarritoCompras");
+                });
+
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Categorias", b =>
                 {
                     b.Property<int>("Id")
@@ -54,7 +77,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Activo")
+                    b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -68,10 +91,10 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateTime?>("FechaFin")
+                    b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime");
 
-                    b.Property<DateTime?>("FechaInicio")
+                    b.Property<DateTime>("FechaInicio")
                         .HasColumnType("datetime");
 
                     b.Property<string>("TipoDescuento")
@@ -402,7 +425,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Activo")
+                    b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -535,7 +558,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool?>("Activo")
+                    b.Property<bool>("Activo")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
@@ -573,6 +596,27 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.HasIndex("Rol");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.CarritoCompras", b =>
+                {
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Productos", "Producto")
+                        .WithMany("CarritoCompras")
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__CarritoCompras__Producto");
+
+                    b.HasOne("Inventario_Productos_Tecnologicos.Models.Usuarios", "Usuario")
+                        .WithMany("CarritoCompras")
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("FK__CarritoCompras__Usuario");
+
+                    b.Navigation("Producto");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.DetallePedido", b =>
@@ -735,6 +779,8 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Productos", b =>
                 {
+                    b.Navigation("CarritoCompras");
+
                     b.Navigation("DetallePedidos");
 
                     b.Navigation("Kardex");
@@ -759,6 +805,8 @@ namespace Inventario_Productos_Tecnologicos.Migrations
 
             modelBuilder.Entity("Inventario_Productos_Tecnologicos.Models.Usuarios", b =>
                 {
+                    b.Navigation("CarritoCompras");
+
                     b.Navigation("Direccion");
 
                     b.Navigation("ListaDeseos");
