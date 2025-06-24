@@ -91,4 +91,10 @@ public partial class Productos
     [ForeignKey("SubcategoriaId")]
     [InverseProperty("Productos")]
     public virtual Subcategorias? Subcategoria { get; set; }
+
+    /// <summary>
+    /// Colección de registros de carrito de compras que incluyen este producto.
+    /// </summary>
+    [InverseProperty("Producto")]
+    public virtual ICollection<CarritoCompras> CarritoCompras { get; set; } = new List<CarritoCompras>();
 }

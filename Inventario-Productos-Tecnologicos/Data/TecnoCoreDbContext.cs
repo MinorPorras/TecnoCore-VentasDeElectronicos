@@ -44,6 +44,8 @@ public partial class TecnoCoreDbContext : DbContext
 
     public virtual DbSet<Usuarios> Usuarios { get; set; }
 
+    public virtual DbSet<CarritoCompras> CarritoCompras { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         if (!optionsBuilder.IsConfigured)
@@ -186,6 +188,24 @@ public partial class TecnoCoreDbContext : DbContext
             entity.Property(e => e.Activo).HasDefaultValue(true);
 
             entity.HasOne(d => d.RolNavigation).WithMany(p => p.Usuarios).HasConstraintName("FK__Usuarios__Rol__4CA06362");
+        });
+
+        modelBuilder.Entity<CarritoCompras>(entity =>
+        {
+            entity.HasKey(e => new { e.UsuarioId, e.ProductoId });
+            entity.Property(e => e.PrecioUnitario).HasColumnType("decimal(10, 2)");
+
+            entity.HasOne(d => d.Usuario)
+                .WithMany(p => p.CarritoCompras)
+                .HasForeignKey(d => d.UsuarioId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__CarritoCompras__Usuario");
+
+            entity.HasOne(d => d.Producto)
+                .WithMany(p => p.CarritoCompras)
+                .HasForeignKey(d => d.ProductoId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("FK__CarritoCompras__Producto");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -35,11 +35,11 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     Descripcion = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
                     TipoDescuento = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Valor = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime", nullable: true),
-                    FechaFin = table.Column<DateTime>(type: "datetime", nullable: true),
+                    FechaInicio = table.Column<DateTime>(type: "datetime", nullable: false),
+                    FechaFin = table.Column<DateTime>(type: "datetime", nullable: false),
                     UsosMaximos = table.Column<int>(type: "int", nullable: true),
                     UsosActuales = table.Column<int>(type: "int", nullable: true, defaultValue: 0),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -149,7 +149,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     Contrasena = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     Rol = table.Column<int>(type: "int", nullable: true),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -175,7 +175,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     Novedad = table.Column<bool>(type: "bit", nullable: false),
                     MarcaId = table.Column<int>(type: "int", nullable: true),
                     SubcategoriaId = table.Column<int>(type: "int", nullable: true),
-                    Activo = table.Column<bool>(type: "bit", nullable: true, defaultValue: true)
+                    Activo = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
                 },
                 constraints: table =>
                 {
@@ -261,6 +261,32 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "CarritoCompras",
+                columns: table => new
+                {
+                    UsuarioId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    Cantidad = table.Column<int>(type: "int", nullable: false),
+                    PrecioUnitario = table.Column<decimal>(type: "decimal(10,2)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CarritoCompras", x => new { x.UsuarioId, x.ProductoId });
+                    table.ForeignKey(
+                        name: "FK__CarritoCompras__Producto",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK__CarritoCompras__Usuario",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "KARDEX",
                 columns: table => new
                 {
@@ -342,6 +368,11 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                         principalTable: "Productos",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CarritoCompras_ProductoId",
+                table: "CarritoCompras",
+                column: "ProductoId");
 
             migrationBuilder.CreateIndex(
                 name: "UQ__Cupones__06370DACEA3BF6E0",
@@ -430,6 +461,9 @@ namespace Inventario_Productos_Tecnologicos.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CarritoCompras");
+
             migrationBuilder.DropTable(
                 name: "DetallePedidos");
 

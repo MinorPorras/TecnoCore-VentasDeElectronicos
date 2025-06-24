@@ -81,6 +81,12 @@ public partial class Usuarios
     public virtual ICollection<Pedidos> Pedidos { get; set; } = new List<Pedidos>();
 
     /// <summary>
+    /// Colección de artículos en el carrito de compras del usuario.
+    /// </summary>
+    [InverseProperty("Usuario")]
+    public virtual ICollection<CarritoCompras> CarritoCompras { get; set; } = new List<CarritoCompras>();
+
+    /// <summary>
     /// Referencia al rol asignado al usuario.
     /// </summary>
     [ForeignKey("Rol")]
