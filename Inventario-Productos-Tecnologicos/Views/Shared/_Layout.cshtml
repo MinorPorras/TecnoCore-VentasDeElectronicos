@@ -14,7 +14,7 @@
 <header>
     <nav>
         <div class="nav-principal">
-            <a asp-action="Index" asp-controller="Home" class="Logo" >
+            <a asp-action="Index" asp-controller="Home" class="Logo">
                 <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="imgLogo"/>
             </a>
             <ul>
@@ -36,13 +36,13 @@
             <input type="text" placeholder="Buscar..." class="search-input"/>
             <button class="button-78" role="button">Buscar</button>
             <div class="nav-cart">
-                <a asp-action="Carro_Compras" asp-controller="Ventas">
+                <div id="showCart" class="nav-cart-button">
                     <img
                         src="~/img/ICO_Cart.svg"
                         alt="compras"
                         class="nav-cart-icon"
                         id="shopping-cart"/>
-                </a>
+                </div>
                 <label for="shopping-cart">₡ 0.00</label>
             </div>
         </div>
@@ -67,6 +67,22 @@
         </div>
     </form>
 </dialog>
+<dialog id="CarritoModal">
+    <div class="modalContent">
+        <h2>Carrito de compras</h2>
+        <div class="Cart-header">
+            <p>Productos en el carrito: <span id="cart-item-count">0</span></p>
+            <button class="btnClearCart">Vaciar carrito</button>
+        </div>
+        <div id="cart-item-container">
+        </div>
+        <p>Total: ₡ 0.00</p>
+        <div class="form-group">
+            <button type="button" class="btnClose" id="closeCart">Cerrar</button>
+            <a class="btnEndCompra" asp-action="Carro_Compras" asp-controller="Ventas">Terminar compra</a>
+        </div>
+    </div>
+</dialog>
 
 <footer class="border-top footer text-muted">
     <div class="container">
@@ -76,6 +92,6 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)
 </body>
 </html>

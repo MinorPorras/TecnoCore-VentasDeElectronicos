@@ -18,13 +18,15 @@
     --ultraviolet: #564787;
     --indianRed: #D36060;
 }
-nav{
+
+nav {
     position: sticky;
     top: 0;
     z-index: 1000;
     height: auto;
     overflow: visible;
 }
+
 .nav-principal {
     position: relative;
     background-color: var(--dBlueEnphasis1);
@@ -73,6 +75,7 @@ nav{
             }
 
             /* Pseudo-elemento ::after que aparecerá desde arriba */
+
             &::after {
                 content: ""; /* Obligatorio para que el pseudo-elemento se muestre */
                 position: absolute;
@@ -91,6 +94,7 @@ nav{
                 z-index: -1; /* Coloca el ::after detrás del contenido del li */
                 border-radius: 0 0 10px 10px; /* Coincide con el border-radius del li */
             }
+
             &:hover::after {
                 transform: translateY(-5%); /* Se mueve a su posición final (cubre el li) */
                 background: var(--darkBlue); /* Cambia de color al hacer hover */
@@ -123,9 +127,10 @@ nav{
     }
 }
 
-.dropdown-container{
+.dropdown-container {
     position: relative;
     display: inline-block;
+
     & .dropbtn {
         font-weight: 600;
         font-size: clamp(1rem, 2vw, 1.2rem);
@@ -139,7 +144,7 @@ nav{
         transition: height 0.3s ease, color 0.3s ease;
     }
 
-    & .dropdown-content{
+    & .dropdown-content {
         position: absolute;
         display: none;
         top: 100%;
@@ -150,7 +155,8 @@ nav{
         align-items: center;
         width: fit-content;
         height: fit-content;
-        & a{
+
+        & a {
             color: var(--Azure);
             font-size: clamp(.6rem, 2vw, .9rem);
             font-weight: bold;
@@ -159,6 +165,7 @@ nav{
             width: 8rem;
             height: fit-content;
             padding-left: .5rem;
+
             &:hover {
                 background-color: var(--dBlueEnphasis3);
                 border-radius: 10px;
@@ -167,12 +174,12 @@ nav{
         }
     }
 
-    &:hover .dropdown-content{
+    &:hover .dropdown-content {
         display: block;
     }
 }
 
-.Logo{
+.Logo {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -185,7 +192,7 @@ nav{
     transition: all 0.5s ease;
     scale: 1.5;
     max-height: 100px;
-    
+
     &:hover {
         transform: scale(1.1);
         transition: all 0.5s ease;
@@ -219,7 +226,7 @@ nav{
     width: 2rem;
     height: 3rem;
     cursor: pointer;
-    
+
     &:hover {
         fill: var(--Twistle);
         transform: scale(1.2);
@@ -235,7 +242,8 @@ nav{
         align-items: center;
         height: fit-content;
     }
-    .Logo{
+
+    .Logo {
         grid-row: 1;
         justify-self: center;
         align-self: center;
@@ -243,23 +251,27 @@ nav{
         align-items: center;
         justify-content: center;
     }
+
     .imgLogo {
         height: 100%;
         scale: 2;
         max-width: 70px;
     }
+
     .nav-account {
         grid-column: 2;
         grid-row: 1;
         justify-self: center;
         align-self: center;
     }
+
     .nav-principal > ul {
         grid-column: 1 / -1;
         grid-row: 2;
         gap: 0;
         justify-self: center;
         align-self: center;
+
         & > li {
             border-radius: 10px;
             width: 100%;
@@ -290,6 +302,7 @@ nav{
     padding: 5px;
     background-color: var(--dBlueEnphasis2);
     gap: 20px;
+
     & input {
         width: 100%;
         padding: 10px;
@@ -311,7 +324,7 @@ nav{
     height: 100%;
     transition: all 0.3s ease;
     width: 100%;
-    
+
     & label {
         display: flex;
         justify-content: center;
@@ -331,12 +344,22 @@ nav{
     margin: 0 auto;
     display: block;
     cursor: pointer;
-    
+
     &:hover {
         fill: var(--Twistle);
         transform: scale(1.2);
         transition: all 0.5s ease;
     }
+}
+
+.nav-cart-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .button-78 {
