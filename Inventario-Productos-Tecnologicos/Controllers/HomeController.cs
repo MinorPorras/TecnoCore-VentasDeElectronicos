@@ -11,7 +11,13 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 /// </summary>
 public class HomeController : Controller
 {
-    private readonly TecnoCoreDbContext _context = new TecnoCoreDbContext();
+    private readonly TecnoCoreDbContext _context;
+
+    public HomeController(TecnoCoreDbContext context)
+    {
+        _context = context;
+    }
+
     /// <summary>
     /// Muestra la vista principal del índice.
     /// </summary>
@@ -30,24 +36,21 @@ public class HomeController : Controller
     public RedirectToActionResult Login(string email, string contrasena)
     {
         // Descomentar y modificar el siguiente código para implementar la lógica de inicio de sesión:
-        /*var usuario = _context.Usuarios.Include(usuario => usuario.RolNavigation).FirstOrDefault(u =>
+        var usuario = _context.Usuarios.Include(usuario => usuario.RolNavigation).FirstOrDefault(u =>
             u.Email == email && u.Contrasena == contrasena && u.RolNavigation != null &&
             u.RolNavigation.Name == "Admin");
-        if (usuario == null)
+        if (usuario == null) ViewBag.Error = "Usuario o contraseña incorrectos";
+        // Guardar información relevante en sesión
+        if (usuario is { RolNavigation: not null })
         {
-            ViewBag.Error = "Usuario o contraseña incorrectos";
+            HttpContext.Session.SetInt32("UserId", usuario.Id);
+            HttpContext.Session.SetString("UserRole", usuario.RolNavigation.Name);
+            HttpContext.Session.SetString("UserName", usuario.Nombre);
+            if (usuario.RolNavigation.Name == "Cliente")
+                return RedirectToAction("Mantenimiento", "Home");
+            else
+                return RedirectToAction("Index", "Home");
         }
-                        // Guardar información relevante en sesión
-        HttpContext.Session.SetInt32("UserId", usuario.Id);
-        HttpContext.Session.SetString("UserRole", usuario.RolNavigation.Name);
-        HttpContext.Session.SetString("UserName", usuario.Nombre);
-        if (usuario?.RolNavigation?.Name == "Admin")
-        {
-            return RedirectToAction("Index", "Home");
-        }
-        else{
-            return RedirectToAction("Index", "Mantenimiento");
-        }*/
 
         return RedirectToAction("Mantenimiento");
     }
@@ -60,7 +63,7 @@ public class HomeController : Controller
     {
         return View();
     }
-    
+
     /// <summary>
     /// Muestra la vista de política de privacidad.
     /// </summary>

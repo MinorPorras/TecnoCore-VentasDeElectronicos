@@ -7,23 +7,27 @@
 
 <h2>Crear Categoría</h2>
 
-<form asp-action="Create">
-    <form asp-action="Create" method="post">
-        @Html.AntiForgeryToken()
-        <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre">
-        </div>
-        <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
-                <option value="true">Activo</option>
-                <option value="false">Inactivo</option>
-            </select>
-        </div>
-        <div class="btngroup">
-            <button type="submit">Guardar</button>
-            <a asp-action="Index">Regresar</a>
-        </div>
-    </form>
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <div class="formgroup">
+        <label asp-for="Nombre">Nombre:</label>
+        <input asp-for="Nombre" class="form-control">
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+    <div class="formgroup">
+        <label asp-for="Activo">Estado:</label>
+        <select asp-for="Activo" class="form-control">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+        <span asp-validation-for="Activo" class="text-danger"></span>
+    </div>
+    <div class="btngroup">
+        <button type="submit" class="btn btn-primary">Guardar</button>
+        <a asp-action="Index" class="btn btn-secondary">Regresar</a>
+    </div>
 </form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

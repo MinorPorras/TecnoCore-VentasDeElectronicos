@@ -42,6 +42,10 @@
 </div>
 
 <p>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a> |
-    <a asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    @if (ViewBag.UserRole == "Admin")
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+    }
+    <a onclick="window.history.back()" class="btn btn-danger">Regresar</a>
+
 </p>
