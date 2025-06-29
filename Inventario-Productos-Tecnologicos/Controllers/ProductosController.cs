@@ -3,17 +3,20 @@ using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.Globalization;
+using System.IO;
+using System.Net;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
 public class ProductosController : Controller
 {
     private readonly TecnoCoreDbContext _context;
+    private readonly IWebHostEnvironment _webHostEnvironment;
 
-    public ProductosController(TecnoCoreDbContext context)
+    public ProductosController(TecnoCoreDbContext context, IWebHostEnvironment webHostEnvironment)
     {
         _context = context;
+        _webHostEnvironment = webHostEnvironment;
     }
 
     // GET: Productos
@@ -39,8 +42,21 @@ public class ProductosController : Controller
             .FirstOrDefaultAsync(p => p.Id == id);
 
         if (producto == null) return NotFound();
+        ViewBag.UserRole = HttpContext.Session.GetString("UserRole");
+        producto.Imagen = GetImagePath(producto.Imagen);
 
         return View(producto);
+    }
+    
+    private string GetImagePath(string? imagePath)
+    {
+        const string defaultImageUrl = "/img/productos/default-image.jpg";
+        if (string.IsNullOrEmpty(imagePath)) return defaultImageUrl;
+        // Convertir la ruta relativa de la BD a ruta física
+        var rutaFisica = Path.Combine(_webHostEnvironment.WebRootPath, imagePath.TrimStart('/'));
+        // Verificar si el archivo existe y devolver la ruta URL relativa original
+        if (System.IO.File.Exists(rutaFisica)) return imagePath;
+        return defaultImageUrl;
     }
 
     // GET: Productos/Create
@@ -79,6 +95,10 @@ public class ProductosController : Controller
 
             // Guarda la ruta relativa en el modelo
             producto.Imagen = "/img/productos/" + fileName;
+        }
+        else
+        {
+            producto.Imagen = "/img/productos/default-image.jpg";
         }
 
         if (ModelState.IsValid)
@@ -247,7 +267,7 @@ public class ProductosController : Controller
         };
 
         ViewData["TipoMovimientoId"] =
-            new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+            new SelectList(
                 await _context.TipoMovimientoKardex.Where(t => t.Activo == true && t.Entrada).ToListAsync(),
                 "Id", "Tipo");
 
@@ -323,9 +343,9 @@ public class ProductosController : Controller
             new SelectList(
                 await _context.TipoMovimientoKardex.Where(t => t.Activo == true && !t.Entrada).ToListAsync(),
                 "Id", "Tipo");
-        
+
         ViewBag.Producto = await _context.Productos.FindAsync(id);
-        
+
         return View(viewModel);
     }
 
@@ -375,7 +395,7 @@ public class ProductosController : Controller
             .Where(p => p.Activo == true)
             .ToListAsync();
 
-        ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+        ViewData["TipoMovimientoId"] = new SelectList(
             await _context.TipoMovimientoKardex.Where(t => t.Activo == true && !t.Entrada).ToListAsync(),
             "Id", "Tipo", viewModel.TipoMovimientoId);
 

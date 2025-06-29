@@ -8,7 +8,7 @@
         <div class="curve-four"></div>
 
         <div class="card-image">
-            <img src="img/BuildYourPC.jpg" alt="Crea Tu PC" />
+            <img src="img/BuildYourPC.jpg" alt="Crea Tu PC"/>
         </div>
 
         <div class="seeMore">
@@ -26,7 +26,7 @@
         <div class="curve-four"></div>
 
         <div class="card-image">
-            <img src="img/ComponentesPC.jpg" alt="Crea Tu PC" />
+            <img src="img/ComponentesPC.jpg" alt="Crea Tu PC"/>
         </div>
 
         <div class="seeMore">
@@ -44,7 +44,7 @@
         <div class="curve-four"></div>
 
         <div class="card-image">
-            <img src="img/perifericos.jpg" alt="Crea Tu PC" />
+            <img src="img/perifericos.jpg" alt="Crea Tu PC"/>
         </div>
 
         <div class="seeMore">
@@ -60,10 +60,11 @@
         <div class="title">Novedades</div>
         <div class="curve-three"></div>
         <div class="curve-four"></div>
-        
+
         <section id="NewsCarousel" class="carousel slide novedad" data-bs-ride="carousel">
             <div class="carousel-indicators">
-                <button type="button" data-bs-target="#NewsCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#NewsCarousel" data-bs-slide-to="0" class="active"
+                        aria-current="true" aria-label="Slide 1"></button>
                 <button type="button" data-bs-target="#NewsCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
                 <button type="button" data-bs-target="#NewsCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
             </div>
@@ -216,9 +217,16 @@
 </section>
 
 <section class="list portatiles">
-    
+    <div class="ListArticlesContainer">
+        @await Component.InvokeAsync("ProductCard", new { productId = 1 })
+        @await Component.InvokeAsync("ProductCard", new { productId = 2 })
+        @await Component.InvokeAsync("ProductCard", new { productId = 3 })
+        @await Component.InvokeAsync("ProductCard", new { productId = 4 })
+
+
+    </div>
 </section>
 
 <section class="list monitores">
-    
+
 </section>

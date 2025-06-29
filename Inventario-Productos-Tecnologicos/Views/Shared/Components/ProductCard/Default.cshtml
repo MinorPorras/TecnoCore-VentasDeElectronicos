@@ -1,0 +1,12 @@
+@using Microsoft.IdentityModel.Tokens
+@model Inventario_Productos_Tecnologicos.Models.Productos
+
+<article class="card-producto">
+    <header>
+        <img src="@Model.Imagen" alt="@Model.Nombre"/>
+        <h3>@Model.Nombre</h3>
+        <p>₡ @Model.Precio</p>
+    </header>
+    <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@Model.Id">Ver más</a>
+    <button class="btnAddToCart">Agregar al carrito</button>
+</article>

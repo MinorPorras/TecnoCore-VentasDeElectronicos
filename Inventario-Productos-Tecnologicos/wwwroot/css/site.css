@@ -959,6 +959,7 @@ section {
             transform-origin: center;
             z-index: 1;
             margin-bottom: 5rem;
+            max-width: 250px;
 
             & header {
                 background: var(--dBlueEnphasis2);
@@ -1004,6 +1005,9 @@ section {
                 border: 5px solid var(--TiffBlue);
                 cursor: pointer;
                 transition: all 0.3s ease;
+                text-decoration: none;
+                text-align: center;
+
 
                 &:hover {
                     background: var(--TiffBlue);
