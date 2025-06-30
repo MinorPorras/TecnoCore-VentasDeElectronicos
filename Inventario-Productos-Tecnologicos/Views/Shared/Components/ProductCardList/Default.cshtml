@@ -1,0 +1,26 @@
+@model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.Productos>
+
+<div class="List-header">
+    <div class="List-title">
+        <h2>@ViewBag.ListTitle</h2>
+    </div>
+    <div class="List-controls-Container">
+        <button class="ListLastElement">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        </button>
+        <button class="ListNextElement">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        </button>
+    </div>
+</div>
+<div class="ListArticlesContainer">
+    @foreach (var prod in Model)
+    {
+        @await Component.InvokeAsync("ProductCard", new { productId = @prod.Id });
+    }
+    <article class="card-producto-last-item">
+        <h2 class="card-producto-last-item-title">
+            Ver todos
+        </h2>
+    </article>
+</div>
