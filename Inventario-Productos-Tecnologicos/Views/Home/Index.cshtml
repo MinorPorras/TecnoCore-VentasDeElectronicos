@@ -216,17 +216,14 @@
     </div>
 </section>
 
-<section class="list portatiles">
-    <div class="ListArticlesContainer">
-        @await Component.InvokeAsync("ProductCard", new { productId = 1 })
-        @await Component.InvokeAsync("ProductCard", new { productId = 2 })
-        @await Component.InvokeAsync("ProductCard", new { productId = 3 })
-        @await Component.InvokeAsync("ProductCard", new { productId = 4 })
-
-
-    </div>
+<section class="list TarjetasGraficas">
+    @await Component.InvokeAsync("ProductCardList", new { title = "Tarjetas Gráficas", subcategoryId = 3, categoryId = 1, lenght = 9 })
 </section>
 
-<section class="list monitores">
+<section class="list Gabinetes">
+    @await Component.InvokeAsync("ProductCardList", new { title = "Gabinetes", subcategoryId = 1, categoryId = 1, lenght = 9 })
+</section>
 
+<section class="list Perifericos">
+    @await Component.InvokeAsync("ProductCardList", new { title = "Periféricos", subcategoryId = 0, categoryId = 3, lenght = 9 })
 </section>
