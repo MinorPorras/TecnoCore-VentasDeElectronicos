@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Inventario_Productos_Tecnologicos.Models.ViewModels
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8"/>
@@ -27,7 +28,14 @@
                     alt="cuenta"
                     class="nav-icon"
                     id="user-account"/>
-                <label for="user-account">Cuenta</label>
+                @if (ViewBag.UserName != null)
+                {
+                    <span for="user-account">@ViewBag.UserName</span>
+                }
+                else
+                {
+                    <span for="user-account">Cuenta</span>
+                }
             </div>
         </div>
         <form asp-action="ListaProductos" asp-controller="Productos" method="get" class="search-bar">
@@ -54,6 +62,31 @@
     </nav>
 </header>
 <div class="main_container">
+    <div id="alertContainer"></div>
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            @TempData["Error"]
+        </div>
+        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"].ToString()!);
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showAlert('@Html.Raw(alert.Message)', '@alert.Type');
+            });
+        </script>
+    }
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success" role="alert">
+            @TempData["Message"]
+        </div>
+        var Message = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Message"].ToString()!);
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                showAlert('@Html.Raw(Message.Message)', '@Message.Type');
+            });
+        </script>
+    }
     <main>
         @RenderBody()
     </main>
