@@ -6,8 +6,9 @@
     {
         <li class="dropdown-container">
             <a asp-controller="Productos"
-               asp-action="PorCategoria"
-               asp-route-id="@categoria.Id"
+               asp-action="ListaProductos"
+               asp-route-categoriaId="@categoria.Id"
+               asp-route-subcategoriaId="0"
                class="dropbtn">
                 @categoria.Nombre
             </a>
@@ -15,8 +16,9 @@
                 @foreach (var subcategoria in categoria.Subcategorias)
                 {
                     <a asp-controller="Productos"
-                       asp-action="PorSubcategoria"
-                       asp-route-id="@subcategoria.Id">
+                       asp-action="ListaProductos"
+                       asp-route-categoriaId="0"
+                       asp-route-subcategoriaId="@subcategoria.Id">
                         @subcategoria.Nombre
                     </a>
                 }

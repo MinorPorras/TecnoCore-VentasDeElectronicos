@@ -1,5 +1,4 @@
-﻿@model IEnumerable<Categorias>
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8"/>
@@ -31,10 +30,16 @@
                 <label for="user-account">Cuenta</label>
             </div>
         </div>
-
-        <div class="search-bar">
-            <input type="text" placeholder="Buscar..." class="search-input"/>
+        <form asp-action="ListaProductos" asp-controller="Productos" method="get" class="search-bar">
+            <input type="text"
+                   placeholder="Nombre del producto"
+                   class="search-input"
+                   id="searchTerm"
+                   name="SearchTerm"
+                   value="@ViewBag.CurrentSearch"
+            />
             <button class="button-78" role="button">Buscar</button>
+
             <div class="nav-cart">
                 <div id="showCart" class="nav-cart-button">
                     <img
@@ -45,7 +50,7 @@
                 </div>
                 <label for="shopping-cart">₡ 0.00</label>
             </div>
-        </div>
+        </form>
     </nav>
 </header>
 <div class="main_container">

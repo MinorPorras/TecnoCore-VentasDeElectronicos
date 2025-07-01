@@ -1,0 +1,125 @@
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.ProductListViewModel
+
+@{
+    Layout = "_Layout";
+}
+<div class="pageContainer">
+    @* Formulario de Filtros en la vista ListaProductos *@
+    <form class="sidebar" asp-action="ListaProductos" method="get">
+        <h3>Filtros</h3>
+        <button type="submit" class="btn-update">Actualizar</button>
+
+        @* Campos ocultos para mantener los IDs de navegación iniciales *@
+        <input type="hidden" name="categoriaId" value="@Model.CurrentCategoriaId"/>
+        <input type="hidden" name="subcategoriaId" value="@Model.CurrentSubcategoriaId"/>
+        @* Campo oculto para mantener el término de búsqueda del layout, si aplica *@
+        <input type="hidden" name="SearchTerm" value="@Model.SearchTerm"/>
+
+        <div class="filterCard">
+            <h4>Ordenar:</h4>
+            <ul>
+                <li>
+                    <label for="order-asc">Ascendente</label>
+                    <input type="radio" name="OrderForm" value="asc" id="order-asc"
+                           @(Model.OrderForm == "asc" || Model.OrderForm == null ? "checked" : "")>
+                </li>
+                <li>
+                    <label for="order-desc">Descendente</label>
+                    <input type="radio" name="OrderForm" value="desc" id="order-desc"
+                           @(Model.OrderForm == "desc" ? "checked" : "")>
+                </li>
+            </ul>
+        </div>
+        <div class="filterCard">
+            <h4>Por:</h4>
+            <ul>
+                <li>
+                    <label for="order-name">Nombre</label>
+                    <input type="radio" name="OrderBy" value="name" id="order-name"
+                           @(Model.OrderBy == "name" || Model.OrderBy == null ? "checked" : "")>
+                </li>
+                <li>
+                    <label for="order-price">Precio</label>
+                    <input type="radio" name="OrderBy" value="price" id="order-price"
+                           @(Model.OrderBy == "price" ? "checked" : "")>
+                </li>
+            </ul>
+        </div>
+
+        @* FILTRO POR CATEGORÍAS (si hay datos) *@
+        @if (Model.ProductosCategorias != null && Model.ProductosCategorias.Any())
+        {
+            <div class="filterCard">
+                <h4>Categorías</h4>
+                <ul>
+                    @foreach (var categoria in Model.ProductosCategorias)
+                    {
+                        <li>
+                            <label for="cat-@categoria.Id">@categoria.Nombre</label>
+                            <input type="checkbox"
+                                   name="SelectedCategoriaIds"
+                                   value="@categoria.Id"
+                                   id="cat-@categoria.Id"
+                                   @(Model.SelectedCategoriaIds.Contains(categoria.Id) ? "checked" : "")/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @* FILTRO POR SUBCATEGORÍAS (si hay datos) *@
+        @if (Model.ProductosSubcategorias != null && Model.ProductosSubcategorias.Any())
+        {
+            <div class="filterCard">
+                <h4>Subcategorías</h4>
+                <ul>
+                    @foreach (var subcategoria in Model.ProductosSubcategorias)
+                    {
+                        <li>
+                            <label for="sub-@subcategoria.Id">@subcategoria.Nombre</label>
+                            <input type="checkbox"
+                                   name="SelectedSubcategoryIds"
+                                   value="@subcategoria.Id"
+                                   id="sub-@subcategoria.Id"
+                                   @(Model.SelectedSubcategoryIds.Contains(subcategoria.Id) ? "checked" : "")/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+
+        @* FILTRO POR MARCAS (si hay datos) *@
+        @if (Model.ProductosMarcas.Any())
+        {
+            <div class="filterCard">
+                <h4>Marcas</h4>
+                <ul>
+                    @foreach (var marca in Model.ProductosMarcas)
+                    {
+                        <li>
+                            <label for="marca-@marca.Id">@marca.Nombre</label>
+                            <input type="checkbox"
+                                   name="SelectedMarcaIds"
+                                   value="@marca.Id"
+                                   id="marca-@marca.Id"
+                                   @(Model.SelectedMarcaIds.Contains(marca.Id) ? "checked" : "")/>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
+    </form>
+    <section class="ProductList">
+        @if (Model.ProductosList.Any())
+        {
+            @foreach (var producto in Model.ProductosList)
+            {
+                @await Component.InvokeAsync("ProductCard", new { productId = @producto.Id })
+            }
+        }
+        else
+        {
+            <p>@ViewBag.Message</p>
+        }
+    </section>
+</div>
