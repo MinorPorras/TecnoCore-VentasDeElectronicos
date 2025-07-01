@@ -3,8 +3,7 @@ using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using System.IO;
-using System.Net;
+using Inventario_Productos_Tecnologicos.Models.ViewModels;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -47,7 +46,7 @@ public class ProductosController : Controller
 
         return View(producto);
     }
-    
+
     private string GetImagePath(string? imagePath)
     {
         const string defaultImageUrl = "/img/productos/default-image.jpg";
@@ -258,7 +257,7 @@ public class ProductosController : Controller
 
     public async Task<IActionResult> CreateKardexEntry(int id)
     {
-        var viewModel = new Models.ViewModels.KardexViewModel
+        var viewModel = new KardexViewModel
         {
             Fecha = DateTime.Now,
             ProductosDisponibles = await _context.Productos
@@ -278,7 +277,7 @@ public class ProductosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateKardexEntry(Models.ViewModels.KardexViewModel viewModel)
+    public async Task<IActionResult> CreateKardexEntry(KardexViewModel viewModel)
     {
         if (ModelState.IsValid)
             try
@@ -331,7 +330,7 @@ public class ProductosController : Controller
 
     public async Task<IActionResult> CreateKardexExit(int id)
     {
-        var viewModel = new Models.ViewModels.KardexViewModel
+        var viewModel = new KardexViewModel
         {
             Fecha = DateTime.Now,
             ProductosDisponibles = await _context.Productos
@@ -351,7 +350,7 @@ public class ProductosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> CreateKardexExit(Models.ViewModels.KardexViewModel viewModel)
+    public async Task<IActionResult> CreateKardexExit(KardexViewModel viewModel)
     {
         if (ModelState.IsValid)
             try
@@ -424,5 +423,130 @@ public class ProductosController : Controller
 
         if (tipoMovimiento == null) return NotFound();
         return Json(tipoMovimiento);
+    }
+
+    public async Task<IActionResult> ListaProductos(ProductListViewModel filterModel, int categoriaId = 0,
+        int subcategoriaId = 0)
+    {
+        //Persistencia en para los ID de navegación de categoría y subcategoría
+        Console.WriteLine("Categoría: " + categoriaId);
+        Console.WriteLine("Subcategoría: " + subcategoriaId);
+        filterModel.CurrentCategoriaId = categoriaId;
+        filterModel.CurrentSubcategoriaId = subcategoriaId;
+
+        //Inicializar la consulta con la DB mostrando solo productos activos
+        var query = _context.Productos
+            .Include(p => p.Marca)
+            .Include(p => p.Subcategoria)
+            .ThenInclude(s => s.Categoria)
+            .Where(p => p.Activo);
+
+        // Aplicar filtros básicos de búsqueda
+        if (categoriaId != 0)
+        {
+            query = query.Where(p => p.Subcategoria.CategoriaId == categoriaId);
+            ViewBag.Title = await _context.Categorias
+                .Where(c => c.Id == categoriaId)
+                .Select(c => c.Nombre)
+                .FirstOrDefaultAsync() ?? "Productos";
+        }
+
+        if (subcategoriaId != 0)
+        {
+            query = query.Where(p => p.SubcategoriaId == subcategoriaId);
+            ViewBag.Title = await _context.Subcategorias
+                .Where(s => s.Id == subcategoriaId)
+                .Select(s => s.Nombre)
+                .FirstOrDefaultAsync() ?? "Productos";
+        }
+
+        // Aplicar filtro de búsqueda global por termino (Desde el layout)
+        if (!string.IsNullOrEmpty(filterModel.SearchTerm))
+        {
+            query = query.Where(p => p.Nombre.ToLower().Contains(filterModel.SearchTerm.ToLower())
+                                     || p.Descripcion.ToLower().Contains(filterModel.SearchTerm.ToLower()));
+            ViewBag.CurrentSearch = filterModel.SearchTerm;
+        }
+        else
+        {
+            ViewBag.CurrentSearch = string.Empty;
+        }
+
+        // Filtrar por categorías y subcategorías seleccionadas
+        // Filtrar por Marcas seleccionadas
+        if (filterModel.SelectedMarcaIds.Any())
+            query = query.Where(p => filterModel.SelectedMarcaIds.Contains(p.Marca.Id));
+        
+
+        // Filtrar por Categorías seleccionadas (desde el sidebar)
+        if (filterModel.SelectedCategoriaIds.Any())
+            query = query.Where(p => p.Subcategoria != null && filterModel.SelectedCategoriaIds.Contains(p.Subcategoria.Categoria.Id));
+        
+
+        // Filtrar por Subcategorías seleccionadas (desde el sidebar)
+        if (filterModel.SelectedSubcategoryIds.Any())
+            query = query.Where(p => p.Subcategoria != null && filterModel.SelectedSubcategoryIds.Contains(p.Subcategoria.Id));
+
+        // Aplicar ordenamiento
+        if (string.IsNullOrEmpty(filterModel.OrderBy)) filterModel.OrderBy = "name";
+        if (string.IsNullOrEmpty(filterModel.OrderForm)) filterModel.OrderForm = "asc";
+
+        switch (filterModel.OrderBy)
+        {
+            case "name":
+                query = filterModel.OrderForm == "asc"
+                    ? query.OrderBy(p => p.Nombre)
+                    : query.OrderByDescending(p => p.Nombre);
+                break;
+            case "price":
+                query = filterModel.OrderForm == "asc"
+                    ? query.OrderBy(p => p.Precio)
+                    : query.OrderByDescending(p => p.Precio);
+                break;
+            default:
+                query = query.OrderBy(p => p.Nombre);
+                break;
+        }
+
+        // Obtener la lista de productos filtrados
+        filterModel.ProductosList = await query.ToListAsync();
+        var marcasIds = filterModel.ProductosList.Select(p => p.MarcaId).Distinct().ToList();
+        filterModel.ProductosMarcas = await _context.Marcas
+            .Where(m => marcasIds.Contains(m.Id) && m.Activo)
+            .ToListAsync(); 
+        var categoriasIds = filterModel.ProductosList
+            .Select(p => p.Subcategoria.CategoriaId)
+            .Distinct()
+            .ToList();
+        filterModel.ProductosCategorias = await _context.Categorias
+            .Where(c => categoriasIds.Contains(c.Id) && c.Activo)
+            .ToListAsync();
+
+        // Las subcategorías deben mostrarse según la categoría seleccionada si hay una categoríaId inicial
+        // O si se ha seleccionado alguna categoría en los filtros del sidebar.
+        if (categoriaId > 0)
+        {
+            filterModel.ProductosSubcategorias = await _context.Subcategorias
+                .Where(s => s.CategoriaId == categoriaId && s.Activo)
+                .ToListAsync();
+        }
+        else if (filterModel.SelectedCategoriaIds.Any()) // Si se filtró por categorías en el sidebar
+        {
+            filterModel.ProductosSubcategorias = await _context.Subcategorias
+                .Where(s => filterModel.SelectedCategoriaIds.Contains(s.Categoria.Id) && s.Activo)
+                .ToListAsync();
+        }
+        else // Si no hay filtro de categoría, mostrar todas las subcategorías activas
+        {
+            filterModel.ProductosSubcategorias = await _context.Subcategorias.Where(s => s.Activo).ToListAsync();
+        }
+
+        //Manejar mensajes si no hay productos
+        if (!filterModel.ProductosList.Any())
+            ViewBag.Message = "No se encontraron productos con los filtros aplicados.";
+        else
+            ViewBag.Message = null; // Limpiar el mensaje si hay productos
+
+        return View(filterModel);
     }
 }

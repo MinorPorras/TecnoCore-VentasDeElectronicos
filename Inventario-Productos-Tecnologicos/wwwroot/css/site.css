@@ -46,6 +46,7 @@ main {
     display: grid;
     grid-template-columns: repeat(4, minmax(190px, 1fr));
     grid-template-rows: Repeat(2, minmax(300px, 1fr));
+
 }
 
 section {
@@ -841,6 +842,248 @@ section {
     }
 }
 
+
+.card-producto {
+    position: relative;
+    width: 100%;
+    height: fit-content;
+    border: 1px solid var(--dBlueEnphasis2);
+    border-radius: 0.8rem;
+    background-color: var(--dBlueEnphasis1);
+    color: var(--Azure);
+    padding: .5rem;
+    display: grid;
+    grid-template-rows: 4fr .5fr;
+    gap: .5rem;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-align: start; /* Hace que los elementos se ajusten al scroll */
+    transition: transform 0.3s ease;
+    transform-origin: center;
+    z-index: 1;
+    margin-bottom: 5rem;
+    max-width: 250px;
+    justify-self: left;
+
+    & header {
+        background: var(--dBlueEnphasis2);
+        border-radius: 0.8rem;
+        display: grid;
+        grid-template-rows: minmax(200px, 200px) minmax(20px, 2fr) minmax(20px, 1fr);
+        gap: .5rem;
+        padding: .5rem;
+
+        & img {
+            position: relative;
+            width: 12rem;
+            height: 12rem;
+            object-fit: cover;
+            border-radius: 0.8rem;
+            filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            transition: all 0.3s ease;
+            padding: 0.5rem;
+            margin: 0 auto;
+        }
+    }
+
+    & h3 {
+        font-size: clamp(.8rem, 2vw, 1.2rem);
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        text-align: center;
+    }
+
+    & p {
+        font-size: clamp(0.9rem, 1.5vw, 1.2rem);
+        margin-bottom: 0.5rem;
+        text-align: end;
+        font-weight: bold;
+        color: var(--indianRed);
+    }
+
+    & .btnVerMas, .btnAddToCart {
+        background: var(--darkGradient);
+        color: var(--Azure);
+        border-radius: 0.8rem;
+        padding: 0.5rem 1rem;
+        border: 5px solid var(--TiffBlue);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        text-align: center;
+
+
+        &:hover {
+            background: var(--TiffBlue);
+            color: var(--darkBlue);
+            filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        }
+
+        &:active {
+            background: var(--indianRed);
+            color: var(--Azure);
+            filter: drop-shadow(0px 1px 5px var(--indianRed));
+            border-color: var(--indianRed);
+        }
+    }
+
+    & .btnAddToCart {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        border: 5px solid var(--indianRed);
+
+        &:hover {
+            background: var(--indianRed);
+            color: var(--darkBlue);
+            filter: drop-shadow(0px 1px 5px var(--indianRed));
+        }
+
+        &:active {
+            background: var(--TiffBlue);
+            color: var(--darkBlue);
+            filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            border-color: var(--TiffBlue);
+        }
+    }
+
+    &:hover {
+        z-index: 2; /* Asegura que la card aparezca por encima de las demás */
+        padding-bottom: 4rem;
+        margin-bottom: 0;
+
+        transition: all 0.3s ease;
+
+        & .btnAddToCart {
+            display: block;
+            animation: fadeIn 0.3s ease;
+            /* Ajustar posición del botón */
+            top: calc(100% - 3.5rem);
+            width: calc(100% - 1rem); /* Ajustar al padding de la card */
+            margin: 0 0.5rem; /* Centrar el botón */
+        }
+    }
+}
+
+.pageContainer {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+    grid-column: 1 / -1;
+    grid-row: 1 / -1;
+    color: var(--Azure);
+
+    & .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        background: var(--dBlueEnphasis1);
+        padding: 1rem;
+        border-right: 1px solid var(--dBlueEnphasis2);
+        overflow-y: auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+
+        & h3 {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: var(--Azure);
+            align-self: center;
+        }
+
+        & .btn-update {
+            background: var(--darkGradient);
+            color: var(--Azure);
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: 5px solid var(--TiffBlue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+
+
+            &:hover {
+                background: var(--TiffBlue);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            }
+
+            &:active {
+                background: var(--indianRed);
+                color: var(--Azure);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+                border-color: var(--indianRed);
+            }
+        }
+
+        .filterCard {
+            padding: 1rem;
+            background: var(--dBlueEnphasis2);
+            border-radius: 0.8rem;
+            color: var(--Azure);
+            border: 1px solid var(--dBlueEnphasis3);
+            display: grid;
+            grid-template-rows: .5fr auto;
+            margin-bottom: .5rem;
+            margin-top: .5rem;
+            grid-column: 1 / -1;
+
+            & h4 {
+                font-size: clamp(1rem, 1.5vw, 1.2rem);
+                font-weight: bold;
+                margin-bottom: 0.5rem;
+                text-align: center;
+            }
+
+            & ul {
+                list-style: none;
+                text-align: left;
+                padding: 0;
+
+                & li {
+                    margin-bottom: 0.5rem;
+                    cursor: pointer;
+                    transition: color 0.3s ease;
+                    display: grid;
+                    grid-template-columns: 1fr auto;
+
+                    &:hover {
+                        color: var(--TiffBlue);
+                    }
+                }
+            }
+        }
+    }
+
+    & section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        grid-template-rows: auto;
+        gap: 1rem;
+        padding: 1rem;
+
+        & .card-producto {
+            justify-self: center;
+        }
+
+        & h2 {
+            grid-column: 1 / -1;
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            font-weight: bold;
+            margin: 1rem;
+            color: var(--Azure);
+            text-align: center;
+            background: var(--indianRed);
+            width: fit-content;
+            padding: 1rem;
+            border-radius: 0.8rem;
+            justify-self: center;
+        }
+    }
+}
+
 .list {
     grid-column: 1/-1;
     display: grid;
@@ -1048,7 +1291,7 @@ section {
             &:hover {
                 z-index: 2; /* Asegura que la card aparezca por encima de las demás */
                 padding-bottom: 4rem;
-                margin-bottom: 0rem;
+                margin-bottom: 0;
 
                 transition: all 0.3s ease;
 
