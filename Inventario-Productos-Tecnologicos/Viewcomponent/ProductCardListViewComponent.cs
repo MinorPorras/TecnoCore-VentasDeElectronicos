@@ -19,9 +19,8 @@ public class ProductCardListViewComponent : ViewComponent
     {
         ViewBag.ListLenght = lenght;
         ViewBag.ListTitle = title;
-        if ( subcategoryId > 0)
+        if (subcategoryId > 0)
         {
-            Console.WriteLine("Subcategoría: " + subcategoryId);
             var productosSubcategoria = await _context.Productos
                 .Where(p => p.SubcategoriaId == subcategoryId && p.Activo)
                 .Include(p => p.Subcategoria)
@@ -29,7 +28,7 @@ public class ProductCardListViewComponent : ViewComponent
                 .ToListAsync();
             return View(productosSubcategoria);
         }
-        else if ( categoryId > 0)
+        else if (categoryId > 0)
         {
             var productosCategoria = await _context.Productos
                 .Where(p => p.Subcategoria!.CategoriaId == categoryId && p.Activo)

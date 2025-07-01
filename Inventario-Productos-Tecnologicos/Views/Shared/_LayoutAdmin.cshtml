@@ -43,12 +43,7 @@
                 <li><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
             </ul>
             <div class="nav-account" id="showLogin">
-                <img
-                    src="~/img/ICO_User.svg"
-                    alt="cuenta"
-                    class="nav-icon"
-                    id="user-account"/>
-                <label for="user-account">Cuenta</label>
+                <a asp-action="Logout" asp-controller="Home">Cerrar Sesión</a>
             </div>
         </div>
     </nav>

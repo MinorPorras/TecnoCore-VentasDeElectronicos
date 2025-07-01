@@ -31,28 +31,38 @@ public class HomeController : Controller
     /// Maneja el inicio de sesión del usuario y redirecciona según el rol.
     /// </summary>
     /// <param name="email">El correo electrónico del usuario.</param>
-    /// <param name="contrasena">La contraseña del usuario.</param>
+    /// <param name="password">La contraseña del usuario.</param>
     /// <returns>Una redirección a la acción correspondiente según el resultado del inicio de sesión.</returns>
-    public RedirectToActionResult Login(string email, string contrasena)
+    [HttpPost]
+    public RedirectToActionResult Login(string email, string password)
     {
-        // Descomentar y modificar el siguiente código para implementar la lógica de inicio de sesión:
-        var usuario = _context.Usuarios.Include(usuario => usuario.RolNavigation).FirstOrDefault(u =>
-            u.Email == email && u.Contrasena == contrasena && u.RolNavigation != null &&
-            u.RolNavigation.Name == "Admin");
-        if (usuario == null) ViewBag.Error = "Usuario o contraseña incorrectos";
-        // Guardar información relevante en sesión
-        if (usuario is { RolNavigation: not null })
+        // Descomentar y modificar el siguiente código para implementar la lógica de inicio de sesión:s
+        var usuario = _context.Usuarios
+            .Include(u => u.RolNavigation)
+            .FirstOrDefault(u => u.Email == email && u.Contrasena == password);
+        if (usuario == null)
         {
-            HttpContext.Session.SetInt32("UserId", usuario.Id);
-            HttpContext.Session.SetString("UserRole", usuario.RolNavigation.Name);
-            HttpContext.Session.SetString("UserName", usuario.Nombre);
-            if (usuario.RolNavigation.Name == "Cliente")
-                return RedirectToAction("Mantenimiento", "Home");
-            else
-                return RedirectToAction("Index", "Home");
+            TempData["Error"] = "Usuario o contraseña incorrectos";
+            return RedirectToAction("Index");
         }
 
-        return RedirectToAction("Mantenimiento");
+        Console.WriteLine("Email: " + usuario.Email);
+        Console.WriteLine("Contraseña: " + usuario.Contrasena);
+        // Guardar información relevante en sesión
+        HttpContext.Session.SetInt32("UserId", usuario.Id);
+        HttpContext.Session.SetString("UserRole", usuario.RolNavigation.Name);
+        HttpContext.Session.SetString("UserName", usuario.Nombre);
+        Console.WriteLine("UserRole:" + HttpContext.Session.GetString("UserRole"));
+        ViewBag.UserName = HttpContext.Session.GetString("UserName");
+        return RedirectToAction(usuario.RolNavigation.Name == "Administrador"
+            ? "Mantenimiento"
+            : "Index", "Home");
+    }
+
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return RedirectToAction("Index");
     }
 
     /// <summary>
