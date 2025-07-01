@@ -18,6 +18,7 @@
     --Twistle: #dbcbd8;
     --ultraviolet: #564787;
     --indianRed: #d36060;
+    --okGreen: #a1d7a5;
 }
 
 * {
@@ -29,8 +30,9 @@
 }
 
 body {
-    background-image: var(--darkBlue);
+    background: var(--darkGradient);
     color: var(--Azure);
+    height: 100vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -41,6 +43,208 @@ h1 {
     font-size: clamp(14px, 2vw, 4vw);
     text-align: center;
     font-weight: bold;
+}
+.pageTitle{
+    font-size: clamp(14px, 2vw, 4vw);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.pageIndexContainer{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 20px 3rem 0;
+
+
+    & form{
+        display: grid;
+        grid-template-columns: 5fr 1fr;
+        justify-content: center;
+        align-items: center;
+        margin-bottom: 20px;
+        width: 100%;
+        gap: .5rem;
+
+        & input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            border-radius: 1rem;
+            background-color: var(--dBlueEnphasis3);
+            color: var(--Azure);
+            font-size: 1rem;
+            background-image: var(--darkGradient);
+            border: 5px solid var(--TiffBlue);
+            transition: all 0.3s ease;
+
+            &::placeholder {
+                color: var(--Azure);
+                opacity: 0.7;
+            }
+
+            &:hover {
+                filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            }
+
+            &:focus {
+                outline: none;
+                border-color: var(--indianRed);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+            }
+        }
+
+        & .btnSearch {
+            background: var(--darkGradient);
+            color: var(--Azure);
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: 5px solid var(--TiffBlue);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+
+
+            &:hover {
+                background: var(--TiffBlue);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            }
+
+            &:active {
+                background: var(--indianRed);
+                color: var(--Azure);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+                border-color: var(--indianRed);
+                scale: 0.9;
+            }
+        }
+        
+        & .btnCreate{
+            background: var(--darkGradient);
+            color: var(--Azure);
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: 5px solid var(--okGreen);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+
+            &:hover {
+                background: var(--okGreen);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--okGreen));
+            }
+
+            &:active {
+                background: var(--indianRed);
+                color: var(--Azure);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+                border-color: var(--indianRed);
+                scale: 0.9;
+            }
+        }
+
+        & .radio-group{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+
+            & label {
+                color: var(--Azure);
+                font-size: clamp(1rem, 1.5vw, 2rem);
+                cursor: pointer;
+            }
+
+            & input[type="radio"] {
+                margin-right: 0.5rem;
+                accent-color: var(--TiffBlue);
+            }
+        }
+    }
+
+    & table{
+        width: 100%;
+        table-layout: fixed;
+        margin: 0 auto;
+
+        & .tbl-header{
+            background-color: var(--dBlueEnphasis2);
+            color: var(--Azure);
+            font-weight: bold;
+            text-align: center;
+        }
+
+        & .tbl-content{
+            height: 2rem;
+            overflow-x: auto;
+            border-radius: 0.5rem;
+            background: var(--darkGradient);
+        }
+
+        & th{
+            padding: 0.5rem;
+            text-align: left;
+            font-size: clamp(14px, 2vw, 4vw);
+            font-weight: bold;
+            border-bottom: 2px solid var(--TiffBlue);
+        }
+
+        & td{
+            padding: 0.5rem;
+            text-align: left;
+            vertical-align: middle;
+            font-weight: 300;
+            font-size: clamp(12px, 1.5vw, 3vw);
+            color: var(--Azure);
+            
+            
+            
+            & img{
+                width: 40px;
+                height: 40px;
+                object-fit: cover;
+            }
+            
+            & a{
+                color: var(--Azure);
+                text-decoration: none;
+                transition: color 0.3s ease;
+
+                &:hover {
+                    color: var(--TiffBlue);
+                }
+            }
+
+            & .btnSwicthActive{
+                background: transparent;
+                cursor: pointer;
+                color: var(--Azure);
+                font-size: clamp(12px, 1.5vw, 3vw);
+                transition: color 0.3s ease;
+                padding: 0.5rem;
+                border-radius: 0.5rem;
+                border: 1px solid transparent;
+            }
+            
+            & .btnSwicthActive.greenHighlight:hover {
+                color: var(--okGreen);
+                background: var(--darkBlueOpacity);
+                border: 1px solid var(--okGreen);
+            }
+
+            & .btnSwicthActive.redHighlight:hover {
+                color: var(--indianRed);
+                background: var(--darkBlueOpacity);
+                border: 1px solid var(--indianRed);
+            }
+        }
+    }
 }
 
 #alertContainer {

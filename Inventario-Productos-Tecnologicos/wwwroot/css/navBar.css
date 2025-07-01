@@ -483,3 +483,15 @@ nav {
     cursor: default;
     opacity: 0.24;
 }
+
+.footer{
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--dBlueEnphasis1);
+    color: var(--Azure);
+    text-align: center;
+    padding: 10px 0;
+    font-size: clamp(.6rem, 2vw, .9rem);
+    z-index: 1000;
+}

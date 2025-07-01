@@ -5,13 +5,13 @@
     Layout = "_LayoutAdmin";
 }
 
-<div>
+<div class="pageIndexContainer">
     <h2 class="pageTitle">Roles del sistema</h2>
 
     <form asp-action="Search" method="GET">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
-        <button type="submit" asp-action="Search">Buscar</button>
+        <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
         <div class="radio-group">
             <label for="todos">Todos</label>
             <input type="radio" name="activeFilter" id="todos" value="all"
@@ -23,55 +23,71 @@
             <input type="radio" name="activeFilter" id="Inactive" value="false"
                    @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
         </div>
+        <a asp-action="Create" class="btnCreate">Crear</a>
     </form>
-    <a asp-action="Create">Crear</a>
 
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Estado</th>
-            <th>Opciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        @if (Model.Count == 0)
-        {
+    <div class="tbl-header">
+        <table>
+            <thead>
             <tr>
-                <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Opciones</th>
             </tr>
-        }
-        else
-        {
-            @foreach (var rol in Model)
+            </thead>
+        </table>
+    </div>
+    <div class="tbl-content">
+        <table>
+            <tbody>
+            @if (Model.Count == 0)
             {
                 <tr>
-                    <td>@rol.Id</td>
-                    <td>@rol.Name</td>
-                    <td>
-                        @if (rol.Activo)
-                        {
-                            <span class="badge text-bg-success">Activo</span>
-                        }
-                        else
-                        {
-                            <span class="badge text-bg-danger">Inactivo</span>
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@rol.Id">Edit</a>
-                        <button type="button" class="showModal" data-id="@rol.Id"
-                                value="@rol.Name" data-active="@rol.Activo"
-                                class="showModal btn btn-sm @(rol.Activo ? "btn-danger" : "btn-success")">
-                            @(rol.Activo ? "Desactivar" : "Activar")
-                        </button>
-                    </td>
+                    <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
                 </tr>
             }
-        }
-        </tbody>
-    </table>
+            else
+            {
+                @foreach (var rol in Model)
+                {
+                    <tr>
+                        <td>@rol.Id</td>
+                        <td>@rol.Name</td>
+                        <td>
+                            @if (rol.Activo)
+                            {
+                                <span class="badge text-bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-danger">Inactivo</span>
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@rol.Id">
+                                <img src="~/img/ICO_Edit.svg" alt="Editar" class="iconEdit"/>
+                                Editar
+                            </a>
+                            <button type="button" data-id="@rol.Id" class="showModal btnSwicthActive @(rol.Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@rol.Name" data-active="@rol.Activo">
+                                @if (rol.Activo)
+                                {
+                                    <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
+                                }
+                                else
+                                {
+                                    <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
+                                }
+                                @(rol.Activo ? "Desactivar" : "Activar")
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            </tbody>
+        </table>
+    </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Roles" })
 </div>
 
