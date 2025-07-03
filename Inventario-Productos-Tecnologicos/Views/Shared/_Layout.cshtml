@@ -63,30 +63,18 @@
 </header>
 <div class="main_container">
     <div id="alertContainer"></div>
-    @if (TempData["Error"] != null)
+    @*@if (TempData["Error"] != null)
     {
         <div class="alert alert-danger" role="alert">
             @TempData["Error"]
         </div>
-        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"].ToString()!);
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert('@Html.Raw(alert.Message)', '@alert.Type');
-            });
-        </script>
     }
     @if (TempData["Message"] != null)
     {
         <div class="alert alert-success" role="alert">
             @TempData["Message"]
         </div>
-        var Message = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Message"].ToString()!);
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert('@Html.Raw(Message.Message)', '@Message.Type');
-            });
-        </script>
-    }
+    }*@
     <main>
         @RenderBody()
     </main>
@@ -122,7 +110,7 @@
     </div>
 </dialog>
 
-<footer class="border-top footer text-muted">
+<footer class="footer">
     <div class="container">
         &copy; 2025 - Tecno Core - Num: 8888-8888 Dirección: Calle 123, Ciudad ...
     </div>

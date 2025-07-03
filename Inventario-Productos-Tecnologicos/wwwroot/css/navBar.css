@@ -149,7 +149,7 @@ nav {
         display: none;
         top: 100%;
         background-color: var(--dBlueEnphasis1);
-        z-index: 1;
+        z-index: 1000;
         border-radius: 10px;
         border: var(--TiffBlue) .3rem solid;
         align-items: center;
@@ -350,6 +350,18 @@ nav {
         transform: scale(1.2);
         transition: all 0.5s ease;
     }
+}
+
+.footer{
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    background-color: var(--dBlueEnphasis1);
+    color: var(--Azure);
+    text-align: center;
+    padding: 10px 0;
+    font-size: clamp(.6rem, 2vw, .9rem);
+    z-index: 999;
 }
 
 .nav-cart-button {

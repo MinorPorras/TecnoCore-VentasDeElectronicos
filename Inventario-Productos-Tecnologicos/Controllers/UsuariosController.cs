@@ -82,7 +82,7 @@ public class UsuariosController : Controller
 
         // Aplicar filtro de rol si no es "all"
         if (rol != "all" && !string.IsNullOrEmpty(rol))
-            query = query.Where(u => u.RolNavigation != null && u.RolNavigation.ToString() == rol);
+            query = query.Where(u => u.RolNavigation != null && u.Rol == Convert.ToInt32(rol));
 
         var usuarios = await query.ToListAsync();
         return View("Index", usuarios);
