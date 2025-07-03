@@ -4,12 +4,12 @@
     ViewBag.Title = "Listado de Marcas";
     Layout = "_LayoutAdmin";
 }
-<div>
+<div class="pageIndexContainer">
     <h2 class="pageTitle">Marcas</h2>
     <form asp-action="Search" method="GET">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
-        <button type="submit" asp-action="Search">Buscar</button>
+        <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
         <div class="radio-group">
             <label for="todos">Todos</label>
             <input type="radio" name="activeFilter" id="todos" value="all"
@@ -21,52 +21,64 @@
             <input type="radio" name="activeFilter" id="Inactive" value="false"
                    @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
         </div>
+        <a asp-action="Create" class="btnCreate">Crear</a>
     </form>
-
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Crear Nueva Marca</a>
-    </p>
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var marca in Model)
-        {
-            <tr>
-                <td>
-                    @marca.Id
-                </td>
-                <td>
-                    @marca.Nombre
-                </td>
-                <td>
-                    @if (marca.Activo)
-                    {
-                        <span class="badge text-bg-success">Activo</span>
-                    }
-                    else
-                    {
-                        <span class="badge text-bg-danger">Inactivo</span>
-                    }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@marca.Id" class="btn btn-info btn-sm">Editar</a>
-                    <button type="button" class="showModal" data-id="@marca.Id"
-                            data-active="@marca.Activo" value="@marca.Nombre"
-                            class="showModal btn btn-sm @(marca.Activo ? "btn-danger" : "btn-success")">
-                        @(marca.Activo ? "Desactivar" : "Activar")
-                    </button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+    
+    
+    <div class="tableContainer">
+        <div class="tbl-header TMarca">
+            <span class="headerText">ID</span>
+            <span class="headerText">Nombre</span>
+            <span class="headerText">Estado</span>
+            <span class="headerText">Opciones</span>
+        </div>
+        <div class="tbl-content">
+            @if (!Model.Any())
+            {
+                <div class="tableRow">
+                    <span class="NoElements">No hay @ViewBag.Title</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var marca in Model)
+                {
+                    <div class="tableRow TMarca">
+                        <span>@marca.Id</span>
+                        <span>@marca.Nombre</span>
+                        <span class="columnEstado">
+                                @if (marca.Activo)
+                            {
+                                <span class="badge text-bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-danger">Inactivo</span>
+                            }
+                            </span>
+                        <div class="tableButtonsColumn">
+                            <a asp-action="Edit" asp-route-id="@marca.Id" class="EditBtn">
+                                <img src="~/img/ICO_Edit.svg" alt="Editar"/>
+                                Editar
+                            </a>
+                            <button type="button" data-id="@marca.Id"
+                                    class="showModal btnSwicthActive @(marca.Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@marca.Nombre" data-active="@marca.Activo">
+                                @if (marca.Activo)
+                                {
+                                    <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
+                                }
+                                else
+                                {
+                                    <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
+                                }
+                                @(marca.Activo ? "Desactivar" : "Activar")
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Marcas" })
 </div>

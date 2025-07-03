@@ -51,7 +51,6 @@ main {
 
 section {
     position: relative;
-    border: 1px solid var(--dBlueEnphasis2);
 }
 
 .cardWrapper {
@@ -1201,7 +1200,7 @@ section {
             transition: transform 0.3s ease;
             transform-origin: center;
             z-index: 1;
-            margin-bottom: 5rem;
+            margin-bottom: 3.5rem;
             max-width: 250px;
             justify-self: left;
 

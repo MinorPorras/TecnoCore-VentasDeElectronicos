@@ -26,36 +26,29 @@
         <a asp-action="Create" class="btnCreate">Crear</a>
     </form>
 
-    <div class="tbl-header">
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Estado</th>
-                <th>Opciones</th>
-            </tr>
-            </thead>
-        </table>
-    </div>
-    <div class="tbl-content">
-        <table>
-            <tbody>
+    <div class="tableContainer">
+        <div class="tbl-header TRoles">
+            <span class="headerText">ID</span>
+            <span class="headerText">Nombre</span>
+            <span class="headerText">Estado</span>
+            <span class="headerText">Opciones</span>
+        </div>
+        <div class="tbl-content">
             @if (Model.Count == 0)
             {
-                <tr>
-                    <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
-                </tr>
+                <div class="tableRow">
+                    <span class="NoElements">No hay @ViewBag.Title</span>
+                </div>
             }
             else
             {
                 @foreach (var rol in Model)
                 {
-                    <tr>
-                        <td>@rol.Id</td>
-                        <td>@rol.Name</td>
-                        <td>
-                            @if (rol.Activo)
+                    <div class="tableRow TRoles">
+                        <span>@rol.Id</span>
+                        <span>@rol.Name</span>
+                        <span class="columnEstado">
+                                @if (rol.Activo)
                             {
                                 <span class="badge text-bg-success">Activo</span>
                             }
@@ -63,13 +56,14 @@
                             {
                                 <span class="badge text-bg-danger">Inactivo</span>
                             }
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@rol.Id">
-                                <img src="~/img/ICO_Edit.svg" alt="Editar" class="iconEdit"/>
+                            </span>
+                        <div class="tableButtonsColumn">
+                            <a asp-action="Edit" asp-route-id="@rol.Id" class="EditBtn">
+                                <img src="~/img/ICO_Edit.svg" alt="Editar"/>
                                 Editar
                             </a>
-                            <button type="button" data-id="@rol.Id" class="showModal btnSwicthActive @(rol.Activo ? "redHighlight" : "greenHighlight")"
+                            <button type="button" data-id="@rol.Id"
+                                    class="showModal btnSwicthActive @(rol.Activo ? "redHighlight" : "greenHighlight")"
                                     value="@rol.Name" data-active="@rol.Activo">
                                 @if (rol.Activo)
                                 {
@@ -81,12 +75,11 @@
                                 }
                                 @(rol.Activo ? "Desactivar" : "Activar")
                             </button>
-                        </td>
-                    </tr>
+                        </div>
+                    </div>
                 }
             }
-            </tbody>
-        </table>
+        </div>
     </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Roles" })
 </div>

@@ -4,13 +4,13 @@
     ViewBag.Title = "Usuarios";
     Layout = "_LayoutAdmin";
 }
-<div>
+<div class="pageIndexContainer">
     <h2 class="pageTitle">@ViewBag.Title</h2>
 
     <form asp-action="Search" method="GET">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
-        <button type="submit" asp-action="Search">Buscar</button>
+        <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
         <div class="radio-group">
             <label for="todos">Todos</label>
             <input type="radio" name="activeFilter" id="todos" value="all"
@@ -21,88 +21,95 @@
             <label for="Inactive">Inactivo</label>
             <input type="radio" name="activeFilter" id="Inactive" value="false"
                    @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
-        </div>
-        <label for="rol">Roles:</label>
-        <select name="rol" id="rol">
-            @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
-            {
-                <option value="all" selected>Todos</option>
-            }
-            else
-            {
-                <option value="all">Todos</option>
-            }
-            @if (ViewBag.Roles != null)
-            {
-                @foreach (var rol in ViewBag.Roles)
+            <label for="rol">Roles:</label>
+            <select name="rol" id="rol" class="searchSelect">
+                @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
                 {
-                    if (ViewBag.Rol == rol.Id.ToString())
-                    {
-                        <option value="@rol.Id" selected>@rol.Name</option>
-                    }
-                    else
-                    {
-                        <option value="@rol.Id">@rol.Name</option>
-                    }
+                    <option value="all" selected>Todos</option>
                 }
-            }
-        </select>
-    </form>
-    <a asp-action="Create">Crear</a>
-
-
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre</th>
-            <th>Apellidos</th>
-            <th>email</th>
-            <th>Teléfono</th>
-            <th>Rol</th>
-            <th>Estado</th>
-            <th>Opciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        @if (Model.Count == 0)
-        {
-            <tr>
-                <td colspan="8" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
-            </tr>
-        }
-        else
-        {
-            @foreach (var usuario in Model)
-            {
-                <tr>
-                    <td>@usuario.Id</td>
-                    <td>@usuario.Nombre</td>
-                    <td>@usuario.Apellidos</td>
-                    <td>@usuario.Email</td>
-                    <td>@usuario.Telefono</td>
-                    <td>@(usuario.RolNavigation?.Name ?? "Sin Rol")</td>
-                    <td>
-                        @if (usuario.Activo)
+                else
+                {
+                    <option value="all">Todos</option>
+                }
+                @if (ViewBag.Roles != null)
+                {
+                    @foreach (var rol in ViewBag.Roles)
+                    {
+                        if (ViewBag.Rol == rol.Id.ToString())
                         {
-                            <span class="badge text-bg-success">Activo</span>
+                            <option value="@rol.Id" selected>@rol.Name</option>
                         }
                         else
                         {
-                            <span class="badge text-bg-danger">Inactivo</span>
+                            <option value="@rol.Id">@rol.Name</option>
                         }
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@usuario.Id">Edit</a>
-                        <button type="button" class="showModal btn btn-sm @(usuario.Activo ? "btn-danger" : "btn-success")"
-                                data-id="@usuario.Id" data-active="@usuario.Activo" value="@usuario.Nombre">
-                            @(usuario.Activo ? "Desactivar" : "Activar")
-                        </button>
-                    </td>
-                </tr>
+                    }
+                }
+            </select>
+        </div>
+        <a asp-action="Create" class="btnCreate">Crear</a>
+    </form>
+
+        <div class="tableContainer">
+        <div class="tbl-header TProd">
+            <span class="headerText">ID</span>
+            <span class="headerText">Nombre</span>
+            <span class="headerText">Apellidos</span>
+            <span class="headerText">email</span>
+            <span class="headerText">Rol</span>
+            <span class="headerText">Estado</span>
+            <span class="headerText">Opciones</span>
+        </div>
+        <div class="tbl-content">
+            @if (!Model.Any())
+            {
+                <div class="tableRow">
+                    <span class="NoElements">No hay @ViewBag.Title</span>
+                </div>
             }
-        }
-        </tbody>
-    </table>
+            else
+            {
+                @foreach (var usuario in Model)
+                {
+                    <div class="tableRow TProd">
+                        <span>@usuario.Id</span>
+                        <span>@usuario.Nombre</span>
+                        <span>@usuario.Apellidos</span>
+                        <span>@usuario.Email</span>
+                        <span>@(usuario.RolNavigation?.Name ?? "Sin Rol")</span>
+                        <span class="columnEstado">
+                            @if (usuario.Activo)
+                            {
+                                <span class="badge text-bg-success">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-danger">Inactivo</span>
+                            }
+                        </span>
+                        <div class="tableButtonsColumn">
+                            <a asp-action="Edit" asp-route-id="@usuario.Id" class="EditBtn">
+                                <img src="~/img/ICO_Edit.svg" alt="Editar"/>
+                                Editar
+                            </a>
+                            <button type="button" data-id="@usuario.Id"
+                                    class="showModal btnSwicthActive @(usuario.Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@usuario.Nombre" data-active="@usuario.Activo">
+                                @if (usuario.Activo)
+                                {
+                                    <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
+                                }
+                                else
+                                {
+                                    <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
+                                }
+                                @(usuario.Activo ? "Desactivar" : "Activar")
+                            </button>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Usuarios" })
 </div>
