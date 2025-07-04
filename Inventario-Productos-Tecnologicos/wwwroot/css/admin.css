@@ -19,6 +19,7 @@
     --ultraviolet: #564787;
     --indianRed: #d36060;
     --okGreen: #a1d7a5;
+    --yellowWarning: #efc499;
 }
 
 * {
@@ -135,6 +136,8 @@ h1 {
             transition: all 0.3s ease;
             text-decoration: none;
             text-align: center;
+            grid-row: 2 / 3;
+            grid-column-end: -1 ;
 
             &:hover {
                 background: var(--okGreen);
@@ -156,6 +159,7 @@ h1 {
             justify-content: left;
             align-items: center;
             gap: 1rem;
+            grid-column-start: 1;
 
             & label {
                 color: var(--Azure);
@@ -195,6 +199,41 @@ h1 {
                 }
             }
         }
+        
+        & .selectGroup{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 1rem;
+            grid-column: 1/-1;
+        }
+
+        .searchSelect{
+            flex: 3;
+            padding: 10px;
+            border-radius: 1rem;
+            background-color: var(--dBlueEnphasis3);
+            color: var(--Azure);
+            font-size: 1rem;
+            background-image: var(--darkGradient);
+            border: 5px solid var(--TiffBlue);
+            transition: all 0.3s ease;
+
+            &::placeholder {
+                color: var(--Azure);
+                opacity: 0.7;
+            }
+
+            &:hover {
+                filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+            }
+
+            &:focus {
+                outline: none;
+                border-color: var(--indianRed);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+            }
+        }
     }
 
     & .tableContainer {
@@ -213,7 +252,6 @@ h1 {
             background: var(--lightgradient);
             color: var(--dBlueEnphasis1);
             font-weight: bold;
-            text-align: center;
             border-radius: 0.8rem;
             width: 100%;
             table-layout: fixed;
@@ -222,12 +260,18 @@ h1 {
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
             min-width: fit-content;
+            position: sticky;
+            top: 0;
             
             & .headerText {
                 padding: 0.5rem;
-                font-size: 1.2rem;
+                font-size: 1.1rem;
                 font-weight: bold;
                 text-align: center;
+            }
+            
+            & span:first-child {
+                text-align: left;
             }
         }
 
@@ -272,10 +316,6 @@ h1 {
                     &:hover {
                         background-color: var(--dBlueEnphasis2);
                     }
-                    
-                    &:first-child{
-                        text-align: center;
-                    }
                 }
                 & span.columnEstado{
                     text-align: center;
@@ -296,12 +336,13 @@ h1 {
                 }
                 & .tableButtonsColumn{
                     display: flex;
+                    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
                     justify-content: center;
                     align-items: center;
                     gap: 0.5rem;
-                    flex-wrap: wrap;
                 }
-                & .EditBtn{
+                
+                & .DetailsBtn{
                     background: transparent;
                     cursor: pointer;
                     color: var(--Azure);
@@ -324,6 +365,30 @@ h1 {
                         border: 1px solid var(--indianRed);
                     }
                 }
+                
+                & .EditBtn{
+                    background: transparent;
+                    cursor: pointer;
+                    color: var(--Azure);
+                    font-size: 1rem;
+                    transition: color 0.3s ease;
+                    padding: 0.5rem;
+                    border-radius: 0.5rem;
+                    border: 1px solid transparent;
+                    height: fit-content;
+
+                    &:hover {
+                        color: var(--yellowWarning);
+                        background: var(--darkBlueOpacity);
+                        border: 1px solid var(--yellowWarning);
+                    }
+
+                    &:active {
+                        color: var(--indianRed);
+                        background: var(--darkBlueOpacity);
+                        border: 1px solid var(--indianRed);
+                    }
+                }
 
                 & .btnSwicthActive{
                     background: transparent;
@@ -336,6 +401,8 @@ h1 {
                     border: 1px solid transparent;
                     display: block;
                     height: fit-content;
+                    width: 10rem;
+                    text-align: left;
                 }
 
                 & .btnSwicthActive.greenHighlight:hover {
@@ -358,8 +425,8 @@ h1 {
         }
         
         & .tbl-header.TProd, .tableRow.TProd{
-            grid-template-columns: minmax(100px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(200px, 2fr) 
-            minmax(150px, 1fr) minmax(100px, 1fr) minmax(300px, 2fr);
+            grid-template-columns: minmax(60px, 1fr) minmax(200px, 2fr) minmax(100px, 1fr) minmax(120px, 1fr) 
+            minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(300px, 2fr);
         }
     }
 }

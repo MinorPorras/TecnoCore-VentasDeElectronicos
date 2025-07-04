@@ -16,6 +16,7 @@ public class CuponesController : Controller
         { "1", "Porcentaje" },
         { "2", "Fijo" }
     };
+    //TODO No se está cargando el tipo de descuento en la vista Create, Edit y Index.
 
     public CuponesController(TecnoCoreDbContext context)
     {

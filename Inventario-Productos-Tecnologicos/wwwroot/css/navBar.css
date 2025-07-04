@@ -57,7 +57,7 @@ nav {
             align-items: center;
             border-radius: 0 0 10px 10px;
             width: auto; /* Ajusta el ancho automáticamente */
-            transition: all 0.3s ease; /* Transición general para el li si se añade algo más */
+            transition: all 0.3s ease;
             transition-delay: 10s;
 
             /* Propiedades para el efecto ::after */
@@ -69,7 +69,7 @@ nav {
             &:hover {
                 background: var(--lightgradient); /* Cambia el color de fondo al hacer hover */
                 color: var(--darkBlue); /* Cambia el color del texto al hacer hover */
-                transition: background-color 0.7s ease, color 0.3s ease; /* Transición suave para el cambio de color */
+                transition: all 0.7s ease;
                 border-radius: 10px;
 
             }
@@ -90,7 +90,7 @@ nav {
                         -20%
                 ); /* Posición inicial: 100% de su altura por encima del li */
                 opacity: 0;
-                transition: transform 0.4s ease-out, background-color 0.3s ease, opacity 0.3s ease; /* Transición suave */
+                transition: all 0.4s ease;
                 z-index: -1; /* Coloca el ::after detrás del contenido del li */
                 border-radius: 0 0 10px 10px; /* Coincide con el border-radius del li */
             }
@@ -99,7 +99,7 @@ nav {
                 transform: translateY(-5%); /* Se mueve a su posición final (cubre el li) */
                 background: var(--darkBlue); /* Cambia de color al hacer hover */
                 opacity: 100%;
-                transition: transform 0.4s ease-out, background-color 0.3s ease; /* Transición suave para el hover */
+                transition: all 0.4s ease;
                 border-radius: 10px;
 
             }
@@ -217,6 +217,17 @@ nav {
     width: 10%;
     height: 100%;
     padding-top: 20px;
+    z-index: 1; /* Asegura que el contenido esté por encima del ::after */
+    transition: all 0.3s ease;
+
+
+    &:hover {
+        background: var(--darkGradient); /* Cambia el color de fondo al hacer hover */
+        color: var(--Twistle); /* Cambia el color del texto al hacer hover */
+        border-radius: 0 0 10px 10px; /* Coincide con el border-radius */
+        outline: 4px var(--ultraviolet) solid;
+        transition: all 0.3s ease;
+    }
 }
 
 .nav-icon {

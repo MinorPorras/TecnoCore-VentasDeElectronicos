@@ -945,6 +945,12 @@ section {
             filter: drop-shadow(0px 1px 5px var(--TiffBlue));
             border-color: var(--TiffBlue);
         }
+        
+        & img{
+            width: 25px;
+            height: 25px;
+            object-fit: cover;
+        }
     }
 
     &:hover {
