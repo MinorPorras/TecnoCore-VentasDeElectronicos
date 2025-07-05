@@ -9,6 +9,7 @@
             var(--Azure) 100%
     );
     --darkBlue: #101935;
+    --darkBlueOpacity: #10193555;
     --dBlueEnphasis1: #1f273f;
     --dBlueEnphasis2: #2c3550;
     --dBlueEnphasis3: #3a425f;
@@ -16,7 +17,9 @@
     --Azure: #f2fdff;
     --Twistle: #dbcbd8;
     --ultraviolet: #564787;
-    --indianRed: #D36060;
+    --indianRed: #d36060;
+    --okGreen: #a1d7a5;
+    --yellowWarning: #efc499;
 }
 
 nav {
@@ -363,9 +366,8 @@ nav {
     }
 }
 
-.footer{
-    position: sticky;
-    bottom: 0;
+.footer {
+    position: relative;
     width: 100%;
     background-color: var(--dBlueEnphasis1);
     color: var(--Azure);

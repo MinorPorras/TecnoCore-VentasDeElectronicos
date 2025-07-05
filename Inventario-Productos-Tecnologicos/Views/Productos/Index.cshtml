@@ -5,22 +5,26 @@
     Layout = "_LayoutAdmin";
 }
 <div class="pageIndexContainer">
-    <h1>Mantenimiento de Productos</h1>
+    <h2 class="pageTitle">Productos</h2>
     <form asp-action="Search" method="GET">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
-        <div class="radio-group">
-            <label for="todos">Todos</label>
-            <input type="radio" name="activeFilter" id="todos" value="all"
-                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
-            <label for="active">Activo</label>
-            <input type="radio" name="activeFilter" id="active" value="true"
-                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
-            <label for="Inactive">Inactivo</label>
-            <input type="radio" name="activeFilter" id="Inactive" value="false"
-                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
-        </div>
+        <div class="radio-group-grid">
+            <div class="radio-group">
+                <label for="todos">Todos</label>
+                <input type="radio" name="activeFilter" id="todos" value="all"
+                       @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+                <label for="active">Activo</label>
+                <input type="radio" name="activeFilter" id="active" value="true"
+                       @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+                <label for="Inactive">Inactivo</label>
+                <input type="radio" name="activeFilter" id="Inactive" value="false"
+                       @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+            </div>
+            <div class=" btnCreateContainer">
+                <a asp-action="Create" class="btnCreate">Crear</a>
+            </div>        </div>
         <div class="selectGroup">
             <label for="marcas">Marcas:</label>
             <select name="marcas" id="marcas" class="searchSelect">
@@ -67,10 +71,9 @@
                 }
             </select>
         </div>
-        <a asp-action="Create" class="btnCreate">Crear</a>
     </form>
-    
-        <div class="tableContainer">
+
+    <div class="tableContainer">
         <div class="tbl-header TProd">
             <span class="headerText">ID</span>
             <span class="headerText">Nombre</span>
@@ -85,8 +88,8 @@
         <div class="tbl-content">
             @if (!Model.Any())
             {
-                <div class="tableRow">
-                    <span class="NoElements">No hay @ViewBag.Title</span>
+                <div class="tableRow listEnd">
+                    <span>No hay elementos</span>
                 </div>
             }
             else
@@ -94,36 +97,39 @@
                 @foreach (var prod in Model)
                 {
                     <div class="tableRow TProd">
-                        <span>@prod.Id</span>
-                        <span>@prod.Nombre</span>
-                        <span>@prod.Marca.Nombre</span>
-                        <span>@prod.Subcategoria.Nombre</span>
-                        <span>@(prod.Precio)</span>
-                        <span>@(prod.Stock)</span>
-                        <span>
+                        <span class="tableCell">@prod.Id</span>
+                        <span class="tableCell">@prod.Nombre</span>
+                        <span class="tableCell">@prod.Marca?.Nombre</span>
+                        <span class="tableCell">@prod.Subcategoria?.Nombre</span>
+                        <span class="tableCell">@(prod.Precio)</span>
+                        <span class="tableCell">@(prod.Stock)</span>
+                        <div class="columnEstado tableCell">
                             @if (prod.Novedad)
                             {
-                                <span class="badge text-bg-info">Novedad</span>
+                                <span class="badge text-bg-info tableCell">Novedad</span>
                             }
-                        </span>
-                        <span class="columnEstado">
+                        </div>
+                        <div class="columnEstado tableCell">
                             @if (prod.Activo)
                             {
-                                <span class="badge text-bg-success">Activo</span>
+                                <span class="badge text-bg-success tableCell">Activo</span>
                             }
                             else
                             {
-                                <span class="badge text-bg-danger">Inactivo</span>
+                                <span class="badge text-bg-danger tableCell">Inactivo</span>
                             }
-                        </span>
+                        </div>
                         <div class="tableButtonsColumn">
-                            <a class="DetailsBtn" asp-action="Details" asp-route-id="@prod.Id">Detalles</a>
-                            <a asp-action="Edit" asp-route-id="@prod.Id" class="EditBtn">
+                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@prod.Id">
+                                <img src="~/img/ICO_Details.svg" alt="Detalles"/>
+                                <span class="TooltipText">Detalles</span>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@prod.Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
-                                Editar
+                                <span class="TooltipText">Editar</span>
                             </a>
                             <button type="button" data-id="@prod.Id"
-                                    class="showModal btnSwicthActive @(prod.Activo ? "redHighlight" : "greenHighlight")"
+                                    class="showModal tooltipContainer btnSwicthActive @(prod.Activo ? "redHighlight" : "greenHighlight")"
                                     value="@prod.Nombre" data-active="@prod.Activo">
                                 @if (prod.Activo)
                                 {
@@ -133,14 +139,16 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                @(prod.Activo ? "Desactivar" : "Activar")
+                                <span class="TooltipText">@(prod.Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
                 }
+                <div class="tableRow listEnd">
+                    <span>Fin de la Lista</span>
+                </div>
             }
         </div>
     </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Productos" })
-
 </div>
