@@ -10,19 +10,22 @@
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
-        <div class="radio-group">
-            <label for="todos">Todos</label>
-            <input type="radio" name="activeFilter" id="todos" value="all"
-                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
-            <label for="active">Activo</label>
-            <input type="radio" name="activeFilter" id="active" value="true"
-                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
-            <label for="Inactive">Inactivo</label>
-            <input type="radio" name="activeFilter" id="Inactive" value="false"
-                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        <div class="radio-group-grid">
+            <div class="radio-group">
+                <label for="todos">Todos</label>
+                <input type="radio" name="activeFilter" id="todos" value="all"
+                       @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+                <label for="active">Activo</label>
+                <input type="radio" name="activeFilter" id="active" value="true"
+                       @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+                <label for="Inactive">Inactivo</label>
+                <input type="radio" name="activeFilter" id="Inactive" value="false"
+                       @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+            </div>
+            <div class=" btnCreateContainer">
+                <a asp-action="Create" class="btnCreate">Crear</a>
+            </div>
         </div>
-        <a class="btnCreate" asp-action="Create">Crear</a>
-
     </form>
     
     <div class="tableContainer">
@@ -44,25 +47,25 @@
                 @foreach (var categoria in Model)
                 {
                     <div class="tableRow TCat">
-                        <span>@categoria.Id</span>
-                        <span>@categoria.Nombre</span>
-                        <span class="columnEstado">
+                        <span class="tableCell">@categoria.Id</span>
+                        <span class="tableCell">@categoria.Nombre</span>
+                        <span class="columnEstado tableCell">
                                 @if (categoria.Activo)
                             {
-                                <span class="badge text-bg-success">Activo</span>
+                                <span class="badge text-bg-success tableCell">Activo</span>
                             }
                             else
                             {
-                                <span class="badge text-bg-danger">Inactivo</span>
+                                <span class="badge text-bg-danger tableCell">Inactivo</span>
                             }
-                            </span>
+                        </span>
                         <div class="tableButtonsColumn">
-                            <a asp-action="Edit" asp-route-id="@categoria.Id" class="EditBtn">
+                            <a asp-action="Edit" asp-route-id="@categoria.Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
-                                Editar
+                                <span class="TooltipText">Editar</span>
                             </a>
                             <button type="button" data-id="@categoria.Id"
-                                    class="showModal btnSwicthActive @(categoria.Activo ? "redHighlight" : "greenHighlight")"
+                                    class="showModal tooltipContainer btnSwicthActive @(categoria.Activo ? "redHighlight" : "greenHighlight")"
                                     value="@categoria.Nombre" data-active="@categoria.Activo">
                                 @if (categoria.Activo)
                                 {
@@ -72,11 +75,14 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                @(categoria.Activo ? "Desactivar" : "Activar")
+                                <span class="TooltipText">@(categoria.Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
                 }
+                <div class="tableRow listEnd">
+                    <span>Fin de la Lista</span>
+                </div>
             }
         </div>
     </div>

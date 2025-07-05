@@ -5,118 +5,132 @@
     Layout = "_LayoutAdmin";
 }
 
-<div>
+<div class="pageIndexContainer">
     <h2 class="pageTitle">Cupones</h2>
     <form asp-action="Search" method="GET">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
                value="@ViewBag.SearchString"/>
-        <button type="submit" asp-action="Search">Buscar</button>
-        <label>Fecha:</label>
-        <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
-               value="@ViewBag.SearchDate"/>
-        <label for="TipoDescuento">Tipo de movimiento:</label>
-        <select name="TipoDescuento" id="TipoDescuento">
-            @if (ViewBag.SelectedTipoDescuento == "all")
-            {
-                <option value="all" selected>Todos</option>
-            }
-            else
-            {
-                <option value="all">Todos</option>
-            }
-            @foreach (var tDesc in ViewBag.TipoDescuento)
-            {
-                if (ViewBag.SelectedTipoMovimiento == tDesc.Key.ToString())
+        <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
+        <div class="radio-group-grid">
+            <div class="radio-group">
+                <label for="todos">Todos</label>
+                <input type="radio" name="activeFilter" id="todos" value="all"
+                       @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+                <label for="active">Activo</label>
+                <input type="radio" name="activeFilter" id="active" value="true"
+                       @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+                <label for="Inactive">Inactivo</label>
+                <input type="radio" name="activeFilter" id="Inactive" value="false"
+                       @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+            </div>
+            
+            <div class=" btnCreateContainer">
+                <a asp-action="Create" class="btnCreate">Crear</a>
+            </div>
+        </div>
+        <div class="selectGroup">
+            <label>Fecha:</label>
+            <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
+                   value="@ViewBag.SearchDate" class="searchSelect"/>
+            <label for="TipoDescuento">Tipo de descuento:</label>
+            <select name="TipoDescuento" id="TipoDescuento" class="searchSelect">
+                @if (ViewBag.SelectedTipoDescuento == "all")
                 {
-                    <option value="@tDesc.Key" selected>@tDesc.Value</option>
+                    <option value="all" selected>Todos</option>
                 }
                 else
                 {
-                    <option value="@tDesc.Key">@tDesc.Value</option>
+                    <option value="all">Todos</option>
                 }
-            }
-        </select>
-        <div class="radio-group">
-            <label for="todos">Todos</label>
-            <input type="radio" name="activeFilter" id="todos" value="all"
-                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
-            <label for="active">Activo</label>
-            <input type="radio" name="activeFilter" id="active" value="true"
-                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
-            <label for="Inactive">Inactivo</label>
-            <input type="radio" name="activeFilter" id="Inactive" value="false"
-                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
-        </div>
-    </form>
-
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Crear cupón</a>
-    </p>
-
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th>Código</th>
-            <th>Descripción</th>
-            <th>Tipo de descuento</th>
-            <th>Valor</th>
-            <th>Fecha Inicio</th>
-            <th>Fecha Fin</th>
-            <th>Usos actuales</th>
-            <th>Usos máximos</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-        @foreach (var cupon in Model)
-        {
-            <tr>
-                <td>
-                    @cupon.Codigo
-                </td>
-                <td>
-                    @cupon.Descripcion
-                </td>
-                <td>
-                    @(cupon.TipoDescuento)
-                </td>
-                <td>
-                    @cupon.Valor
-                </td>
-                <td>
-                    @cupon.FechaInicio.Date
-                </td>
-                <td>
-                    @cupon.FechaFin.Date
-                </td>
-                <td>
-                    @cupon.UsosActuales
-                </td>
-                <td>
-                    @cupon.UsosMaximos
-                </td>
-                <td>
-                    @if (cupon.Activo)
+                @foreach (var tDesc in ViewBag.TipoDescuento)
+                {
+                    if (ViewBag.SelectedTipoMovimiento == tDesc.Key.ToString())
                     {
-                        <span class="badge text-bg-success">Activo</span>
+                        <option value="@tDesc.Key" selected>@tDesc.Value</option>
                     }
                     else
                     {
-                        <span class="badge text-bg-danger">Inactivo</span>
+                        <option value="@tDesc.Key">@tDesc.Value</option>
                     }
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@cupon.Id" class="btn btn-info btn-sm">Editar</a>
-                    <button type="button" data-id="@cupon.Id"
-                            data-active="Delete" value="@cupon.Descripcion"
-                            class="showModal btn btn-sm btn-danger">
-                        Eliminar
-                    </button>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
+                }
+            </select>
+        </div>
+    </form>
+
+    <div class="tableContainer">
+        <div class="tbl-header TCupon">
+            <span class="headerText">Código</span>
+            <span class="headerText">Descripción</span>
+            <span class="headerText">Tipo de descuento</span>
+            <span class="headerText">Valor</span>
+            <span class="headerText">Fecha Inicio</span>
+            <span class="headerText">Fecha Fin</span>
+            <span class="headerText">Usos actuales</span>
+            <span class="headerText">Usos máximos</span>
+            <span class="headerText">Estado</span>
+            <span class="headerText">Opciones</span>
+        </div>
+        <div class="tbl-content">
+            @if (!Model.Any())
+            {
+                <div class="tableRow listEnd">
+                    <span>Fin de la Lista</span>
+                </div>
+            }
+            else
+            {
+                @foreach (var cupon in Model)
+                {
+                    <div class="tableRow TCupon">
+                        <span class="tableCell">@cupon.Codigo</span>
+                        <span class="tableCell">@cupon.Descripcion</span>
+                        <span class="tableCell">@cupon.TipoDescuento</span>
+                        <span class="tableCell">@cupon.Valor</span>
+                        <span class="tableCell">@(cupon.FechaInicio.Date)</span>
+                        <span class="tableCell">@(cupon.FechaFin.Date)</span>
+                        <span class="tableCell">@cupon.UsosActuales</span>
+                        <span class="tableCell">@cupon.UsosMaximos</span>
+                        
+                        <div class="columnEstado tableCell">
+                            @if (cupon.Activo)
+                            {
+                                <span class="badge text-bg-success tableCell">Activo</span>
+                            }
+                            else
+                            {
+                                <span class="badge text-bg-danger tableCell">Inactivo</span>
+                            }
+                        </div>
+                        <div class="tableButtonsColumn">
+                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@cupon.Id">
+                                <img src="~/img/ICO_Details.svg" alt="Detalles"/>
+                                <span class="TooltipText">Detalles</span>
+                            </a>
+                            <a asp-action="Edit" asp-route-id="@cupon.Id" class="EditBtn tooltipContainer">
+                                <img src="~/img/ICO_Edit.svg" alt="Editar"/>
+                                <span class="TooltipText">Editar</span>
+                            </a>
+                            <button type="button" data-id="@cupon.Id"
+                                    class="showModal tooltipContainer btnSwicthActive @(cupon.Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@cupon.Codigo" data-active="@cupon.Activo">
+                                @if (cupon.Activo)
+                                {
+                                    <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
+                                }
+                                else
+                                {
+                                    <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
+                                }
+                                <span class="TooltipText">@(cupon.Activo ? "Desactivar" : "Activar")</span>
+                            </button>
+                        </div>
+                    </div>
+                }
+                <div class="tableRow listEnd">
+                    <span>Fin de la Lista</span>
+                </div>
+            }
+        </div>
+    </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Cupones" })
 </div>

@@ -8,19 +8,26 @@
     <h2 class="pageTitle">@ViewBag.Title</h2>
 
     <form asp-action="Search" method="GET">
-        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por email o Id:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
-        <div class="radio-group">
-            <label for="todos">Todos</label>
-            <input type="radio" name="activeFilter" id="todos" value="all"
-                   @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
-            <label for="active">Activo</label>
-            <input type="radio" name="activeFilter" id="active" value="true"
-                   @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
-            <label for="Inactive">Inactivo</label>
-            <input type="radio" name="activeFilter" id="Inactive" value="false"
-                   @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+        <div class="radio-group-grid">
+            <div class="radio-group">
+                <label for="todos">Todos</label>
+                <input type="radio" name="activeFilter" id="todos" value="all"
+                       @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
+                <label for="active">Activo</label>
+                <input type="radio" name="activeFilter" id="active" value="true"
+                       @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
+                <label for="Inactive">Inactivo</label>
+                <input type="radio" name="activeFilter" id="Inactive" value="false"
+                       @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
+            </div>
+            <div class=" btnCreateContainer">
+                <a asp-action="Create" class="btnCreate">Crear</a>
+            </div>
+        </div>
+        <div class="selectGroup">
             <label for="rol">Roles:</label>
             <select name="rol" id="rol" class="searchSelect">
                 @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
@@ -47,15 +54,14 @@
                 }
             </select>
         </div>
-        <a asp-action="Create" class="btnCreate">Crear</a>
     </form>
 
-        <div class="tableContainer">
-        <div class="tbl-header TProd">
+    <div class="tableContainer">
+        <div class="tbl-header tUsers">
             <span class="headerText">ID</span>
             <span class="headerText">Nombre</span>
             <span class="headerText">Apellidos</span>
-            <span class="headerText">email</span>
+            <span class="headerText">Email</span>
             <span class="headerText">Rol</span>
             <span class="headerText">Estado</span>
             <span class="headerText">Opciones</span>
@@ -71,29 +77,29 @@
             {
                 @foreach (var usuario in Model)
                 {
-                    <div class="tableRow TProd">
-                        <span>@usuario.Id</span>
-                        <span>@usuario.Nombre</span>
-                        <span>@usuario.Apellidos</span>
-                        <span>@usuario.Email</span>
-                        <span>@(usuario.RolNavigation?.Name ?? "Sin Rol")</span>
-                        <span class="columnEstado">
+                    <div class="tableRow tUsers">
+                        <span class="tableCell">@usuario.Id</span>
+                        <span class="tableCell">@usuario.Nombre</span>
+                        <span class="tableCell">@usuario.Apellidos</span>
+                        <span class="tableCell">@usuario.Email</span>
+                        <span class="tableCell">@(usuario.RolNavigation?.Name ?? "Sin Rol")</span>
+                        <span class="columnEstado tableCell">
                             @if (usuario.Activo)
                             {
-                                <span class="badge text-bg-success">Activo</span>
+                                <span class="badge text-bg-success tableCell">Activo</span>
                             }
                             else
                             {
-                                <span class="badge text-bg-danger">Inactivo</span>
+                                <span class="badge text-bg-danger tableCell">Inactivo</span>
                             }
                         </span>
                         <div class="tableButtonsColumn">
-                            <a asp-action="Edit" asp-route-id="@usuario.Id" class="EditBtn">
+                            <a asp-action="Edit" asp-route-id="@usuario.Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
-                                Editar
+                                <span class="TooltipText">Editar</span>
                             </a>
                             <button type="button" data-id="@usuario.Id"
-                                    class="showModal btnSwicthActive @(usuario.Activo ? "redHighlight" : "greenHighlight")"
+                                    class="showModal tooltipContainer btnSwicthActive @(usuario.Activo ? "redHighlight" : "greenHighlight")"
                                     value="@usuario.Nombre" data-active="@usuario.Activo">
                                 @if (usuario.Activo)
                                 {
@@ -103,11 +109,14 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                @(usuario.Activo ? "Desactivar" : "Activar")
+                                <span class="TooltipText">@(usuario.Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
                 }
+                <div class="tableRow listEnd">
+                    <span>Fin de la Lista</span>
+                </div>
             }
         </div>
     </div>

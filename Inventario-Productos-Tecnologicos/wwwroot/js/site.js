@@ -93,6 +93,8 @@ function initCartModal() {
         console.log('modalContent:', !!modalContent);
     }
 
+    //TODO: Esto se debe de cambiar ya que no se está trabajando con sesiones, esto se maneja desde el controller, 
+    // pero desde aquí se puede llamar al controller para obtener los datos del carrito. Los datos del usuario se podrán obtener desde ahí mismo
     if (localStorage.getItem("UserId") && localStorage.getItem("UserId") !== "null") {
         fetch(`/Ventas/GetCartItems`)
             .then(response => response.json()
