@@ -9,6 +9,7 @@
             var(--Azure) 100%
     );
     --darkBlue: #101935;
+    --darkBlueOpacity: #10193555;
     --dBlueEnphasis1: #1f273f;
     --dBlueEnphasis2: #2c3550;
     --dBlueEnphasis3: #3a425f;
@@ -16,13 +17,17 @@
     --Azure: #f2fdff;
     --Twistle: #dbcbd8;
     --ultraviolet: #564787;
-    --indianRed: #D36060;
+    --indianRed: #d36060;
+    --okGreen: #a1d7a5;
+    --yellowWarning: #efc499;
 }
-nav{
+
+nav {
     position: sticky;
     top: 0;
     z-index: 1000;
 }
+
 .nav-principal {
     position: relative;
     background-color: var(--dBlueEnphasis1);
@@ -71,6 +76,7 @@ nav{
             }
 
             /* Pseudo-elemento ::after que aparecerá desde arriba */
+
             &::after {
                 content: ""; /* Obligatorio para que el pseudo-elemento se muestre */
                 position: absolute;
@@ -89,6 +95,7 @@ nav{
                 z-index: -1; /* Coloca el ::after detrás del contenido del li */
                 border-radius: 0 0 10px 10px; /* Coincide con el border-radius del li */
             }
+
             &:hover::after {
                 transform: translateY(-5%); /* Se mueve a su posición final (cubre el li) */
                 background: var(--darkBlue); /* Cambia de color al hacer hover */
@@ -121,9 +128,10 @@ nav{
     }
 }
 
-.dropdown-container{
+.dropdown-container {
     position: relative;
     display: inline-block;
+
     & .dropbtn {
         font-weight: 600;
         font-size: clamp(1rem, 2vw, 1.2rem);
@@ -137,7 +145,7 @@ nav{
         transition: height 0.3s ease, color 0.3s ease;
     }
 
-    & .dropdown-content{
+    & .dropdown-content {
         position: absolute;
         display: none;
         top: 100%;
@@ -148,7 +156,8 @@ nav{
         align-items: center;
         width: fit-content;
         height: fit-content;
-        & a{
+
+        & a {
             color: var(--Azure);
             font-size: clamp(.6rem, 2vw, .9rem);
             font-weight: bold;
@@ -157,6 +166,7 @@ nav{
             width: 8rem;
             height: fit-content;
             padding-left: .5rem;
+
             &:hover {
                 background-color: var(--dBlueEnphasis3);
                 border-radius: 10px;
@@ -165,12 +175,12 @@ nav{
         }
     }
 
-    &:hover .dropdown-content{
+    &:hover .dropdown-content {
         display: block;
     }
 }
 
-.Logo{
+.Logo {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -191,14 +201,25 @@ nav{
 }
 
 
-.nav-account {
+.logoutbtn {
     display: flex;
-    justify-content: center;
+    background-color: var(--dBlueEnphasis1);
     align-items: center;
-    flex-direction: column;
-    width: 20%;
-    height: 100%;
-    padding-top: 20px;
+    justify-content: center;
+    padding: 1rem;
+
+    & img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        transition: all .5s ease;
+
+        &:hover {
+            scale: 1.2;
+            filter: brightness(1);
+            transition: all .5s ease;
+        }
+    }
 }
 
 .nav-icon {
@@ -224,7 +245,8 @@ nav{
         align-items: center;
         height: fit-content;
     }
-    .Logo{
+
+    .Logo {
         grid-row: 1;
         justify-self: center;
         align-self: center;
@@ -232,23 +254,27 @@ nav{
         align-items: center;
         justify-content: center;
     }
+
     .imgLogo {
         height: 100%;
         scale: 2;
         max-width: 70px;
     }
+
     .nav-account {
         grid-column: 2;
         grid-row: 1;
         justify-self: center;
         align-self: center;
     }
+
     .nav-principal > ul {
         grid-column: 1 / -1;
         grid-row: 2;
         gap: 0;
         justify-self: center;
         align-self: center;
+
         & > li {
             border-radius: 10px;
             width: 100%;
@@ -260,9 +286,8 @@ nav{
     }
 }
 
-.footer{
-    position: sticky;
-    bottom: 0;
+.footer {
+    position: relative;
     width: 100%;
     background-color: var(--dBlueEnphasis1);
     color: var(--Azure);
