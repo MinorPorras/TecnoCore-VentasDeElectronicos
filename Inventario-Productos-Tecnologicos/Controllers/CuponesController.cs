@@ -58,14 +58,13 @@ public class CuponesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Delete(int id)
+    public async Task<IActionResult> SwitchActive(int id)
     {
         var cupon = await _context.Cupones.FindAsync(id);
-        if (cupon != null)
-        {
-            _context.Cupones.Remove(cupon);
-            await _context.SaveChangesAsync();
-        }
+        if (cupon == null) return RedirectToAction(nameof(Index));
+        cupon.Activo = !cupon.Activo;
+        _context.Cupones.Update(cupon);
+        await _context.SaveChangesAsync();
 
         return RedirectToAction(nameof(Index));
     }
@@ -172,3 +171,5 @@ public class CuponesController : Controller
         }
     }
 }
+
+//TODO Arreglar el CRUD de cupones y crear el sistema de busqueda

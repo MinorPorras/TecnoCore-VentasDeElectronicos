@@ -87,6 +87,9 @@
         <input type="text" id="email" name="email" class="" required/>
         <label for="password">Contraseña:</label>
         <input type="password" id="password" name="password" class="" required/>
+        <div class="loginActions">
+            <p>No tiene cuenta? <a asp-action="Registrar" asp-controller="Usuarios">Registrarse</a></p>
+        </div>
         <div class="form-group">
             <button type="submit" class="btnLogin">Iniciar sesión</button>
             <button type="button" class="btnClose" id="closeLogin">Cerrar</button>

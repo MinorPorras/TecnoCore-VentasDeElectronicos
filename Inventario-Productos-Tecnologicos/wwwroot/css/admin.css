@@ -13,6 +13,7 @@
     --dBlueEnphasis1: #1f273f;
     --dBlueEnphasis2: #2c3550;
     --dBlueEnphasis3: #3a425f;
+    --dBlueEnphasis3Trans: #3A425FA3;
     --TiffBlue: #9ad4d6;
     --Azure: #f2fdff;
     --Twistle: #dbcbd8;
@@ -35,6 +36,16 @@ body {
     background-attachment: fixed;
     color: var(--Azure);
     height: 100vh;
+}
+
+.main_container {
+    position: relative;
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    min-height: 78vh;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -70,7 +81,7 @@ h1 {
         align-items: center;
         margin-bottom: 20px;
         width: 100%;
-        gap: .5rem;
+        gap: 1rem;
 
         & input[type="text"] {
             width: 100%;
@@ -125,82 +136,115 @@ h1 {
                 scale: 0.9;
             }
         }
+        
+        & .radio-group-grid{
 
-        & .btnCreate {
-            background: var(--darkGradient);
-            color: var(--Azure);
-            border-radius: 0.8rem;
-            padding: 0.5rem 1rem;
-            border: 5px solid var(--okGreen);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            text-align: center;
-            grid-row: 2 / 3;
-            grid-column-end: -1 ;
-
-            &:hover {
-                background: var(--okGreen);
-                color: var(--darkBlue);
-                filter: drop-shadow(0px 1px 5px var(--okGreen));
-            }
-
-            &:active {
-                background: var(--indianRed);
-                color: var(--Azure);
-                filter: drop-shadow(0px 1px 5px var(--indianRed));
-                border-color: var(--indianRed);
-                scale: 0.9;
-            }
-        }
-
-        & .radio-group {
-            display: flex;
-            justify-content: left;
-            align-items: center;
-            gap: 1rem;
-            grid-column-start: 1;
-
-            & label {
-                color: var(--Azure);
-                font-size: clamp(1rem, 1.5vw, 2rem);
-                cursor: pointer;
-            }
-
-            & input[type="radio"] {
-                margin-right: 0.5rem;
-                accent-color: var(--TiffBlue);
-            }
-
-            .searchSelect{
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr;
+            justify-items: left;
+            grid-column: 1/-1;
+            
+            & .btnCreateContainer {
+                display: flex;
+                align-items: flex-end;
                 width: 100%;
-                padding: 10px;
-                border-radius: 1rem;
-                background-color: var(--dBlueEnphasis3);
-                color: var(--Azure);
-                font-size: 1rem;
-                background-image: var(--darkGradient);
-                border: 5px solid var(--TiffBlue);
-                transition: all 0.3s ease;
+                justify-content: end;
+                gap: 1rem;
+            }
 
-                &::placeholder {
-                    color: var(--Azure);
-                    opacity: 0.7;
-                }
+            & .btnCreate {
+                background: var(--darkGradient);
+                color: var(--Azure);
+                border-radius: 0.8rem;
+                padding: 0.5rem 1rem;
+                border: 5px solid var(--okGreen);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                text-align: center;
+                width: 100%;
+                max-width: 175px;
 
                 &:hover {
-                    filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
                 }
 
-                &:focus {
-                    outline: none;
-                    border-color: var(--indianRed);
+                &:active {
+                    background: var(--indianRed);
+                    color: var(--Azure);
                     filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    border-color: var(--indianRed);
+                    scale: 0.9;
+                }
+
+                &.exit {
+                    border: 5px solid var(--indianRed);
+
+                    &:hover {
+                        background: var(--indianRed);
+                        color: var(--darkBlue);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    }
+
+                    &:active {
+                        background: var(--TiffBlue);
+                        color: var(--Azure);
+                        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                        border-color: var(--TiffBlue);
+                        scale: 0.9;
+                    }
+                }
+            }
+            & .radio-group {
+                display: flex;
+                justify-content: left;
+                align-items: center;
+                gap: 1rem;
+
+                & label {
+                    color: var(--Azure);
+                    font-size: clamp(1rem, 1.5vw, 2rem);
+                    cursor: pointer;
+                }
+
+                & input[type="radio"] {
+                    margin-right: 0.5rem;
+                    accent-color: var(--TiffBlue);
+                }
+
+                .searchSelect {
+                    width: 100%;
+                    padding: 10px;
+                    border-radius: 1rem;
+                    background-color: var(--dBlueEnphasis3);
+                    color: var(--Azure);
+                    font-size: 1rem;
+                    background-image: var(--darkGradient);
+                    border: 5px solid var(--TiffBlue);
+                    transition: all 0.3s ease;
+
+                    &::placeholder {
+                        color: var(--Azure);
+                        opacity: 0.7;
+                    }
+
+                    &:hover {
+                        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                    }
+
+                    &:focus {
+                        outline: none;
+                        border-color: var(--indianRed);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    }
                 }
             }
         }
-        
-        & .selectGroup{
+
+        & .selectGroup {
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -208,7 +252,7 @@ h1 {
             grid-column: 1/-1;
         }
 
-        .searchSelect{
+        .searchSelect {
             flex: 3;
             padding: 10px;
             border-radius: 1rem;
@@ -245,6 +289,7 @@ h1 {
         background-repeat: no-repeat;
         background-attachment: fixed;
         grid-column: 1 / -1;
+        height: fit-content;
         max-height: 90vh;
         margin-bottom: 1rem;
 
@@ -262,14 +307,15 @@ h1 {
             min-width: fit-content;
             position: sticky;
             top: 0;
-            
+            z-index: 10;
+
             & .headerText {
                 padding: 0.5rem;
                 font-size: 1.1rem;
                 font-weight: bold;
                 text-align: center;
             }
-            
+
             & span:first-child {
                 text-align: left;
             }
@@ -284,6 +330,8 @@ h1 {
             grid-auto-rows: minmax(60px, 1fr);
             min-width: fit-content;
             overflow-y: auto;
+            width: 100%;
+
 
 
             & .tableRow {
@@ -291,7 +339,16 @@ h1 {
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
                 padding: 0.5rem;
                 border-bottom: 1px solid var(--TiffBlue);
-                
+                min-width: fit-content;
+                width: 100%;
+
+                &.listEnd{
+                    justify-content: center;
+                    align-items: center;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: clamp(1rem, 1.5vw, 2rem);
+                }
 
                 & .NoElements {
                     grid-column: 1 / -1; /* Make it span all columns */
@@ -302,7 +359,7 @@ h1 {
                 }
 
 
-                & span{
+                & .tableCell {
                     padding: 0.5rem;
                     font-size: 1rem;
                     color: var(--Azure);
@@ -317,15 +374,18 @@ h1 {
                         background-color: var(--dBlueEnphasis2);
                     }
                 }
-                & span.columnEstado{
+
+                & .tableCell.columnEstado {
                     text-align: center;
                 }
-                & img{
+
+                & img {
                     width: 40px;
                     height: 40px;
                     object-fit: cover;
                 }
-                & a{
+
+                & a {
                     color: var(--Azure);
                     text-decoration: none;
                     transition: color 0.3s ease;
@@ -334,20 +394,33 @@ h1 {
                         color: var(--TiffBlue);
                     }
                 }
-                & .tableButtonsColumn{
-                    display: flex;
-                    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-                    justify-content: center;
-                    align-items: center;
-                    gap: 0.5rem;
+
+                & .tableButtonsColumn {
+                    display: flex; /* Para que los botones se coloquen en fila */
+                    gap: 10px; /* Espacio entre los botones */
                 }
-                
-                & .DetailsBtn{
+
+                .DetailsBtn,
+                .EditBtn,
+                .showModal {
+                    display: inline-flex; /* Permite que el contenido interno (imagen, texto) se alinee */
+                    align-items: center;
+                    gap: 5px; /* Espacio entre la imagen y el texto */
+                    padding: 8px 12px;
+                    border-radius: 5px;
+                    font-size: 0.9em;
+                    text-decoration: none;
+                    color: var(--Azure); /* Color de texto por defecto */
+                    transition: background-color 0.3s ease;
+                    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+                }
+
+                & .DetailsBtn {
                     background: transparent;
                     cursor: pointer;
                     color: var(--Azure);
                     font-size: 1rem;
-                    transition: color 0.3s ease;
+                    transition: all 0.3s ease;
                     padding: 0.5rem;
                     border-radius: 0.5rem;
                     border: 1px solid transparent;
@@ -357,21 +430,25 @@ h1 {
                         color: var(--TiffBlue);
                         background: var(--darkBlueOpacity);
                         border: 1px solid var(--TiffBlue);
+                        scale: 1.1;
+                        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+
                     }
 
                     &:active {
                         color: var(--indianRed);
                         background: var(--darkBlueOpacity);
                         border: 1px solid var(--indianRed);
+                        scale: .8;
                     }
                 }
-                
-                & .EditBtn{
+
+                & .EditBtn {
                     background: transparent;
                     cursor: pointer;
                     color: var(--Azure);
                     font-size: 1rem;
-                    transition: color 0.3s ease;
+                    transition: all 0.3s ease;
                     padding: 0.5rem;
                     border-radius: 0.5rem;
                     border: 1px solid transparent;
@@ -381,54 +458,132 @@ h1 {
                         color: var(--yellowWarning);
                         background: var(--darkBlueOpacity);
                         border: 1px solid var(--yellowWarning);
+                        scale: 1.1;
+                        filter: drop-shadow(0px 1px 5px var(--yellowWarning));
                     }
 
                     &:active {
                         color: var(--indianRed);
                         background: var(--darkBlueOpacity);
                         border: 1px solid var(--indianRed);
+                        scale: .8;
                     }
-                }
-
-                & .btnSwicthActive{
-                    background: transparent;
-                    cursor: pointer;
-                    color: var(--Azure);
-                    font-size: 1rem;
-                    transition: color 0.3s ease;
-                    padding: 0.5rem;
-                    border-radius: 0.5rem;
-                    border: 1px solid transparent;
-                    display: block;
-                    height: fit-content;
-                    width: 10rem;
-                    text-align: left;
-                }
-
-                & .btnSwicthActive.greenHighlight:hover {
-                    color: var(--okGreen);
-                    background: var(--darkBlueOpacity);
-                    border: 1px solid var(--okGreen);
-                }
-
-                & .btnSwicthActive.redHighlight:hover {
-                    color: var(--indianRed);
-                    background: var(--darkBlueOpacity);
-                    border: 1px solid var(--indianRed);
                 }
             }
         }
-        & .tbl-header.TRoles, .tableRow.TRoles, 
+
+        /*----Tablas con 4 columnas----*/
+
+        & .tbl-header.TRoles, .tableRow.TRoles,
         .tbl-header.TCat, .tableRow.TCat,
-        .tbl-header.TMarca, .tableRow.TMarca{
-            grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(200px, 2fr);
+        .tbl-header.TMarca, .tableRow.TMarca {
+            grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(150px, 1fr) ;
         }
-        
-        & .tbl-header.TProd, .tableRow.TProd{
+
+        /*----Tablas con 7 columnas----*/
+
+        & .tbl-header.tUsers, .tableRow.tUsers {
+            grid-template-columns: minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(200px, 2fr) 
+            minmax(120px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr);
+        }
+
+
+        /*----Tablas con 9 columnas----*/
+
+        & .tbl-header.TProd, .tableRow.TProd {
             grid-template-columns: minmax(60px, 1fr) minmax(200px, 2fr) minmax(100px, 1fr) minmax(120px, 1fr) 
-            minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(300px, 2fr);
+            minmax(80px, 1fr) minmax(100px, 1fr) minmax(100px, 1fr) minmax(80px, 1fr) minmax(200px, 2fr);
+        }
+
+        & .tbl-header.TKardex, .tableRow.TKardex {
+            grid-template-columns: minmax(60px, 1fr) minmax(200px, 2fr) minmax(100px, 1fr) minmax(120px, 1fr) 
+            minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr);
+        }
+        & .tableRow.TKardex .tableCell{
+            text-align: center;
+        }
+
+        /*----Tablas con 10 columnas----*/
+        & .tbl-header.TCupon, .tableRow.TCupon {
+            grid-template-columns: minmax(60px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(120px, 1fr) 
+            minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
         }
     }
+}
+
+/* --- ESTILOS DEL TOOLTIP --- */
+
+/* La clave: El contenedor del botón debe ser relative */
+.tooltipContainer {
+    position: relative; /* Permite posicionar el 'tooltip-text' de forma absoluta dentro de este botón/enlace */
+    cursor: help; /* Cambia el cursor para indicar que hay un tooltip (opcional) */
+}
+
+.btnSwicthActive {
+    background: transparent;
+    cursor: pointer;
+    color: var(--Azure);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    display: block;
+    height: fit-content;
+    text-align: left;
+}
+
+& .btnSwicthActive.greenHighlight:hover {
+    color: var(--okGreen);
+    background: var(--darkBlueOpacity);
+    border: 1px solid var(--okGreen);
+    scale: 1.1;
+    filter: drop-shadow(0px 1px 5px var(--okGreen));
+    transition: all 0.3s ease;
+}
+
+& .btnSwicthActive.greenHighlight:active{
+    scale: .8;
+    transition: all 0.3s ease;
+}
+
+& .btnSwicthActive.redHighlight:hover {
+    color: var(--indianRed);
+    background: var(--darkBlueOpacity);
+    border: 1px solid var(--indianRed);
+    scale: 1.1;
+    filter: drop-shadow(0px 1px 5px var(--indianRed));
+    transition: all 0.3s ease;
+}
+& .btnSwicthActive.redHighlight:active{
+    scale: .8;
+    transition: all 0.3s ease;
+}
+
+/* Estilos del texto del tooltip */
+.TooltipText {
+    visibility: hidden; /* **Oculto por defecto:** El elemento no es visible */
+    opacity: 0; /* **Transparente por defecto:** Para una transición suave */
+    width: auto; /* Ancho automático según el contenido */
+    min-width: 80px; /* Ancho mínimo para legibilidad */
+    max-width: 200px; /* Ancho máximo para evitar tooltips demasiado largos */
+    background-color: var(--dBlueEnphasis3Trans); /* Fondo oscuro semitransparente */
+    color: #fff; /* Texto blanco */
+    text-align: center; /* Centra el texto */
+    font-weight: bold;
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 6px 10px; /* Espaciado interno */
+    font-size: 1rem;
+    position: absolute; /* **Posicionamiento:** Lo saca del flujo normal */
+    z-index: 2; /* Asegura que el tooltip esté por encima de otros elementos */
+    
+    transform: translate(-50% ,100%); /* Empieza fuera, abajo del botón */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+/* Mostrar el tooltip al pasar el ratón */
+.tooltipContainer:hover .TooltipText {
+    visibility: visible; /* Hace que el elemento sea visible */
+    opacity: 1; /* Lo vuelve completamente opaco */
 }
 
 #alertContainer {
@@ -437,6 +592,8 @@ h1 {
     right: 20px;
     z-index: 1050;
     max-width: 350px;
+    background: var(--darkGradient);
+    border: 1px solid var(--TiffBlue);
 }
 
 #alertContainer .alert {
