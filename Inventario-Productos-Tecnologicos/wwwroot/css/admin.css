@@ -136,15 +136,15 @@ h1 {
                 scale: 0.9;
             }
         }
-        
-        & .radio-group-grid{
+
+        & .radio-group-grid {
 
             display: grid;
             grid-template-columns: 1fr 1fr;
             grid-template-rows: 1fr;
             justify-items: left;
             grid-column: 1/-1;
-            
+
             & .btnCreateContainer {
                 display: flex;
                 align-items: flex-end;
@@ -198,6 +198,7 @@ h1 {
                     }
                 }
             }
+
             & .radio-group {
                 display: flex;
                 justify-content: left;
@@ -333,7 +334,6 @@ h1 {
             width: 100%;
 
 
-
             & .tableRow {
                 display: grid;
                 grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -342,7 +342,7 @@ h1 {
                 min-width: fit-content;
                 width: 100%;
 
-                &.listEnd{
+                &.listEnd {
                     justify-content: center;
                     align-items: center;
                     text-align: center;
@@ -477,7 +477,7 @@ h1 {
         & .tbl-header.TRoles, .tableRow.TRoles,
         .tbl-header.TCat, .tableRow.TCat,
         .tbl-header.TMarca, .tableRow.TMarca {
-            grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(150px, 1fr) ;
+            grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(150px, 1fr);
         }
 
         /*----Tablas con 7 columnas----*/
@@ -499,11 +499,13 @@ h1 {
             grid-template-columns: minmax(60px, 1fr) minmax(200px, 2fr) minmax(100px, 1fr) minmax(120px, 1fr) 
             minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr);
         }
-        & .tableRow.TKardex .tableCell{
+
+        & .tableRow.TKardex .tableCell {
             text-align: center;
         }
 
         /*----Tablas con 10 columnas----*/
+
         & .tbl-header.TCupon, .tableRow.TCupon {
             grid-template-columns: minmax(60px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(120px, 1fr) 
             minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
@@ -541,7 +543,7 @@ h1 {
     transition: all 0.3s ease;
 }
 
-& .btnSwicthActive.greenHighlight:active{
+& .btnSwicthActive.greenHighlight:active {
     scale: .8;
     transition: all 0.3s ease;
 }
@@ -554,7 +556,8 @@ h1 {
     filter: drop-shadow(0px 1px 5px var(--indianRed));
     transition: all 0.3s ease;
 }
-& .btnSwicthActive.redHighlight:active{
+
+& .btnSwicthActive.redHighlight:active {
     scale: .8;
     transition: all 0.3s ease;
 }
@@ -575,8 +578,8 @@ h1 {
     font-size: 1rem;
     position: absolute; /* **Posicionamiento:** Lo saca del flujo normal */
     z-index: 2; /* Asegura que el tooltip esté por encima de otros elementos */
-    
-    transform: translate(-50% ,100%); /* Empieza fuera, abajo del botón */
+
+    transform: translate(-50%, 100%); /* Empieza fuera, abajo del botón */
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 

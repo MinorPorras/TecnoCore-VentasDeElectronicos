@@ -99,7 +99,7 @@ public class UsuariosController : Controller
                 {
                     var user = new Usuarios
                     {
-                        UserName = model.Email,
+                        UserName = model.UserName,
                         Email = model.Email,
                         Nombre = model.Nombre,
                         Apellidos = model.Apellidos, // El campo único para apellidos
@@ -177,6 +177,56 @@ public class UsuariosController : Controller
         // Si el ModelState no es válido o hubo errores, re-renderizar la vista
         await RellenarProvinciasCantones(model);
         return View(model);
+    }
+
+    public ViewResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogInformation("Datos de login invalidos");
+            return View(model);
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, true);
+        if (result.Succeeded)
+        {
+            if (User.IsInRole("Administrador"))
+                return RedirectToAction("Mantenimiento", "Home");
+            else
+                return RedirectToAction("Index", "Home");
+        }
+
+        return View(model);
+    }
+
+    /*[HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogInformation("Intento de login con datos invalidos");
+            foreach (var error in ModelState.Values)
+            {
+                TempData["LoginError"] = error.Errors[0].ErrorMessage;
+                break;
+            }
+            TempData["LoginError"] = null;
+        }
+        return RedirectToAction(nameof(Index));
+    }*/
+
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction(nameof(Index), "Home");
     }
 
 
@@ -360,4 +410,8 @@ public class UsuariosController : Controller
             return StatusCode(500, new { message = "No se pudo guardar los cambios en la base de datos" });
         }
     }*/
+    public IActionResult Informacion_personal()
+    {
+        return View();
+    }
 }
