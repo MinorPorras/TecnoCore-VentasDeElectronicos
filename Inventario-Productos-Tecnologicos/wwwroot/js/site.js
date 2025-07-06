@@ -1,7 +1,58 @@
-﻿document.addEventListener('DOMContentLoaded', () => {
+﻿
+document.addEventListener('DOMContentLoaded', () => {
     initLoginModal();
     initCartModal()
+
+    if (document.querySelector('.register')) {
+        initDropdownProvinciaCanton()
+    }
 });
+
+function initDropdownProvinciaCanton() {
+    var provinciasDropdown = document.getElementById('provinciasDropdown');
+    var cantonesDropdown = document.getElementById('cantonesDropdown');
+
+    async function loadCantones(provinciaId, SelectedCantonId) {
+        cantonesDropdown.innerHTML = '';
+        cantonesDropdown.appendChild(document.createElement(new Option('--Cargando cantones...--', '')));
+        cantonesDropdown.disabled = true;
+
+        if (provinciaId) {
+            try {
+                const response = fetch(`/Usuarios/GetCantonesByProvince/${provinciaId}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                cantonesDropdown.innerHTML = '';
+                cantonesDropdown.appendChild(document.createElement(new Option('--Seleccione un cantón--', '')));
+
+                data.forEach((canton) => {
+                    cantonesDropdown.appendChild(document.createElement(new Option(canton.Nombre, canton.Id)));
+                });
+                cantonesDropdown.disabled = true;
+                if (SelectedCantonId && SelectedCantonId !== 0) {
+                    cantonesDropdown.value = SelectedCantonId;
+                }
+            } catch (error) {
+                console.log("Error al cargar los cantones: ", error);
+                cantonesDropdown.innerHTML = '';
+                cantonesDropdown.appendChild(document.createElement(new Option('--Error al cargar los cantones--', '')));
+                cantonesDropdown.disabled = true;
+            }
+        } else {
+            cantonesDropdown.innerHTML = '';
+            cantonesDropdown.appendChild(document.createElement(new Option('--Seleccione una provincia--', '')));
+            cantonesDropdown.disabled = true;
+        }
+    }
+
+    provinciasDropdown.addEventListener('change', function () {
+        var selectedProvinciaId = this.value;
+        loadCantones(selectedProvinciaId);
+    });
+}
 
 function initLoginModal() {
     const modalLogin = document.getElementById('loginModal');

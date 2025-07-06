@@ -1,7 +1,5 @@
 // Models/ViewModels/ProductListViewModel.cs
 
-using System.Collections.Generic;
-
 namespace Inventario_Productos_Tecnologicos.Models.ViewModels;
 
 public class ProductListViewModel

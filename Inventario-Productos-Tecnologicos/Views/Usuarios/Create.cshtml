@@ -25,7 +25,7 @@
             <input asp-for="Apellidos" type="text" class="form-control">
             <span asp-validation-for="Apellidos" class="text-danger"></span>
         </div>
-        <div class="formgroup">
+        @*<div class="formgroup">
             <label asp-for="Contrasena">Contraseña:</label>
             <input asp-for="Contrasena" type="password" class="form-control">
             <span asp-validation-for="Contrasena" class="text-danger"></span>
@@ -36,7 +36,7 @@
             <span asp-validation-for="Telefono" class="text-danger"></span>
         </div>
         <div class="formgroup">
-            <label asp-for="Rol">Rol:</label>
+            <label asp-for="">Rol:</label>
             <select asp-for="Rol" class="form-control">
                 <option value="">Seleccione un rol</option>
                 @if (ViewBag.Roles != null)
@@ -48,7 +48,7 @@
                 }
             </select>
             <span asp-validation-for="Rol" class="text-danger"></span>
-        </div>
+        </div>*@
         <div class="formgroup">
             <label>Estado:</label>
             <div>

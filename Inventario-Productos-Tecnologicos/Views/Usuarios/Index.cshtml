@@ -82,7 +82,9 @@
                         <span class="tableCell">@usuario.Nombre</span>
                         <span class="tableCell">@usuario.Apellidos</span>
                         <span class="tableCell">@usuario.Email</span>
+                        @*
                         <span class="tableCell">@(usuario.RolNavigation?.Name ?? "Sin Rol")</span>
+                        *@
                         <span class="columnEstado tableCell">
                             @if (usuario.Activo)
                             {
@@ -114,6 +116,7 @@
                         </div>
                     </div>
                 }
+
                 <div class="tableRow listEnd">
                     <span>Fin de la Lista</span>
                 </div>

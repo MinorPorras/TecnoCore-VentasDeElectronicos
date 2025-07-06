@@ -1,4 +1,4 @@
-using Inventario_Productos_Tecnologicos.Data;
+/*using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -107,4 +107,5 @@ public class RolesController : Controller
         await _context.SaveChangesAsync();
         return RedirectToAction("Index");
     }
-}
+}*/
+

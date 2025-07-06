@@ -1,4 +1,4 @@
-@model List<Inventario_Productos_Tecnologicos.Models.Roles>
+@model List<object>
 
 @{
     ViewBag.Title = "Roles";
@@ -30,6 +30,7 @@
         </div>
     </form>
 
+    @*
     <div class="tableContainer">
         <div class="tbl-header TRoles">
             <span class="headerText">ID</span>
@@ -87,7 +88,7 @@
                 </div>
             }
         </div>
-    </div>
+    </div>*@
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Roles" })
 </div>
 

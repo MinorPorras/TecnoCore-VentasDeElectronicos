@@ -27,7 +27,7 @@ public class HomeController : Controller
         return View();
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Maneja el inicio de sesión del usuario y redirecciona según el rol.
     /// </summary>
     /// <param name="email">El correo electrónico del usuario.</param>
@@ -57,7 +57,7 @@ public class HomeController : Controller
         return RedirectToAction(usuario.RolNavigation.Name == "Administrador"
             ? "Mantenimiento"
             : "Index", "Home");
-    }
+    }*/
 
     public IActionResult Logout()
     {
