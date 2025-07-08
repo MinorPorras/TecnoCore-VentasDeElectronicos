@@ -26,6 +26,8 @@ nav {
     position: sticky;
     top: 0;
     z-index: 1000;
+    height: auto;
+    overflow: visible;
 }
 
 .nav-principal {
@@ -48,6 +50,7 @@ nav {
         position: relative;
         flex-grow: 1; /* Permite que la lista ocupe el espacio restante */
         flex-shrink: 0;
+        margin-bottom: 0;
 
         & li {
             list-style: none;
@@ -58,7 +61,7 @@ nav {
             align-items: center;
             border-radius: 0 0 10px 10px;
             width: auto; /* Ajusta el ancho automáticamente */
-            transition: all 0.3s ease; /* Transición general para el li si se añade algo más */
+            transition: all 0.3s ease;
             transition-delay: 10s;
 
             /* Propiedades para el efecto ::after */
@@ -70,7 +73,7 @@ nav {
             &:hover {
                 background: var(--lightgradient); /* Cambia el color de fondo al hacer hover */
                 color: var(--darkBlue); /* Cambia el color del texto al hacer hover */
-                transition: background-color 0.7s ease, color 0.3s ease; /* Transición suave para el cambio de color */
+                transition: all 0.7s ease;
                 border-radius: 10px;
 
             }
@@ -91,7 +94,7 @@ nav {
                         -20%
                 ); /* Posición inicial: 100% de su altura por encima del li */
                 opacity: 0;
-                transition: transform 0.4s ease-out, background-color 0.3s ease, opacity 0.3s ease; /* Transición suave */
+                transition: all 0.4s ease;
                 z-index: -1; /* Coloca el ::after detrás del contenido del li */
                 border-radius: 0 0 10px 10px; /* Coincide con el border-radius del li */
             }
@@ -100,7 +103,7 @@ nav {
                 transform: translateY(-5%); /* Se mueve a su posición final (cubre el li) */
                 background: var(--darkBlue); /* Cambia de color al hacer hover */
                 opacity: 100%;
-                transition: transform 0.4s ease-out, background-color 0.3s ease; /* Transición suave para el hover */
+                transition: all 0.4s ease;
                 border-radius: 10px;
 
             }
@@ -200,28 +203,6 @@ nav {
     }
 }
 
-
-.logoutbtn {
-    display: flex;
-    background-color: var(--dBlueEnphasis1);
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-
-    & img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
-        transition: all .5s ease;
-
-        &:hover {
-            scale: 1.2;
-            filter: brightness(1);
-            transition: all .5s ease;
-        }
-    }
-}
-
 .nav-icon {
     fill: var(--Azure);
     scale: 1.7;
@@ -234,6 +215,74 @@ nav {
         fill: var(--Twistle);
         transform: scale(1.2);
         transition: all 0.5s ease;
+    }
+}
+
+
+/* El contenedor del botón debe ser relative */
+.tooltipContainer {
+    position: relative; /* Permite posicionar el 'tooltip-text' de forma absoluta dentro de este botón/enlace */
+    width: 5rem;
+}
+
+
+/* Estilos del texto del tooltip */
+.TooltipText {
+    visibility: hidden; /* **Oculto por defecto:** El elemento no es visible */
+    opacity: 0; /* **Transparente por defecto:** Para una transición suave */
+    width: auto; /* Ancho automático según el contenido */
+    min-width: 80px; /* Ancho mínimo para legibilidad */
+    max-width: 200px; /* Ancho máximo para evitar tooltips demasiado largos */
+    background-color: var(--dBlueEnphasis3Trans); /* Fondo oscuro semitransparente */
+    color: #fff; /* Texto blanco */
+    text-align: center; /* Centra el texto */
+    font-weight: bold;
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 6px 10px; /* Espaciado interno */
+    font-size: 1rem;
+    position: absolute; /* **Posicionamiento:** Lo saca del flujo normal */
+    z-index: 2; /* Asegura que el tooltip esté por encima de otros elementos */
+
+    transform: translateY(100%); /* Empieza fuera, abajo del botón */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+/* Mostrar el tooltip al pasar el ratón */
+.tooltipContainer:hover .TooltipText {
+    visibility: visible; /* Hace que el elemento sea visible */
+    opacity: 1; /* Lo vuelve completamente opaco */
+}
+
+.btnLogOut, .btnAccount, .btnCarrito {
+    display: inline-flex; /* Permite que el contenido interno (imagen, texto) se alinee */
+    align-items: center;
+    justify-content: center;
+    gap: 5px; /* Espacio entre la imagen y el texto */
+    font-size: 0.9em;
+    text-decoration: none;
+    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    background: transparent;
+    cursor: pointer;
+    color: var(--Azure);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    text-align: left;
+    scale: .7;
+
+    &:hover {
+        color: var(--indianRed);
+        background: var(--darkBlueOpacity);
+        border: 1px solid var(--indianRed);
+        scale: .8;
+        filter: drop-shadow(0px 1px 5px var(--indianRed));
+        transition: all 0.3s ease;
+    }
+
+    &:active {
+        scale: .8;
+        transition: all 0.3s ease;
     }
 }
 

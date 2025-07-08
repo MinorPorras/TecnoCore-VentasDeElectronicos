@@ -42,9 +42,14 @@
                 </li>
                 <li><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
             </ul>
-            <div class="logoutbtn">
-                <a asp-action="Logout" asp-controller="Home"><img src="~/img/ICO_Logout.svg" alt=""></a>
-            </div>
+            <a class="nav-account tooltipContainer btnLogOut" asp-action="Logout" asp-controller="Usuarios">
+                <img
+                    src="~/img/ICO_Logout.svg"
+                    alt="cuenta"
+                    class="nav-icon"
+                    id="user-account"/>
+                <span class="TooltipText">Cerrar Sesión</span>
+            </a>
         </div>
     </nav>
 </header>

@@ -26,16 +26,16 @@ public class VentasController : Controller
         return View();
     }
 
-    public async Task<IActionResult> GetCartItems(int usuarioId)
-    {
-        var cartItems = await _context.CarritoCompras
-            .Where(c => c.UsuarioId == usuarioId)
-            .ToListAsync();
-        if (!cartItems.Any()) return NotFound("No hay productos en el carrito de compras.");
-        return Json(cartItems);
-    }
+    // public async Task<IActionResult> GetCartItems(int usuarioId)
+    // {
+    //     var cartItems = await _context.CarritoCompras
+    //         .Where(c => c.UsuarioId == usuarioId)
+    //         .ToListAsync();
+    //     if (!cartItems.Any()) return NotFound("No hay productos en el carrito de compras.");
+    //     return Json(cartItems);
+    // }
 
-    public async Task<IActionResult> RemoveFromCart(int usuarioId, int productoId)
+    /*public async Task<IActionResult> RemoveFromCart(int usuarioId, int productoId)
     {
         try
         {
@@ -53,7 +53,7 @@ public class VentasController : Controller
             Console.WriteLine(e);
             return Json(new { success = false });
         }
-    }
+    }*/
 
 
     public IActionResult ConfirmarCompra(List<Productos> listaCompras)

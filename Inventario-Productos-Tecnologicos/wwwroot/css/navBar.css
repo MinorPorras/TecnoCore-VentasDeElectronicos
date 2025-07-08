@@ -9,10 +9,11 @@
             var(--Azure) 100%
     );
     --darkBlue: #101935;
-    --darkBlueOpacity: #10193555;
     --dBlueEnphasis1: #1f273f;
     --dBlueEnphasis2: #2c3550;
     --dBlueEnphasis3: #3a425f;
+    --dBlueEnphasis3Trans: #3A425FA3;
+    --darkBlueOpacity: #10193555;
     --TiffBlue: #9ad4d6;
     --Azure: #f2fdff;
     --Twistle: #dbcbd8;
@@ -42,6 +43,7 @@ nav {
     height: 100%;
     top: 0;
     gap: .5rem;
+    margin-bottom: 0;
 
     & > ul {
         display: flex;
@@ -50,6 +52,7 @@ nav {
         position: relative;
         flex-grow: 1; /* Permite que la lista ocupe el espacio restante */
         flex-shrink: 0;
+        margin-bottom: 0;
 
         & li {
             list-style: none;
@@ -213,23 +216,25 @@ nav {
 }
 
 .nav-account {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    width: 10%;
-    height: 100%;
+    width: fit-content;
+    max-width: 10%;
+    min-width: 100px;
     padding-top: 20px;
     z-index: 1; /* Asegura que el contenido esté por encima del ::after */
     transition: all 0.3s ease;
+    text-decoration: none;
+    color: var(--Azure);
+    text-align: center;
+    margin-right: 5px;
 
-
-    &:hover {
-        background: var(--darkGradient); /* Cambia el color de fondo al hacer hover */
-        color: var(--Twistle); /* Cambia el color del texto al hacer hover */
-        border-radius: 0 0 10px 10px; /* Coincide con el border-radius */
-        outline: 4px var(--ultraviolet) solid;
-        transition: all 0.3s ease;
+    & p {
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 }
 
@@ -247,6 +252,166 @@ nav {
         transition: all 0.5s ease;
     }
 }
+
+/* El contenedor del botón debe ser relative */
+.tooltipContainer {
+    position: relative; /* Permite posicionar el 'tooltip-text' de forma absoluta dentro de este botón/enlace */
+    cursor: help; /* Cambia el cursor para indicar que hay un tooltip (opcional) */
+}
+
+
+/* Estilos del texto del tooltip */
+.TooltipText {
+    visibility: hidden; /* **Oculto por defecto:** El elemento no es visible */
+    opacity: 0; /* **Transparente por defecto:** Para una transición suave */
+    width: auto; /* Ancho automático según el contenido */
+    min-width: 100px; /* Ancho mínimo para legibilidad */
+    max-width: 200px; /* Ancho máximo para evitar tooltips demasiado largos */
+    background-color: var(--dBlueEnphasis3Trans); /* Fondo oscuro semitransparente */
+    color: #fff; /* Texto blanco */
+    text-align: center; /* Centra el texto */
+    font-weight: bold;
+    border-radius: 4px; /* Bordes ligeramente redondeados */
+    padding: 6px 10px; /* Espaciado interno */
+    font-size: 1rem;
+    position: absolute; /* **Posicionamiento:** Lo saca del flujo normal */
+    z-index: 2; /* Asegura que el tooltip esté por encima de otros elementos */
+
+    transform: translateY(100%); /* Empieza fuera, abajo del botón */
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+/* Mostrar el tooltip al pasar el ratón */
+.tooltipContainer:hover .TooltipText {
+    visibility: visible; /* Hace que el elemento sea visible */
+    opacity: 1; /* Lo vuelve completamente opaco */
+}
+
+.btnLogOut, .btnAccount, .btnCarrito {
+    display: inline-flex; /* Permite que el contenido interno (imagen, texto) se alinee */
+    align-items: center;
+    justify-content: center;
+    gap: 5px; /* Espacio entre la imagen y el texto */
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    text-decoration: none;
+    color: var(--Azure); /* Color de texto por defecto */
+    transition: background-color 0.3s ease;
+    white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    scale: .8;
+}
+
+.btnAccount {
+    background: transparent;
+    cursor: pointer;
+    color: var(--Azure);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    text-align: left;
+
+    &:hover {
+        color: var(--ultraviolet);
+        background: var(--darkBlueOpacity);
+        border: 1px solid var(--ultraviolet);
+        scale: .9;
+        filter: drop-shadow(0px 1px 5px var(--ultraviolet));
+        transition: all 0.3s ease;
+    }
+
+    &:active {
+        scale: .8;
+        transition: all 0.3s ease;
+    }
+}
+
+.btnLogOut, .btnCarrito {
+    background: transparent;
+    cursor: pointer;
+    color: var(--Azure);
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid transparent;
+    text-align: left;
+
+    &:hover {
+        color: var(--indianRed);
+        background: var(--darkBlueOpacity);
+        border: 1px solid var(--indianRed);
+        scale: .9;
+        filter: drop-shadow(0px 1px 5px var(--indianRed));
+        transition: all 0.3s ease;
+    }
+
+    &:active {
+        scale: .8;
+        transition: all 0.3s ease;
+    }
+}
+
+.search-bar {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 3fr 1fr 1fr;
+    width: 100%;
+    height: 100%;
+    padding: 5px;
+    background-color: var(--dBlueEnphasis2);
+    gap: 20px;
+
+    & input {
+        width: 100%;
+        padding: 10px;
+        border-radius: 1rem;
+        background-color: var(--dBlueEnphasis3);
+        color: var(--Azure);
+        font-size: 1rem;
+        background-image: var(--darkGradient);
+        border: 5px solid var(--TiffBlue);
+
+        &:focus {
+            outline: none;
+            border-color: var(--indianRed);
+        }
+    }
+}
+
+.nav-cart {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    & label {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+        color: var(--Azure);
+        font-weight: 600;
+        font-size: clamp(1rem, 2vw, 1.2rem);
+    }
+}
+
+.nav-cart-icon {
+    fill: var(--Azure);
+    transition: all 0.5s ease;
+    height: 3rem;
+    display: block;
+    cursor: pointer;
+
+    &:hover {
+        fill: var(--Twistle);
+        transform: scale(1.2);
+        transition: all 0.5s ease;
+    }
+}
+
 
 @media (width <= 760px) {
     .nav-principal {
@@ -306,66 +471,6 @@ nav {
     }
 }
 
-.search-bar {
-    display: grid;
-    justify-content: center;
-    align-items: center;
-    grid-template-columns: 3fr 1fr 1fr;
-    width: 100%;
-    height: 100%;
-    padding: 5px;
-    background-color: var(--dBlueEnphasis2);
-    gap: 20px;
-
-    & input {
-        width: 100%;
-        padding: 10px;
-        border-radius: 1rem;
-        background-color: var(--dBlueEnphasis3);
-        color: var(--Azure);
-        font-size: 1rem;
-        background-image: var(--darkGradient);
-        border: 5px solid var(--TiffBlue);
-
-        &:focus {
-            outline: none;
-            border-color: var(--indianRed);
-        }
-    }
-}
-
-.nav-cart {
-    height: 100%;
-    transition: all 0.3s ease;
-    width: 100%;
-
-    & label {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-        color: var(--Azure);
-        font-weight: 600;
-        font-size: clamp(1rem, 2vw, 1.2rem);
-    }
-}
-
-.nav-cart-icon {
-    fill: var(--Azure);
-    transition: all 0.5s ease;
-    width: 100%;
-    height: 3rem;
-    margin: 0 auto;
-    display: block;
-    cursor: pointer;
-
-    &:hover {
-        fill: var(--Twistle);
-        transform: scale(1.2);
-        transition: all 0.5s ease;
-    }
-}
-
 .footer {
     position: relative;
     width: 100%;
@@ -375,16 +480,6 @@ nav {
     padding: 10px 0;
     font-size: clamp(.6rem, 2vw, .9rem);
     z-index: 999;
-}
-
-.nav-cart-button {
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .button-78 {

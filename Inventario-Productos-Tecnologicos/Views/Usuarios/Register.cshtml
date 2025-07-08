@@ -1,0 +1,165 @@
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registro de usuario";
+    Layout = "_Layout";
+}
+<div class="pageContainer register">
+    <h2 class="pageTitle">Crea tu nueva cuenta</h2>
+    <form asp-action="Register" method="post" class="accountForm">
+        @Html.AntiForgeryToken()
+        <div class="dataSeccion cuenta">
+            <h4 class="RegisterSeccionTitle">Datos de la cuenta</h4>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <input asp-for="UserName" type="text">
+                <span asp-validation-for="UserName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" type="email" placeholder="tu.correo@ejemplo.com">
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" type="password" placeholder="Minimo 6 caracteres">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="ConfirmPassword"></label>
+                <input asp-for="ConfirmPassword" type="password" placeholder="Confirma tu contraseña">
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="dataSeccion personal">
+            <h4 class="RegisterSeccionTitle">Datos Personales</h4>
+            <div class="form-group">
+                <label asp-for="Nombre"></label>
+                <input asp-for="Nombre" type="text">
+                <span asp-validation-for="Nombre" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellidos"></label>
+                <input asp-for="Apellidos" type="text">
+                <span asp-validation-for="Apellidos" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <input asp-for="PhoneNumber" type="tel" maxlength="8">
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="dataSeccion direccion">
+            <h4 class="RegisterSeccionTitle">Dirección</h4>
+            <div class="form-group">
+                <label asp-for="SelectedProvinciaId"></label>
+                <select asp-for="SelectedProvinciaId" asp-items="@Model.Provincias" class="form-control"
+                        id="provinciasDropdown">
+                    <option value="">-- Seleccione una provincia --</option>
+                </select>
+                <span asp-validation-for="SelectedProvinciaId" class="text-danger"></span>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="SelectedCantonId"></label>
+                <select asp-for="SelectedCantonId" asp-items="@Model.Cantones" class="form-control"
+                        id="cantonesDropdown">
+                    <option value="">-- Seleccione un cantón --</option>
+                </select>
+                <span asp-validation-for="SelectedCantonId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DireccionExacta"></label>
+                <input asp-for="DireccionExacta" type="text">
+                <span asp-validation-for="DireccionExacta" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CodigoPostal"></label>
+                <input asp-for="CodigoPostal" type="number" maxlength="5">
+                <span asp-validation-for="CodigoPostal" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="btnFormContainer">
+            <button type="button" onclick="window.history.back()" class="formBtn back">Regresar</button>
+            <button type="submit" class="formBtn">Crear Usuario</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let pageTitle = document.querySelector('.pageTitle');
+            if (pageTitle) {
+                pageTitle.scrollIntoView();
+            }
+            let provinciasDropdown = document.getElementById('provinciasDropdown');
+            let cantonesDropdown = document.getElementById('cantonesDropdown');
+
+            async function loadCantones(provinciaId, selectedCantonId) {
+                cantonesDropdown.innerHTML = '';
+                cantonesDropdown.appendChild(new Option('-- Cargando cantones... --', ''));
+                cantonesDropdown.disabled = true;
+
+                if (provinciaId) {
+                    try {
+                        const response = await fetch(`/Usuarios/GetCantonesByProvincia/${provinciaId}`);
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        const data = await response.json();
+
+                        cantonesDropdown.innerHTML = '';
+                        cantonesDropdown.appendChild(new Option('-- Seleccione un cantón --', ''));
+
+                        data.forEach(function (canton) {
+                            cantonesDropdown.appendChild(new Option(canton.nombre, canton.id));
+                        });
+
+                        cantonesDropdown.disabled = false;
+
+                        if (selectedCantonId && selectedCantonId !== "0") {
+                            cantonesDropdown.value = selectedCantonId;
+                        }
+                    } catch (error) {
+                        console.error("Error al cargar cantones: ", error);
+                        cantonesDropdown.innerHTML = '';
+                        cantonesDropdown.appendChild(new Option('-- Error al cargar --', ''));
+                        cantonesDropdown.disabled = true;
+                    }
+                } else {
+                    cantonesDropdown.innerHTML = '';
+                    cantonesDropdown.appendChild(new Option('-- Seleccione una provincia primero --', ''));
+                    cantonesDropdown.disabled = true;
+                }
+            }
+
+            provinciasDropdown.addEventListener('change', function () {
+                let selectedProvinciaId = this.value;
+                loadCantones(selectedProvinciaId, null);
+            });
+
+            let initialProvinciaId = provinciasDropdown.value;
+            let initialCantonId
+            @if (Model.SelectedCantonId != 0)
+            {
+                <text>initialCantonId = '@Model.SelectedCantonId';</text>
+            }
+            else
+            {
+                <text>initialCantonId = null;</text> // Se genera como JS null
+            }
+
+            if (initialProvinciaId) {
+                loadCantones(initialProvinciaId, initialCantonId);
+            } else {
+                cantonesDropdown.disabled = true;
+            }
+        });
+    </script>
+}

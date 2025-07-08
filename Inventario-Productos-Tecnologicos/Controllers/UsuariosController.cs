@@ -1,7 +1,12 @@
-using Inventario_Productos_Tecnologicos.Data;
-using Inventario_Productos_Tecnologicos.Models;
+using System.Linq; // Necesario para LINQ, como .FirstOrDefault() o .Any()
+using Microsoft.AspNetCore.Identity; // Necesario para UserManager y SignInManager
 using Microsoft.AspNetCore.Mvc;
+using Inventario_Productos_Tecnologicos.Models; // Tu modelo Usuarios, Provincia, Canton, Direccion
+using Inventario_Productos_Tecnologicos.Models.ViewModels; // Tu RegisterViewModel
+using Inventario_Productos_Tecnologicos.Data; // Tu DbContext
+using Microsoft.AspNetCore.Mvc.Rendering; // Para SelectListItem
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage; // Para ToListAsync()
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -11,13 +16,265 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 public class UsuariosController : Controller
 {
     private readonly TecnoCoreDbContext _context;
+    private readonly UserManager<Usuarios> _userManager;
+    private readonly SignInManager<Usuarios> _signInManager;
+    private readonly ILogger<UsuariosController> _logger;
 
-    public UsuariosController(TecnoCoreDbContext context)
+    public UsuariosController(TecnoCoreDbContext context,
+        UserManager<Usuarios> userManager, SignInManager<Usuarios> signInManager,
+        ILogger<UsuariosController> logger)
     {
         _context = context;
+        _userManager = userManager;
+        _signInManager = signInManager;
+        _logger = logger;
     }
 
-    /// <summary>
+    public IActionResult Index()
+    {
+        return View();
+    }
+
+    [HttpGet]
+    public async Task<ViewResult> Register()
+    {
+        var model = new RegisterViewModel
+        {
+            SelectedCantonId = 0,
+            SelectedProvinciaId = 0
+        };
+        await RellenarProvinciasCantones(model);
+        return View(model);
+    }
+
+    private async Task RellenarProvinciasCantones(RegisterViewModel model)
+    {
+        model.Provincias = await _context.Provincias
+            .Select(p => new SelectListItem
+            {
+                Value = p.Id.ToString(),
+                Text = p.Nombre
+            }).ToListAsync();
+
+        if (model.SelectedProvinciaId == 0)
+            model.Cantones.Add(new SelectListItem { Value = "", Text = "--Seleccione primero una provincia--" });
+        else
+            model.Cantones = await _context.Cantones
+                .Where(p => p.ProvinciaId == model.SelectedProvinciaId)
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.Nombre
+                }).ToListAsync();
+    }
+
+    [HttpGet] // Especifica que es un método HTTP GET
+    [Route("Usuarios/GetCantonesByProvincia/{provinciaId}")] // Define la ruta para este método
+    public async Task<IActionResult> GetCantonesByProvincia(int provinciaId)
+    {
+        // Verifica si el ID de provincia es válido (opcional, pero buena práctica)
+        if (provinciaId <= 0) return BadRequest("ID de provincia inválido.");
+
+        // Obtener los cantones de la base de datos para la provincia dada
+        var cantones = await _context.Cantones
+            .Where(c => c.ProvinciaId == provinciaId)
+            .Select(c => new
+            {
+                id = c.Id,
+                nombre = c.Nombre
+            }) // Selecciona solo las propiedades necesarias para el JSON
+            .ToListAsync();
+
+        // Devolver la lista de cantones como JSON
+        return Json(cantones);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Register(RegisterViewModel model)
+    {
+        if (ModelState.IsValid)
+            //Se inicia un proceso de transacción, este tipo de procesos ejecutan
+            //las acciones en la DB pero si una falla las demás se descartan con ella
+            //En este caso se guarda tod*o no se guarda nada
+            using (var transaction = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var user = new Usuarios
+                    {
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        Nombre = model.Nombre,
+                        Apellidos = model.Apellidos, // El campo único para apellidos
+                        PhoneNumber = model.PhoneNumber,
+                        EmailConfirmed = true, // Podrías tener un proceso de confirmación por email
+                        Activo = true // Asumimos que el usuario está activo al registrarse
+                    };
+
+                    //Se crea el usuario
+                    var result = await _userManager.CreateAsync(user, model.Password);
+
+                    //EN caso de que se cree se pasa a asignarle un rol por defecto
+                    if (result.Succeeded)
+                    {
+                        _logger.LogInformation("Usuario Creado exitosamente");
+
+                        //Si no tienje un rol asignado se le agrega el rol de Cliente
+                        if (!await _userManager.IsInRoleAsync(user, "Cliente"))
+                        {
+                            await _userManager.AddToRoleAsync(user, "Cliente");
+                            _logger.LogInformation("Usuario asignado al rol cliente exitosamente");
+                        }
+                        else
+                        {
+                            _logger.LogWarning($"El usuario {user.UserName} ya tiene un rol asignado");
+                        }
+
+                        //Se obtiene la provincia y el cantón seleccionados
+                        var provincia =
+                            await _context.Provincias.FirstOrDefaultAsync(p => p.Id == model.SelectedProvinciaId);
+                        var canton =
+                            await _context.Cantones.FirstOrDefaultAsync(p => p.Id == model.SelectedCantonId);
+
+                        if (provincia == null && canton == null)
+                        {
+                            //Si no se ecneuntra nada se hace un rollback para quitar los cambios
+                            ModelState.AddModelError(string.Empty, "Provincia o cantón seleccionados no son válidos");
+                            await transaction.RollbackAsync();
+                            await RellenarProvinciasCantones(model);
+                            return View(model);
+                        }
+
+                        //Creación de la dirección del usuario
+                        var direccion = new Direcciones
+                        {
+                            Direccion = model.DireccionExacta,
+                            CodigoPostal = model.CodigoPostal,
+                            CantonId = canton?.Id,
+                            UsuarioId = user.Id,
+                            Activo = true
+                        };
+                        //Se agrega en la abse de datos la dirección del usuario
+                        _context.Direcciones.Add(direccion);
+                        await _context.SaveChangesAsync();
+                        _logger.LogInformation("Dirección almacenada correctamente");
+
+                        //Se hace el commit de la transacción para guardar los cambios realizados en la DB
+                        await transaction.CommitAsync();
+
+                        await _signInManager.SignInAsync(user, false);
+                        _logger.LogInformation("Usuario registrado y ha iniciado sesión");
+
+                        return RedirectToAction("Index", "Home");
+                    }
+
+                    foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    throw;
+                }
+            }
+
+        // Si el ModelState no es válido o hubo errores, re-renderizar la vista
+        await RellenarProvinciasCantones(model);
+        return View(model);
+    }
+
+    public async Task<IActionResult> Informacion_personal(string id)
+    {
+        var usuario = await _userManager.FindByIdAsync(id);
+        if (usuario == null) return NotFound();
+        var direccion = await _context.Direcciones.Where(d => d.UsuarioId == usuario.Id)
+            .Include(direcciones => direcciones.Canton).FirstOrDefaultAsync();
+        if (direccion == null) return NotFound();
+        try
+        {
+            if (direccion.Canton != null && usuario is { Email: not null, UserName: not null, PhoneNumber: not null })
+            {
+                var model = new RegisterViewModel
+                {
+                    UserName = usuario.UserName,
+                    Email = usuario.Email,
+                    Nombre = usuario.Nombre,
+                    Apellidos = usuario.Apellidos,
+                    PhoneNumber = usuario.PhoneNumber,
+                    DireccionExacta = direccion.Direccion,
+                    CodigoPostal = direccion.CodigoPostal,
+                    SelectedCantonId = direccion.CantonId,
+                    SelectedProvinciaId = direccion.Canton.ProvinciaId
+                };
+                var provincia = await _context.Provincias.Where(p => p.Id == model.SelectedProvinciaId)
+                    .FirstOrDefaultAsync();
+                var canton = await _context.Cantones.Where(c => c.Id == model.SelectedCantonId).FirstOrDefaultAsync();
+                ViewBag.ProvinciaName = provincia?.Nombre;
+                ViewBag.CantonName = canton?.Nombre;
+                return View(model);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        return RedirectToAction("Index", "Home");
+    }
+
+    public ViewResult Login()
+    {
+        return View();
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogInformation("Datos de login invalidos");
+            return View(model);
+        }
+
+        var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, true);
+        if (result.Succeeded)
+        {
+            if (User.IsInRole("Administrador"))
+                return RedirectToAction("Mantenimiento", "Home");
+            else
+                return RedirectToAction("Index", "Home");
+        }
+
+        return View(model);
+    }
+
+    /*[HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Login(LoginViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogInformation("Intento de login con datos invalidos");
+            foreach (var error in ModelState.Values)
+            {
+                TempData["LoginError"] = error.Errors[0].ErrorMessage;
+                break;
+            }
+            TempData["LoginError"] = null;
+        }
+        return RedirectToAction(nameof(Index));
+    }*/
+
+    public async Task<IActionResult> Logout()
+    {
+        await _signInManager.SignOutAsync();
+        return RedirectToAction(nameof(Index), "Home");
+    }
+
+
+    /*/// <summary>
     /// Muestra la vista principal de usuarios.
     /// </summary>
     /// <returns>La vista Index de usuarios.</returns>
@@ -196,5 +453,5 @@ public class UsuariosController : Controller
             Console.WriteLine($"Error al actualizar el usuario: {e.Message}");
             return StatusCode(500, new { message = "No se pudo guardar los cambios en la base de datos" });
         }
-    }
+    }*/
 }
