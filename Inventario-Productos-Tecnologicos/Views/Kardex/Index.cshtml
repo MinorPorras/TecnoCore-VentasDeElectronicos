@@ -28,7 +28,7 @@
                 <a asp-action="CreateExit" class="btnCreate exit">Nueva Salida</a>
             </div>
         </div>
-        
+
         <div class="selectGroup">
             <label>Fecha:</label>
             <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
@@ -67,7 +67,6 @@
             <span class="headerText">Cantidad</span>
             <span class="headerText">Stock Actual</span>
             <span class="headerText">Movimiento</span>
-            <span class="headerText">Activo</span>
             <span class="headerText">Opciones</span>
         </div>
         <div class="tbl-content">
@@ -84,47 +83,25 @@
                     <div class="tableRow TKardex">
                         <span class="tableCell">@entry.Id</span>
                         <span class="tableCell">@(entry.Producto?.Nombre ?? "")</span>
-                        <span class="tableCell">@(entry.Fecha.HasValue ? entry.Fecha.Value.ToString("dd/MM/yyyy") : "")</span>
+                        <span
+                            class="tableCell">@(entry.Fecha.HasValue ? entry.Fecha.Value.ToString("dd/MM/yyyy") : "")</span>
                         <span class="tableCell">@(entry.StockAnterior ?? 0)</span>
                         <span class="tableCell">@(entry.Cantidad ?? 0)</span>
                         <span class="tableCell">@(entry.StockActual ?? 0)</span>
                         <span class="tableCell">@(entry.TipoMovimientoKardex?.Tipo ?? "-")</span>
-                        <div class="columnEstado tableCell">
-                            @if (entry.Activo)
-                            {
-                                <span class="badge text-bg-success tableCell">Activo</span>
-                            }
-                            else
-                            {
-                                <span class="badge text-bg-danger tableCell">Inactivo</span>
-                            }
-                        </div>
                         <div class="tableButtonsColumn">
                             <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@entry.Id">
                                 <img src="~/img/ICO_Details.svg" alt="Detalles"/>
                                 <span class="TooltipText">Detalles</span>
                             </a>
-                            <button type="button" data-id="@entry.Id"
-                                    class="showModal tooltipContainer btnSwicthActive @(entry.Activo ? "redHighlight" : "greenHighlight")"
-                                    value="@entry.Producto?.Nombre" data-active="@entry.Activo">
-                                @if (entry.Activo)
-                                {
-                                    <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
-                                }
-                                else
-                                {
-                                    <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
-                                }
-                                <span class="TooltipText">@(entry.Activo ? "Desactivar" : "Activar")</span>
-                            </button>
                         </div>
                     </div>
                 }
+
                 <div class="tableRow listEnd">
                     <span>Fin de la Lista</span>
                 </div>
             }
         </div>
     </div>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Kardex" })
 </div>

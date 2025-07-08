@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.JavaScript;
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -229,19 +230,14 @@ public class KardexController : Controller
         return RedirectToAction(nameof(Index));
     }
 
-    private bool KardexExists(int id)
-    {
-        return _context.Kardex.Any(e => e.Id == id);
-    }
-
     public async Task<IActionResult> Search(string searchElement, string searchDate, string activeFilter = "all",
-        string TipoMovimientoId = "all")
+        string tipoMovimiento = "all")
     {
         // Guardar los parámetros de búsqueda en ViewBag
         ViewBag.SearchString = searchElement;
         ViewBag.SearchDate = searchDate;
         ViewBag.ActiveFilter = activeFilter;
-        ViewBag.SelectedTipoMovimiento = TipoMovimientoId;
+        ViewBag.SelectedTipoMovimiento = tipoMovimiento;
 
         // Crear la consulta base
         var query = _context.Kardex
@@ -267,7 +263,7 @@ public class KardexController : Controller
         }
 
         // Filtrar por tipo de movimiento
-        if (TipoMovimientoId != "all" && int.TryParse(TipoMovimientoId, out var tipoMovimientoId))
+        if (tipoMovimiento != "all" && int.TryParse(tipoMovimiento, out var tipoMovimientoId))
             query = query.Where(k => k.TipoMovimientoId == tipoMovimientoId);
 
         // Cargar los tipos de movimiento para el dropdown

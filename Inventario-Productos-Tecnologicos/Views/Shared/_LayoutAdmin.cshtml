@@ -55,15 +55,6 @@
 </header>
 <div class="main_container">
     <div id="alertContainer"></div>
-    @if (TempData["Alert"] != null)
-    {
-        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"].ToString()!);
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert('@Html.Raw(alert.Message)', '@alert.Type');
-            });
-        </script>
-    }
     <div class="container-fluid">
         @RenderBody()
     </div>
@@ -80,3 +71,29 @@
 @await RenderSectionAsync("Scripts", false)
 </body>
 </html>
+
+@section Scripts{
+    @if (TempData["Alert"] != null)
+    {
+        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"]?.ToString()!);
+        <script>
+            console.log(@alert.Message);
+            console.log(@alert.Type)
+            document.addEventListener('DOMContentLoaded', function () {
+                showAlert('@Html.Raw(alert?.Message)', '@alert?.Type');
+            });
+        </script>
+    }
+
+    @if (TempData["Sucess"] != null)
+    {
+        var sucess = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Sucess"]?.ToString()!);
+        <script>
+            console.log(@sucess.Message);
+            console.log(@sucess.Type)
+            document.addEventListener('DOMContentLoaded', function () {
+                showAlert('@Html.Raw(sucess?.Message)', '@sucess?.Type');
+            });
+        </script>
+    }
+}

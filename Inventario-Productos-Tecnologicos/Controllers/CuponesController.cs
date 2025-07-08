@@ -10,6 +10,7 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 public class CuponesController : Controller
 {
     private readonly TecnoCoreDbContext _context;
+    private readonly ILogger<CuponesController> _logger;
 
     private readonly Dictionary<string, string> _tipoDescuento = new()
     {
@@ -18,9 +19,10 @@ public class CuponesController : Controller
     };
     //TODO No se está cargando el tipo de descuento en la vista Create, Edit y Index.
 
-    public CuponesController(TecnoCoreDbContext context)
+    public CuponesController(TecnoCoreDbContext context, ILogger<CuponesController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     // GET
@@ -40,19 +42,24 @@ public class CuponesController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("Id,Codigo,Descripcion,TipoDescuento,ValorDescuento,FechaInicio,FechaFin,Activo")] Cupones cupon)
+        [Bind(
+            "Codigo,Descripcion,TipoDescuento,Valor,FechaInicio,FechaFin, UsosActuales, UsosMaximos ,Activo")]
+        Cupones cupon)
     {
+        _logger.LogDebug(ModelState.IsValid.ToString());
         if (ModelState.IsValid)
         {
+            _logger.LogInformation(cupon.Codigo);
             _context.Add(cupon);
             await _context.SaveChangesAsync();
             var alert = new Alert { Type = "success", Message = "Cupón creado exitosamente" };
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(alert);
+            TempData["Sucess"] = System.Text.Json.JsonSerializer.Serialize(alert);
             return RedirectToAction(nameof(Index));
         }
 
         var errorAlert = new Alert { Type = "danger", Message = "Por favor, revise los datos ingresados" };
         TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(errorAlert);
+        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value");
         return View(cupon);
     }
 
@@ -74,7 +81,8 @@ public class CuponesController : Controller
         var cupon = await _context.Cupones.FindAsync(id);
         if (cupon == null) return NotFound();
 
-        var tipoDescuentoKey = cupon.TipoDescuento == "Porcentaje" ? "1" : "2";
+        var tipoDescuentoKey = cupon.TipoDescuento;
+        _logger.LogInformation($"---------------- {tipoDescuentoKey} -----------------");
         ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", tipoDescuentoKey);
         return View(cupon);
     }
@@ -111,23 +119,15 @@ public class CuponesController : Controller
                     type = "danger"
                 });
 
-            // Convertir el tipo de descuento
-            cupon.TipoDescuento = cupon.TipoDescuento switch
-            {
-                "1" => "Porcentaje",
-                "2" => "Fijo",
-                _ => cupon.TipoDescuento
-            };
-
             // Validar valor según tipo de descuento
-            if (cupon.TipoDescuento == "Porcentaje" && (cupon.Valor < 0 || cupon.Valor > 100))
+            if (cupon.TipoDescuento == "1" && (cupon.Valor < 0 || cupon.Valor > 100))
                 return BadRequest(new
                 {
                     status = "error",
                     message = "El porcentaje debe de estar entre 0 y 100.",
                     type = "danger"
                 });
-            if (cupon.TipoDescuento == "Fijo" && cupon.Valor <= 0)
+            if (cupon.TipoDescuento == "2" && cupon.Valor <= 0)
                 return BadRequest(new
                 {
                     status = "error",
@@ -170,6 +170,44 @@ public class CuponesController : Controller
             });
         }
     }
-}
 
-//TODO Arreglar el CRUD de cupones y crear el sistema de busqueda
+    public async Task<IActionResult> Search(string searchElement,
+        string tipoDescuento = "all", string activeFilter = "all")
+    {
+        //Se guardan y envián los datos de la busqueda actual
+        ViewBag.SearchString = searchElement;
+        ViewBag.ActiveFilter = activeFilter;
+        ViewBag.SelectedTipoDescuento = tipoDescuento;
+        ViewBag.TipoDescuento = _tipoDescuento;
+
+        try
+        {
+            var query = _context.Cupones.AsQueryable();
+            if (!string.IsNullOrEmpty(searchElement))
+                query = query.Where(r => r.Descripcion != null
+                                         && (r.Codigo.Contains(searchElement)
+                                             || r.Descripcion.Contains(searchElement)));
+
+            // Filtrar por estado activo/inactivo
+            if (activeFilter != "all")
+            {
+                var isActive = activeFilter == "true";
+                query = query.Where(k => k.Activo == isActive);
+            }
+
+            //Filtrar por tipo de descuento
+            if (tipoDescuento != "all") query = query.Where(k => k.TipoDescuento == tipoDescuento);
+
+            //Cargar los tipos de descuentos
+            var cupones = await query.ToListAsync();
+            return View("Index", cupones);
+        }
+        catch (Exception e)
+        {
+            var errorAlert = new Alert { Type = "danger", Message = "Error al realizar la busqueda" };
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(errorAlert);
+            _logger.LogError(e.Message);
+            return View("Index");
+        }
+    }
+}

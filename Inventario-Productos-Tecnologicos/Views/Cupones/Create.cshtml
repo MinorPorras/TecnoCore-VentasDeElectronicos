@@ -1,4 +1,3 @@
-@using System.Runtime.InteropServices.JavaScript
 @model Inventario_Productos_Tecnologicos.Models.Cupones
 
 @{
@@ -10,10 +9,11 @@
     <form asp-action="Create" method="Post">
         @Html.AntiForgeryToken()
         <div class="form-group">
-            <input type="hidden" asp-for="Id"/>
             <label for="Codigo" class="control-label">Código</label>
             <input class="form-control" name="Codigo" id="Codigo" placeholder="Código que usaran los clientes"
                    type="text"/>
+            <span asp-validation-for="Codigo" class="text-danger"></span>
+
         </div>
         <div class="form-group">
             <label for="Descripcion">Descripción</label>
@@ -41,10 +41,6 @@
         <div>
             <label for="FechaFin">Fecha de finalización:</label>
             <input type="date" id="FechaFin" name="FechaFin" class="form-control" required/>
-            <span asp-validation-for="FechaFin" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <input id="UsosActuales" name="UsosActuales" class="form-control" hidden value="0"/>
         </div>
         <div class="form-group">
             <label for="UsosMaximos">Usos máximos</label>
@@ -54,10 +50,10 @@
         <div class="formgroup">
             <label>Estado:</label>
             <div>
-                <input type="radio" name="active" id="active" value="true" checked>
+                <input type="radio" name="Activo" id="active" value="true" checked>
                 <label for="active">Activo</label>
 
-                <input type="radio" name="active" id="inactive" value="false">
+                <input type="radio" name="Activo" id="inactive" value="false">
                 <label for="inactive">Inactivo</label>
             </div>
         </div>
