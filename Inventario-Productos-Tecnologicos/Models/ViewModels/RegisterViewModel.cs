@@ -60,7 +60,7 @@ public class RegisterViewModel
 
     [Required(ErrorMessage = "Debe seleccionar un cantón.")]
     [Display(Name = "Cantón")]
-    public int SelectedCantonId { get; set; }
+    public int? SelectedCantonId { get; set; }
 
     // Listas para poblar los Dropdowns en la vista
     public List<SelectListItem> Provincias { get; set; } = new();

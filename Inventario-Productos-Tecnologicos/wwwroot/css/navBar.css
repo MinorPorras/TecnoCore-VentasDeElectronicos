@@ -9,11 +9,11 @@
             var(--Azure) 100%
     );
     --darkBlue: #101935;
-    --darkBlueOpacity: #10193555;
     --dBlueEnphasis1: #1f273f;
     --dBlueEnphasis2: #2c3550;
     --dBlueEnphasis3: #3a425f;
     --dBlueEnphasis3Trans: #3A425FA3;
+    --darkBlueOpacity: #10193555;
     --TiffBlue: #9ad4d6;
     --Azure: #f2fdff;
     --Twistle: #dbcbd8;
@@ -43,6 +43,7 @@ nav {
     height: 100%;
     top: 0;
     gap: .5rem;
+    margin-bottom: 0;
 
     & > ul {
         display: flex;
@@ -51,6 +52,7 @@ nav {
         position: relative;
         flex-grow: 1; /* Permite que la lista ocupe el espacio restante */
         flex-shrink: 0;
+        margin-bottom: 0;
 
         & li {
             list-style: none;
@@ -263,7 +265,7 @@ nav {
     visibility: hidden; /* **Oculto por defecto:** El elemento no es visible */
     opacity: 0; /* **Transparente por defecto:** Para una transición suave */
     width: auto; /* Ancho automático según el contenido */
-    min-width: 80px; /* Ancho mínimo para legibilidad */
+    min-width: 100px; /* Ancho mínimo para legibilidad */
     max-width: 200px; /* Ancho máximo para evitar tooltips demasiado largos */
     background-color: var(--dBlueEnphasis3Trans); /* Fondo oscuro semitransparente */
     color: #fff; /* Texto blanco */
@@ -297,6 +299,7 @@ nav {
     color: var(--Azure); /* Color de texto por defecto */
     transition: background-color 0.3s ease;
     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+    scale: .8;
 }
 
 .btnAccount {
@@ -313,7 +316,7 @@ nav {
         color: var(--ultraviolet);
         background: var(--darkBlueOpacity);
         border: 1px solid var(--ultraviolet);
-        scale: 1.1;
+        scale: .9;
         filter: drop-shadow(0px 1px 5px var(--ultraviolet));
         transition: all 0.3s ease;
     }
@@ -338,7 +341,7 @@ nav {
         color: var(--indianRed);
         background: var(--darkBlueOpacity);
         border: 1px solid var(--indianRed);
-        scale: 1.1;
+        scale: .9;
         filter: drop-shadow(0px 1px 5px var(--indianRed));
         transition: all 0.3s ease;
     }

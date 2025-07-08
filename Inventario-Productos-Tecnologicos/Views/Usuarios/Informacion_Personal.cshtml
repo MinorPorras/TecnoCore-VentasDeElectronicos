@@ -1,7 +1,59 @@
-@model Inventario_Productos_Tecnologicos.Models.Usuarios
-
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.RegisterViewModel
 @{
     ViewBag.Title = "Información Personal";
+    Layout = "_Layout";
 }
+<div class="pageContainer personalInfo">
+    <h2 class="pageTitle">Información Personal</h2>
+    <div class="accountForm">
+        @Html.AntiForgeryToken()
+        <div class="dataSeccion cuenta">
+            <h4>Datos de la cuenta</h4>
+            <div class="form-group">
+                <label asp-for="UserName"></label>
+                <label class="infoLabel">@Model.UserName</label>
+            </div>
 
-<h1>Información Personal</h1>
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <label class="infoLabel">@Model.Email</label>
+            </div>
+        </div>
+        <div class="dataSeccion personal">
+            <h4>Datos Personales</h4>
+            <div class="form-group">
+                <label asp-for="Nombre"></label>
+                <label class="infoLabel">@Model.Nombre</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="Apellidos"></label>
+                <label class="infoLabel">@Model.Apellidos</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber"></label>
+                <label class="infoLabel">@Model.PhoneNumber</label>
+            </div>
+        </div>
+
+        <div class="dataSeccion direccion">
+            <h4>Dirección</h4>
+            <div class="form-group">
+                <label>Provincia</label>
+                <label class="infoLabel">@ViewBag.ProvinciaName</label>
+            </div>
+            <div class="form-group mb-3">
+                <label asp-for="SelectedCantonId"></label>
+                <label class="infoLabel">@ViewBag.CantonName</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="DireccionExacta"></label>
+                <label class="infoLabel">@Model.DireccionExacta</label>
+            </div>
+            <div class="form-group">
+                <label asp-for="CodigoPostal"></label>
+                <label class="infoLabel">@Model.CodigoPostal</label>
+            </div>
+        </div>
+        <a asp-action="changePersonalInformation" asp-controller="Usuarios" class="formBtn">Actualizar información</a>
+    </div>
+</div>

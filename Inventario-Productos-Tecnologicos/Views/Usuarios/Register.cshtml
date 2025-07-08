@@ -5,11 +5,11 @@
     Layout = "_Layout";
 }
 <div class="pageContainer register">
-    <h2>Crea tu nueva cuenta</h2>
-    <form asp-action="Register" method="post">
+    <h2 class="pageTitle">Crea tu nueva cuenta</h2>
+    <form asp-action="Register" method="post" class="accountForm">
         @Html.AntiForgeryToken()
-        <div class="RegisterSeccion">
-            <h4>Datos de la cuenta</h4>
+        <div class="dataSeccion cuenta">
+            <h4 class="RegisterSeccionTitle">Datos de la cuenta</h4>
             <div class="form-group">
                 <label asp-for="UserName"></label>
                 <input asp-for="UserName" type="text">
@@ -34,8 +34,8 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
         </div>
-        <div class="RegisterSeccion">
-            <h4>Datos Personales</h4>
+        <div class="dataSeccion personal">
+            <h4 class="RegisterSeccionTitle">Datos Personales</h4>
             <div class="form-group">
                 <label asp-for="Nombre"></label>
                 <input asp-for="Nombre" type="text">
@@ -53,8 +53,8 @@
             </div>
         </div>
 
-        <div class="RegisterSeccion">
-            <h4>Dirección</h4>
+        <div class="dataSeccion direccion">
+            <h4 class="RegisterSeccionTitle">Dirección</h4>
             <div class="form-group">
                 <label asp-for="SelectedProvinciaId"></label>
                 <select asp-for="SelectedProvinciaId" asp-items="@Model.Provincias" class="form-control"
@@ -82,8 +82,10 @@
                 <span asp-validation-for="CodigoPostal" class="text-danger"></span>
             </div>
         </div>
-        <button type="button" onclick="window.history.back()">Regresar</button>
-        <button type="submit">Crear Usuario</button>
+        <div class="btnFormContainer">
+            <button type="button" onclick="window.history.back()" class="formBtn back">Regresar</button>
+            <button type="submit" class="formBtn">Crear Usuario</button>
+        </div>
     </form>
 </div>
 
@@ -91,6 +93,10 @@
     <partial name="_ValidationScriptsPartial"/>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            let pageTitle = document.querySelector('.pageTitle');
+            if (pageTitle) {
+                pageTitle.scrollIntoView();
+            }
             let provinciasDropdown = document.getElementById('provinciasDropdown');
             let cantonesDropdown = document.getElementById('cantonesDropdown');
 
@@ -101,9 +107,6 @@
 
                 if (provinciaId) {
                     try {
-                        // ¡CAMBIO AQUÍ EN LA URL DEL FETCH!
-                        // Asumiendo que tu controlador es "UsuariosController"
-                        // y el método se llama "GetCantonesByProvincia"
                         const response = await fetch(`/Usuarios/GetCantonesByProvincia/${provinciaId}`);
 
                         if (!response.ok) {
@@ -115,7 +118,6 @@
                         cantonesDropdown.appendChild(new Option('-- Seleccione un cantón --', ''));
 
                         data.forEach(function (canton) {
-                            // Asegúrate de que el objeto canton tenga 'id' y 'nombre' como propiedades
                             cantonesDropdown.appendChild(new Option(canton.nombre, canton.id));
                         });
 
@@ -143,7 +145,15 @@
             });
 
             let initialProvinciaId = provinciasDropdown.value;
-            let initialCantonId = @Html.Raw(Model.SelectedCantonId.ToString() == "0" ? "null" : Model.SelectedCantonId.ToString());
+            let initialCantonId
+            @if (Model.SelectedCantonId != 0)
+            {
+                <text>initialCantonId = '@Model.SelectedCantonId';</text>
+            }
+            else
+            {
+                <text>initialCantonId = null;</text> // Se genera como JS null
+            }
 
             if (initialProvinciaId) {
                 loadCantones(initialProvinciaId, initialCantonId);

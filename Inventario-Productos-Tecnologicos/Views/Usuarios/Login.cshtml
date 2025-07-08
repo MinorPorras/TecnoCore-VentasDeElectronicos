@@ -6,7 +6,7 @@
 }
 <div class="loginContainer">
     <form asp-action="login" asp-controller="Usuarios" method="post" class="loginForm">
-        <h2>Inicio de sesión</h2>
+        <h2 class="pageTitle">Inicio de sesión</h2>
         @Html.AntiForgeryToken()
         <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
         <div class="form-group">
@@ -23,8 +23,20 @@
             <p>No tiene cuenta? <a asp-action="Register" asp-controller="Usuarios">Registrarse</a></p>
         </div>
         <div class="form-group">
-            <button type="submit" class="btnLogin">Iniciar sesión</button>
             <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
+            <button type="submit" class="btnLogin">Iniciar sesión</button>
         </div>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial"/>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            let pageTitle = document.querySelector('.pageTitle');
+            if (pageTitle) {
+                pageTitle.scrollIntoView();
+            }
+        });
+    </script>
+}

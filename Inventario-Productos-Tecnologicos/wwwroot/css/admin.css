@@ -397,6 +397,8 @@ h1 {
 
                 & .tableButtonsColumn {
                     display: flex; /* Para que los botones se coloquen en fila */
+                    align-items: center;
+                    justify-content: center;
                     gap: 10px; /* Espacio entre los botones */
                 }
 
@@ -404,7 +406,6 @@ h1 {
                 .EditBtn,
                 .showModal {
                     display: inline-flex; /* Permite que el contenido interno (imagen, texto) se alinee */
-                    align-items: center;
                     gap: 5px; /* Espacio entre la imagen y el texto */
                     padding: 8px 12px;
                     border-radius: 5px;
@@ -413,6 +414,8 @@ h1 {
                     color: var(--Azure); /* Color de texto por defecto */
                     transition: background-color 0.3s ease;
                     white-space: nowrap; /* Evita que el texto se rompa en varias líneas */
+                    align-items: center;
+                    justify-content: center;
                 }
 
                 & .DetailsBtn {

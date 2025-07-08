@@ -38,7 +38,11 @@ public class UsuariosController : Controller
     [HttpGet]
     public async Task<ViewResult> Register()
     {
-        var model = new RegisterViewModel();
+        var model = new RegisterViewModel
+        {
+            SelectedCantonId = 0,
+            SelectedProvinciaId = 0
+        };
         await RellenarProvinciasCantones(model);
         return View(model);
     }
@@ -177,6 +181,46 @@ public class UsuariosController : Controller
         // Si el ModelState no es válido o hubo errores, re-renderizar la vista
         await RellenarProvinciasCantones(model);
         return View(model);
+    }
+
+    public async Task<IActionResult> Informacion_personal(string id)
+    {
+        var usuario = await _userManager.FindByIdAsync(id);
+        if (usuario == null) return NotFound();
+        var direccion = await _context.Direcciones.Where(d => d.UsuarioId == usuario.Id)
+            .Include(direcciones => direcciones.Canton).FirstOrDefaultAsync();
+        if (direccion == null) return NotFound();
+        try
+        {
+            if (direccion.Canton != null && usuario is { Email: not null, UserName: not null, PhoneNumber: not null })
+            {
+                var model = new RegisterViewModel
+                {
+                    UserName = usuario.UserName,
+                    Email = usuario.Email,
+                    Nombre = usuario.Nombre,
+                    Apellidos = usuario.Apellidos,
+                    PhoneNumber = usuario.PhoneNumber,
+                    DireccionExacta = direccion.Direccion,
+                    CodigoPostal = direccion.CodigoPostal,
+                    SelectedCantonId = direccion.CantonId,
+                    SelectedProvinciaId = direccion.Canton.ProvinciaId
+                };
+                var provincia = await _context.Provincias.Where(p => p.Id == model.SelectedProvinciaId)
+                    .FirstOrDefaultAsync();
+                var canton = await _context.Cantones.Where(c => c.Id == model.SelectedCantonId).FirstOrDefaultAsync();
+                ViewBag.ProvinciaName = provincia?.Nombre;
+                ViewBag.CantonName = canton?.Nombre;
+                return View(model);
+            }
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+
+        return RedirectToAction("Index", "Home");
     }
 
     public ViewResult Login()
@@ -410,8 +454,4 @@ public class UsuariosController : Controller
             return StatusCode(500, new { message = "No se pudo guardar los cambios en la base de datos" });
         }
     }*/
-    public IActionResult Informacion_personal()
-    {
-        return View();
-    }
 }
