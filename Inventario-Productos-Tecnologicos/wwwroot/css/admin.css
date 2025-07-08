@@ -500,7 +500,7 @@ h1 {
 
         & .tbl-header.TKardex, .tableRow.TKardex {
             grid-template-columns: minmax(60px, 1fr) minmax(200px, 2fr) minmax(100px, 1fr) minmax(120px, 1fr) 
-            minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr);
+            minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr);
         }
 
         & .tableRow.TKardex .tableCell {
@@ -510,8 +510,8 @@ h1 {
         /*----Tablas con 10 columnas----*/
 
         & .tbl-header.TCupon, .tableRow.TCupon {
-            grid-template-columns: minmax(60px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(120px, 1fr) 
-            minmax(80px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr);
+            grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(120px, 1fr) 
+            minmax(120px, 1fr) minmax(120px, 1fr) minmax(80px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr) minmax(200px, 2fr);
         }
     }
 }
@@ -592,14 +592,13 @@ h1 {
     opacity: 1; /* Lo vuelve completamente opaco */
 }
 
+
 #alertContainer {
     position: fixed;
     top: 20px;
     right: 20px;
     z-index: 1050;
     max-width: 350px;
-    background: var(--darkGradient);
-    border: 1px solid var(--TiffBlue);
 }
 
 #alertContainer .alert {

@@ -1,4 +1,5 @@
 ﻿@using System.Security.Claims;
+@using Inventario_Productos_Tecnologicos.Models.ViewModels
 @{
     var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
 }
@@ -21,6 +22,13 @@
                 <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="imgLogo"/>
             </a>
             <ul>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    if (User.IsInRole("Administrador"))
+                    {
+                        <li><a asp-action="Mantenimiento" asp-controller="Home">Mantenimiento</a></li>
+                    }
+                }
                 <li><a asp-action="index" asp-controller="Home">Inicio</a></li>
                 @await Component.InvokeAsync("Categories")
             </ul>
@@ -83,18 +91,6 @@
 </header>
 <div class="main_container">
     <div id="alertContainer"></div>
-    @*@if (TempData["Error"] != null)
-    {
-        <div class="alert alert-danger" role="alert">
-            @TempData["Error"]
-        </div>
-    }
-    @if (TempData["Message"] != null)
-    {
-        <div class="alert alert-success" role="alert">
-            @TempData["Message"]
-        </div>
-    }*@
     <main>
         @RenderBody()
     </main>
@@ -128,3 +124,23 @@
 @await RenderSectionAsync("Scripts", false)
 </body>
 </html>
+
+@if (TempData["Alert"] != null)
+{
+    var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"]?.ToString()!);
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showAlert('@Html.Raw(alert?.Message)', '@alert?.Type');
+        });
+    </script>
+}
+
+@if (TempData["Sucess"] != null)
+{
+    var sucess = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Sucess"]?.ToString()!);
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            showAlert('@Html.Raw(sucess?.Message)', '@sucess?.Type');
+        });
+    </script>
+}
