@@ -12,7 +12,12 @@
         </div>
 
         <div class="seeMore">
-            <a href="#">Ver más</a>
+            <a asp-controller="Productos"
+               asp-action="ListaProductos"
+               asp-route-categoriaId="2"
+               asp-route-subcategoriaId="0">
+                Ver más
+            </a>
         </div>
         <div class="curve-one"></div>
         <div class="curve-two"></div>
@@ -30,7 +35,12 @@
         </div>
 
         <div class="seeMore">
-            <a href="#">Ver más</a>
+            <a asp-controller="Productos"
+               asp-action="ListaProductos"
+               asp-route-categoriaId="1"
+               asp-route-subcategoriaId="0">
+                Ver más
+            </a>
         </div>
         <div class="curve-one"></div>
         <div class="curve-two"></div>
@@ -48,7 +58,12 @@
         </div>
 
         <div class="seeMore">
-            <a href="#">Ver más</a>
+            <a asp-controller="Productos"
+               asp-action="ListaProductos"
+               asp-route-categoriaId="3"
+               asp-route-subcategoriaId="0">
+                Ver más
+            </a>
         </div>
         <div class="curve-one"></div>
         <div class="curve-two"></div>
@@ -58,119 +73,6 @@
 <section class="cardWrapper Novedades">
     <div class="InicioCard">
         @await Component.InvokeAsync("CarruselNovedades")
-    </div>
-</section>
-
-<section class="list ofertas">
-    <div class="List-header">
-        <div class="List-title">
-            <h2>Ofertas</h2>
-        </div>
-        <div class="List-controls-Container">
-            <button class="ListLastElement">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            </button>
-            <button class="ListNextElement">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            </button>
-        </div>
-    </div>
-    <div class="ListArticlesContainer">
-        <article class="card-producto">
-            <header>
-                <img src="img/perifericos.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto">
-            <header>
-                <img src="img/BuildYourPC.jpg" alt="Imagen">
-                <h3>Título del elemento</h3>
-                <p>₡ 0.00</p>
-            </header>
-            <button class="btnVerMas">Ver más</button>
-            <button class="btnAddToCart">Agregar al carrito</button>
-        </article>
-
-        <article class="card-producto-last-item">
-            <h2 class="card-producto-last-item-title">
-                Ver todas las ofertas
-            </h2>
-        </article>
     </div>
 </section>
 

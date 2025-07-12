@@ -7,7 +7,7 @@
     @* Formulario de Filtros en la vista ListaProductos *@
     <form class="sidebar" asp-action="ListaProductos" method="get">
         <h3>Filtros</h3>
-        <button type="submit" class="btn-update">Actualizar</button>
+        <button type="reset" class="btn-update">Limpiar</button>
 
         @* Campos ocultos para mantener los IDs de navegación iniciales *@
         <input type="hidden" name="categoriaId" value="@Model.CurrentCategoriaId"/>
@@ -123,3 +123,17 @@
         }
     </section>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleccionar todos los inputs de tipo radio y checkbox en los filtros
+        const filterInputs = document.querySelectorAll('input[type="radio"][name="OrderForm"], input[type="radio"][name="OrderBy"], input[type="checkbox"][name="SelectedCategoriaIds"], input[type="checkbox"][name="SelectedSubcategoryIds"], input[type="checkbox"][name="SelectedMarcaIds"]');
+
+        // Agregar el evento change a cada input
+        filterInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Enviar el formulario automáticamente
+                this.closest('form').submit();
+            });
+        });
+    });
+</script>
