@@ -61,6 +61,7 @@ function modifyElement() {
         const values = {};
 
         form.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+            console.log(`Nombre del elemento: ${el.name}`)
             // Ignorar ciertos campos
             if (el.name === 'controller' || el.name === '__RequestVerificationToken' || el.name === 'action') {
                 return;
@@ -76,12 +77,12 @@ function modifyElement() {
             } else {
                 // Manejar casos especiales
                 switch (el.name) {
-                    case 'Id':
-                    case 'CategoriaId':
-                    case 'MarcaId':
+                    case 'TN_Id':
+                    case 'TN_CategoriaId':
+                    case 'TN_MarcaId':
                         values[el.name] = parseInt(el.value);
                         break;
-                    case 'Activo':
+                    case 'TB_Activo':
                         console.log('Activo:', el.value);
                         values[el.name] = el.value === "true";
                         break;
@@ -93,6 +94,7 @@ function modifyElement() {
         });
 
         try {
+            console.log(values)
             const bodyRequest = JSON.stringify(values);
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
             const response = await fetch(`/${controller}/${action}`, {
@@ -104,18 +106,20 @@ function modifyElement() {
                 body: bodyRequest
             })
 
-            const data = await response.json();
+            // Check if the response status is 204 No Content
+            if (response.status === 204) {
+                return;
+            }
 
             if (response.ok) {
-                showAlert('Operación realizada con éxito', 'success');
-                setTimeout(() => {
+                if (action !== 'EditSubcategoria') {
                     window.location.href = `/${controller}/Index`;
-                }, 1500);
-            } else {
-                showAlert(data.message || 'Ha ocurrido un error', data.type || 'danger');
+                } else {
+                    window.history.back();
+                    window.location.reload();
+                }
             }
         } catch (e) {
-            showAlert('Error en la operación', 'danger');
             console.error('Error:', e);
         }
     })
@@ -253,17 +257,24 @@ function kardexHandlers() {
 }
 
 function handleCuponesForm(create = true) {
-    const fechaInicio = document.querySelector('#FechaInicio');
-    const fechaFin = document.querySelector('#FechaFin');
+    const fechaInicio = document.querySelector('#TF_FechaInicio');
+    const fechaFin = document.querySelector('#TF_FechaFin');
+    const tipoDescuento = document.querySelector('#TC_TipoDescuento');
+    const symbolColon = document.getElementById('symbolColon');
+    const symbolPorc = document.getElementById('symbolPorc');
+
+    // Verificar que todos los elementos necesarios existen
+    if (!fechaInicio || !fechaFin || !tipoDescuento || !symbolColon || !symbolPorc) {
+        console.log('No se encontraron todos los elementos necesarios para el formulario de cupones');
+        return;
+    }
+
     const today = new Date();
     const tomorrow = new Date(today);
-    console.log(create);
 
     if (create) {
         // Obtener fecha de hoy
         fechaInicio.value = today.toISOString().split('T')[0];
-    }
-    if (create) {
         // Obtener fecha de mañana
         tomorrow.setDate(today.getDate() + 1);
         fechaFin.value = tomorrow.toISOString().split('T')[0];
@@ -284,25 +295,19 @@ function handleCuponesForm(create = true) {
     });
 
     // Manejar la visualización de símbolos según el tipo de descuento
-    const tipoDescuento = document.querySelector('#TipoDescuento');
-    const symbolColon = document.getElementById('symbolColon');
-    const symbolPorc = document.getElementById('symbolPorc');
-
-    if (tipoDescuento.value === "1") { // Porcentaje
-        symbolColon.style.display = 'none';
-        symbolPorc.style.display = 'inline';
-    } else if (tipoDescuento.value === "2") { // Fijo
-        symbolColon.style.display = 'inline';
-        symbolPorc.style.display = 'none';
-    }
-
-    tipoDescuento.addEventListener('change', function () {
-        if (this.value === "1") { // Porcentaje
+    function updateSymbols() {
+        if (tipoDescuento.value === "P") {
             symbolColon.style.display = 'none';
             symbolPorc.style.display = 'inline';
-        } else if (this.value === "2") { // Fijo
+        } else if (tipoDescuento.value === "M") {
             symbolColon.style.display = 'inline';
             symbolPorc.style.display = 'none';
         }
-    });
+    }
+
+    // Actualizar símbolos inicialmente
+    updateSymbols();
+
+    // Agregar listener para cambios
+    tipoDescuento.addEventListener('change', updateSymbols);
 }

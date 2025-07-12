@@ -1,8 +1,8 @@
-using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
@@ -14,10 +14,9 @@ public class CuponesController : Controller
 
     private readonly Dictionary<string, string> _tipoDescuento = new()
     {
-        { "1", "Porcentaje" },
-        { "2", "Fijo" }
+        { "P", "Porcentaje" },
+        { "M", "Monto" }
     };
-    //TODO No se está cargando el tipo de descuento en la vista Create, Edit y Index.
 
     public CuponesController(TecnoCoreDbContext context, ILogger<CuponesController> logger)
     {
@@ -25,12 +24,26 @@ public class CuponesController : Controller
         _logger = logger;
     }
 
-    // GET
     public async Task<IActionResult> Index()
     {
-        var cupones = await _context.Cupones.ToListAsync();
-        ViewData["TipoDescuento"] = _tipoDescuento;
-        return View(cupones);
+        try
+        {
+            var cupones = await _context.TECO_M_Cupon.ToListAsync();
+
+            _logger.LogInformation("Cupones cargados: {Count}", cupones.Count);
+            foreach (var cupon in cupones)
+                _logger.LogInformation("Cupón ID: {Id}, Código: {Codigo}", cupon.TN_Id, cupon.TC_Codigo);
+
+            ViewData["TipoDescuento"] = _tipoDescuento;
+            return View(cupones);
+        }
+        catch (Exception ex)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al cargar la lista de cupones"));
+            _logger.LogError(ex, "Error al cargar cupones");
+            return RedirectToAction("Index", "Home");
+        }
     }
 
     public IActionResult Create()
@@ -43,171 +56,174 @@ public class CuponesController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
         [Bind(
-            "Codigo,Descripcion,TipoDescuento,Valor,FechaInicio,FechaFin, UsosActuales, UsosMaximos ,Activo")]
-        Cupones cupon)
+            "TC_Codigo,TC_Descripcion,TC_TipoDescuento,TN_Valor,TF_FechaInicio,TF_FechaFin,TN_UsosActuales,TN_UsosMaximos,TB_Activo")]
+        TECO_M_Cupon cupon)
     {
-        _logger.LogDebug(ModelState.IsValid.ToString());
         if (ModelState.IsValid)
+            try
+            {
+                _context.Add(cupon);
+                await _context.SaveChangesAsync();
+                TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.ErrorAlert("Error al crear el cupón"));
+                _logger.LogError(ex, "Error al crear cupón");
+            }
+
+        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", cupon.TC_TipoDescuento);
+        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            Alert.ErrorAlert("Por favor, revise los datos ingresados"));
+        return View(cupon);
+    }
+
+    public async Task<IActionResult> Edit(int TN_Id)
+    {
+        Console.WriteLine($"Edit method called with id: {TN_Id}");
+        var cupon = await _context.TECO_M_Cupon.FindAsync(TN_Id);
+        if (cupon == null)
         {
-            _logger.LogInformation(cupon.Codigo);
-            _context.Add(cupon);
-            await _context.SaveChangesAsync();
-            var alert = new Alert { Type = "success", Message = "Cupón creado exitosamente" };
-            TempData["Sucess"] = System.Text.Json.JsonSerializer.Serialize(alert);
-            return RedirectToAction(nameof(Index));
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("el cupón"));
+            return NotFound();
         }
 
-        var errorAlert = new Alert { Type = "danger", Message = "Por favor, revise los datos ingresados" };
-        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(errorAlert);
-        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value");
+        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", cupon.TC_TipoDescuento);
         return View(cupon);
+    }
+
+    [HttpPut]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit([FromBody] TECO_M_Cupon cupon)
+    {
+        try
+        {
+            if (!ModelState.IsValid)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.ErrorAlert("Los datos ingresados no son válidos"));
+                return BadRequest();
+            }
+
+            var cuponExistente = await _context.TECO_M_Cupon.FindAsync(cupon.TN_Id);
+            if (cuponExistente == null)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.NotFoundAlert("el cupón"));
+                return NotFound();
+            }
+
+            // Actualizar las propiedades del cupón existente
+            cuponExistente.TC_Codigo = cupon.TC_Codigo;
+            cuponExistente.TC_Descripcion = cupon.TC_Descripcion;
+            cuponExistente.TC_TipoDescuento = cupon.TC_TipoDescuento;
+            cuponExistente.TN_Valor = cupon.TN_Valor;
+            cuponExistente.TF_FechaInicio = cupon.TF_FechaInicio;
+            cuponExistente.TF_FechaFin = cupon.TF_FechaFin;
+            cuponExistente.TN_UsosActuales = cupon.TN_UsosActuales;
+            cuponExistente.TN_UsosMaximos = cupon.TN_UsosMaximos;
+            cuponExistente.TB_Activo = cupon.TB_Activo;
+
+            _context.Update(cuponExistente);
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+            return Ok();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CuponExists(cupon.TN_Id))
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.NotFoundAlert("el cupón"));
+                return NotFound();
+            }
+
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error de concurrencia al actualizar el cupón"));
+            return StatusCode(500);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al actualizar cupón {CuponId}", cupon.TN_Id);
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al actualizar el cupón"));
+            return StatusCode(500);
+        }
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SwitchActive(int id)
     {
-        var cupon = await _context.Cupones.FindAsync(id);
-        if (cupon == null) return RedirectToAction(nameof(Index));
-        cupon.Activo = !cupon.Activo;
-        _context.Cupones.Update(cupon);
-        await _context.SaveChangesAsync();
+        try
+        {
+            var cupon = await _context.TECO_M_Cupon.FindAsync(id);
+            if (cupon == null)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.NotFoundAlert("el cupón"));
+                return RedirectToAction(nameof(Index));
+            }
+
+            cupon.TB_Activo = !cupon.TB_Activo;
+            _context.Update(cupon);
+            await _context.SaveChangesAsync();
+
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+        }
+        catch (Exception ex)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al cambiar el estado del cupón"));
+            _logger.LogError(ex, "Error al cambiar estado del cupón {CuponId}", id);
+        }
 
         return RedirectToAction(nameof(Index));
     }
 
-    public async Task<IActionResult> Edit(int id)
+    private bool CuponExists(int id)
     {
-        var cupon = await _context.Cupones.FindAsync(id);
-        if (cupon == null) return NotFound();
-
-        var tipoDescuentoKey = cupon.TipoDescuento;
-        _logger.LogInformation($"---------------- {tipoDescuentoKey} -----------------");
-        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", tipoDescuentoKey);
-        return View(cupon);
+        return _context.TECO_M_Cupon.Any(e => e.TN_Id == id);
     }
 
-    [HttpPut]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit([FromBody] Cupones cupon)
+    public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
-        if (!ModelState.IsValid)
-        {
-            TempData["Error"] = "Datos inválidos enviados al servidor.";
-            return BadRequest(new
-            {
-                status = "error",
-                message = "Datos inválidos enviados al servidor.",
-                type = "danger"
-            });
-        }
-
         try
         {
-            var existingCupon = await _context.Cupones.FirstOrDefaultAsync(r => r.Id == cupon.Id);
-            if (existingCupon == null)
-                return NotFound();
+            ViewBag.SearchString = searchElement;
+            ViewBag.ActiveFilter = activeFilter;
 
-            // Verificar si el código ya existe en otro cupón
-            var duplicateCupon = await _context.Cupones
-                .FirstOrDefaultAsync(c => c.Codigo == cupon.Codigo && c.Id != cupon.Id);
-            if (duplicateCupon != null)
-                return BadRequest(new
-                {
-                    status = "error",
-                    message = "Ya existe otro cupón con el mismo código.",
-                    type = "danger"
-                });
+            var query = _context.TECO_M_Cupon.AsQueryable();
 
-            // Validar valor según tipo de descuento
-            if (cupon.TipoDescuento == "1" && (cupon.Valor < 0 || cupon.Valor > 100))
-                return BadRequest(new
-                {
-                    status = "error",
-                    message = "El porcentaje debe de estar entre 0 y 100.",
-                    type = "danger"
-                });
-            if (cupon.TipoDescuento == "2" && cupon.Valor <= 0)
-                return BadRequest(new
-                {
-                    status = "error",
-                    message = "El valor del descuento fijo debe ser mayor que cero.",
-                    type = "danger"
-                });
-            if (cupon.FechaInicio > cupon.FechaFin)
-                return BadRequest(new
-                {
-                    status = "error",
-                    message = "La fecha de inicio no puede ser posterior a la fecha de fin.",
-                    type = "danger"
-                });
-            existingCupon.Codigo = cupon.Codigo;
-            existingCupon.Descripcion = cupon.Descripcion;
-            existingCupon.TipoDescuento = cupon.TipoDescuento;
-            existingCupon.Valor = cupon.Valor;
-            existingCupon.FechaInicio = cupon.FechaInicio;
-            existingCupon.FechaFin = cupon.FechaFin;
-            existingCupon.UsosActuales = cupon.UsosActuales;
-            existingCupon.UsosMaximos = cupon.UsosMaximos;
-            existingCupon.Activo = cupon.Activo;
-
-            await _context.SaveChangesAsync();
-            TempData["Success"] = "Cupón actualizado correctamente.";
-            return Ok(new
-            {
-                status = "success",
-                message = "Cupón actualizado correctamente.",
-                type = "success"
-            });
-        }
-        catch (DbUpdateException)
-        {
-            return StatusCode(500, new
-            {
-                status = "error",
-                message = "No se pudo guardar los cambios en la base de datos",
-                type = "danger"
-            });
-        }
-    }
-
-    public async Task<IActionResult> Search(string searchElement,
-        string tipoDescuento = "all", string activeFilter = "all")
-    {
-        //Se guardan y envián los datos de la busqueda actual
-        ViewBag.SearchString = searchElement;
-        ViewBag.ActiveFilter = activeFilter;
-        ViewBag.SelectedTipoDescuento = tipoDescuento;
-        ViewBag.TipoDescuento = _tipoDescuento;
-
-        try
-        {
-            var query = _context.Cupones.AsQueryable();
             if (!string.IsNullOrEmpty(searchElement))
-                query = query.Where(r => r.Descripcion != null
-                                         && (r.Codigo.Contains(searchElement)
-                                             || r.Descripcion.Contains(searchElement)));
+                query = query.Where(c => c.TC_Codigo.Contains(searchElement)
+                                         || c.TC_Descripcion.Contains(searchElement));
 
-            // Filtrar por estado activo/inactivo
-            if (activeFilter != "all")
+            if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
             {
                 var isActive = activeFilter == "true";
-                query = query.Where(k => k.Activo == isActive);
+                query = query.Where(c => c.TB_Activo == isActive);
             }
 
-            //Filtrar por tipo de descuento
-            if (tipoDescuento != "all") query = query.Where(k => k.TipoDescuento == tipoDescuento);
-
-            //Cargar los tipos de descuentos
             var cupones = await query.ToListAsync();
+
+            if (!cupones.Any())
+                TempData["info"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.InfoAlert("No se encontraron cupones con los criterios especificados"));
+
+            ViewData["TipoDescuento"] = _tipoDescuento;
             return View("Index", cupones);
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            var errorAlert = new Alert { Type = "danger", Message = "Error al realizar la busqueda" };
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(errorAlert);
-            _logger.LogError(e.Message);
-            return View("Index");
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al buscar cupones"));
+            _logger.LogError(ex, "Error al buscar cupones");
+            return RedirectToAction(nameof(Index));
         }
     }
 }

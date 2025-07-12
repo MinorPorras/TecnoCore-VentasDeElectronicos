@@ -20,13 +20,13 @@ public class ProductCardViewComponent : ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync(int productId)
     {
-        var product = await _context.Productos
+        var product = await _context.TECO_A_Producto
             .Include(p => p.Subcategoria)
             .Include(p => p.Subcategoria!.Categoria)
-            .FirstOrDefaultAsync(p => p.Id == productId);
+            .FirstOrDefaultAsync(p => p.TN_Id == productId);
         if (product == null) return Content("Producto no encontrado");
         // Verificar y asignar la ruta de la imagen
-        product.Imagen = GetImagePath(product.Imagen);
+        product.TC_Imagen = GetImagePath(product.TC_Imagen);
         return View(product);
     }
 

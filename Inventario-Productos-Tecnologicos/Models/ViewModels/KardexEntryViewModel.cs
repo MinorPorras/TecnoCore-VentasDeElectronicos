@@ -26,5 +26,5 @@ public class KardexViewModel
 
     public bool Activo { get; set; } = true;
 
-    public List<Productos>? ProductosDisponibles { get; set; }
+    public List<TECO_A_Producto>? ProductosDisponibles { get; set; }
 }

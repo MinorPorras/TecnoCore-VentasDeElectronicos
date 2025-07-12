@@ -1,4 +1,4 @@
-@model Categorias
+@model TECO_M_Subcategoria
 
 @{
     ViewBag.Title = "Crear Subcategoría";
@@ -11,20 +11,20 @@
     <form asp-action="CreateSubcategoria" method="post">
         @Html.AntiForgeryToken()
         <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre">
+            <label for="TC_Nombre">Nombre:</label>
+            <input type="text" name="TC_Nombre" id="TC_Nombre">
         </div>
-        <input type="hidden" name="CategoriaID" id="CategoriaID" value="@ViewBag.CategoriaId">
+        <input type="hidden" name="TN_CategoriaId" id="TN_CategoriaId" value="@ViewBag.CategoriaId">
         <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
+            <label for="TB_Activo">Estado:</label>
+            <select name="TB_Activo" id="TB_Activo">
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
             <button type="submit">Guardar</button>
-            <a asp-action="Index">Regresar</a>
+            <a asp-action="Edit" asp-route-id="@ViewBag.CategoriaId">Regresar</a>
         </div>
     </form>
 </div>

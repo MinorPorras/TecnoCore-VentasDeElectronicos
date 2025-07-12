@@ -1,4 +1,4 @@
-@model List<Inventario_Productos_Tecnologicos.Models.Kardex>
+@model List<Inventario_Productos_Tecnologicos.Models.TECO_P_Kardex>
 
 @{
     ViewBag.Title = "Kardex General";
@@ -45,13 +45,13 @@
                 }
                 @foreach (var tMovimiento in ViewBag.TiposMovimiento)
                 {
-                    if (ViewBag.SelectedTipoMovimiento == tMovimiento.Id.ToString())
+                    if (ViewBag.SelectedTipoMovimiento == tMovimiento.TN_Id.ToString())
                     {
-                        <option value="@tMovimiento.Id" selected>@tMovimiento.Tipo</option>
+                        <option value="@tMovimiento.TN_Id" selected>@tMovimiento.TC_Tipo</option>
                     }
                     else
                     {
-                        <option value="@tMovimiento.Id">@tMovimiento.Tipo</option>
+                        <option value="@tMovimiento.TN_Id">@tMovimiento.TC_Tipo</option>
                     }
                 }
             </select>
@@ -81,16 +81,16 @@
                 @foreach (var entry in Model)
                 {
                     <div class="tableRow TKardex">
-                        <span class="tableCell">@entry.Id</span>
-                        <span class="tableCell">@(entry.Producto?.Nombre ?? "")</span>
+                        <span class="tableCell">@entry.TN_Id</span>
+                        <span class="tableCell">@(entry.Producto?.TC_Nombre ?? "")</span>
                         <span
-                            class="tableCell">@(entry.Fecha.HasValue ? entry.Fecha.Value.ToString("dd/MM/yyyy") : "")</span>
-                        <span class="tableCell">@(entry.StockAnterior ?? 0)</span>
-                        <span class="tableCell">@(entry.Cantidad ?? 0)</span>
-                        <span class="tableCell">@(entry.StockActual ?? 0)</span>
-                        <span class="tableCell">@(entry.TipoMovimientoKardex?.Tipo ?? "-")</span>
+                            class="tableCell">@(entry.TF_Fecha.HasValue ? entry.TF_Fecha.Value.ToString("dd/MM/yyyy") : "")</span>
+                        <span class="tableCell">@(entry.TN_StockAnterior ?? 0)</span>
+                        <span class="tableCell">@(entry.TN_Cantidad ?? 0)</span>
+                        <span class="tableCell">@(entry.TN_StockActual ?? 0)</span>
+                        <span class="tableCell">@(entry.TipoMovimientoKardex?.TC_Tipo ?? "-")</span>
                         <div class="tableButtonsColumn">
-                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@entry.Id">
+                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@entry.TN_Id">
                                 <img src="~/img/ICO_Details.svg" alt="Detalles"/>
                                 <span class="TooltipText">Detalles</span>
                             </a>

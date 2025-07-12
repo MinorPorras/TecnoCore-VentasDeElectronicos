@@ -11,12 +11,12 @@
     <form asp-action="Create" method="post">
         @Html.AntiForgeryToken()
         <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre">
+            <label for="TC_Nombre">Nombre:</label>
+            <input type="text" name="TC_Nombre" id="TC_Nombre">
         </div>
         <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
+            <label for="TB_Activo">Estado:</label>
+            <select name="TB_Activo" id="TB_Activo">
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
             </select>

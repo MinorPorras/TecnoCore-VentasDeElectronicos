@@ -1,4 +1,4 @@
-@model List<Inventario_Productos_Tecnologicos.Models.Productos>
+@model List<Inventario_Productos_Tecnologicos.Models.TECO_A_Producto>
 
 @{
     ViewBag.Title = "Productos";
@@ -24,7 +24,8 @@
             </div>
             <div class=" btnCreateContainer">
                 <a asp-action="Create" class="btnCreate">Crear</a>
-            </div>        </div>
+            </div>
+        </div>
         <div class="selectGroup">
             <label for="marcas">Marcas:</label>
             <select name="marcas" id="marcas" class="searchSelect">
@@ -97,20 +98,20 @@
                 @foreach (var prod in Model)
                 {
                     <div class="tableRow TProd">
-                        <span class="tableCell">@prod.Id</span>
-                        <span class="tableCell">@prod.Nombre</span>
-                        <span class="tableCell">@prod.Marca?.Nombre</span>
-                        <span class="tableCell">@prod.Subcategoria?.Nombre</span>
-                        <span class="tableCell">@(prod.Precio)</span>
-                        <span class="tableCell">@(prod.Stock)</span>
+                        <span class="tableCell">@prod.TN_Id</span>
+                        <span class="tableCell">@prod.TC_Nombre</span>
+                        <span class="tableCell">@prod.Marca?.TC_Nombre</span>
+                        <span class="tableCell">@prod.Subcategoria?.TC_Nombre</span>
+                        <span class="tableCell">@(prod.TN_Precio)</span>
+                        <span class="tableCell">@(prod.TN_Stock)</span>
                         <div class="columnEstado tableCell">
-                            @if (prod.Novedad)
+                            @if (prod.TB_Novedad)
                             {
                                 <span class="badge text-bg-info tableCell">Novedad</span>
                             }
                         </div>
                         <div class="columnEstado tableCell">
-                            @if (prod.Activo)
+                            @if (prod.TB_Activo)
                             {
                                 <span class="badge text-bg-success tableCell">Activo</span>
                             }
@@ -120,18 +121,18 @@
                             }
                         </div>
                         <div class="tableButtonsColumn">
-                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@prod.Id">
+                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@prod.TN_Id">
                                 <img src="~/img/ICO_Details.svg" alt="Detalles"/>
                                 <span class="TooltipText">Detalles</span>
                             </a>
-                            <a asp-action="Edit" asp-route-id="@prod.Id" class="EditBtn tooltipContainer">
+                            <a asp-action="Edit" asp-route-id="@prod.TN_Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
                                 <span class="TooltipText">Editar</span>
                             </a>
-                            <button type="button" data-id="@prod.Id"
-                                    class="showModal tooltipContainer btnSwicthActive @(prod.Activo ? "redHighlight" : "greenHighlight")"
-                                    value="@prod.Nombre" data-active="@prod.Activo">
-                                @if (prod.Activo)
+                            <button type="button" data-id="@prod.TN_Id"
+                                    class="showModal tooltipContainer btnSwicthActive @(prod.TB_Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@prod.TC_Nombre" data-active="@prod.TB_Activo">
+                                @if (prod.TB_Activo)
                                 {
                                     <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
                                 }
@@ -139,11 +140,12 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                <span class="TooltipText">@(prod.Activo ? "Desactivar" : "Activar")</span>
+                                <span class="TooltipText">@(prod.TB_Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
                 }
+
                 <div class="tableRow listEnd">
                     <span>Fin de la Lista</span>
                 </div>

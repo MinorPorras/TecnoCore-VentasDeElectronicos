@@ -35,6 +35,11 @@
 
     <ItemGroup>
         <Folder Include="Migrations\"/>
+        <Folder Include="Pages\Shared\Components\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="Views\Shared\Components\CarruselNovedades\Default.cshtml"/>
     </ItemGroup>
 
 </Project>

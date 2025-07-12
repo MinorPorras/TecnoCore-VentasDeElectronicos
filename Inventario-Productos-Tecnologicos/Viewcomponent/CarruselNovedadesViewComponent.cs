@@ -22,11 +22,11 @@ public class CarruselNovedadesViewComponent : ViewComponent
 
     public async Task<ViewViewComponentResult> InvokeAsync()
     {
-        var productos = await _context.Productos
-            .Where(p => p.Novedad)
+        var productos = await _context.TECO_A_Producto
+            .Where(p => p.TB_Novedad)
             .ToListAsync();
         ViewBag.Cant = productos.Count;
-        foreach (var prod in productos) prod.Imagen = GetImagePath(prod.Imagen);
+        foreach (var prod in productos) prod.TC_Imagen = GetImagePath(prod.TC_Imagen);
 
         return View(productos);
     }

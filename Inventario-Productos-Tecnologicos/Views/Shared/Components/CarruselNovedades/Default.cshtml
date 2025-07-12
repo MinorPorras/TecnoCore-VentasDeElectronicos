@@ -1,0 +1,50 @@
+@model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.TECO_A_Producto>
+
+@{
+    var indicatorIndex = 0;
+    // Reinicia el contador para los ítems del carrusel
+    var itemIndex = 0;
+}
+
+<div class="title">Novedades</div>
+<div class="curve-three"></div>
+<div class="curve-four"></div>
+
+<section id="NewsCarousel" class="carousel slide novedad" data-bs-ride="carousel">
+    <div class="carousel-indicators">
+        @foreach (var prod in Model)
+        {
+            <button type="button"
+                    data-bs-target="#NewsCarousel"
+                    data-bs-slide-to="@indicatorIndex"
+                    class="@(indicatorIndex == 0 ? "active" : "")" @* Solo el primer indicador es 'active' *@
+                    aria-current="@(indicatorIndex == 0 ? "true" : "false")"
+                    aria-label="Slide @(indicatorIndex + 1)">
+            </button>
+            indicatorIndex++;
+        }
+    </div>
+    <div class="carousel-inner">
+        @foreach (var prod in Model)
+        {
+            <div class="carousel-item @(itemIndex == 0 ? "active" : "")"
+                 data-bs-interval="5000"> @* Solo el primer item es 'active' *@
+                <img src="@prod.TC_Imagen" class="d-block w-100"
+                     alt="@prod.TC_Nombre"> @* Usa Url.Content para rutas relativas *@
+                <div class="carousel-caption">
+                    <h5>@prod.TC_Nombre</h5>
+                    <p>Precio: @prod.TN_Precio</p>
+                </div>
+            </div>
+            itemIndex++;
+        }
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#NewsCarousel" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#NewsCarousel" data-bs-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Next</span>
+    </button>
+</section>

@@ -55,12 +55,12 @@
                     @foreach (var categoria in Model.ProductosCategorias)
                     {
                         <li>
-                            <label for="cat-@categoria.Id">@categoria.Nombre</label>
+                            <label for="cat-@categoria.TN_Id">@categoria.TC_Nombre</label>
                             <input type="checkbox"
                                    name="SelectedCategoriaIds"
-                                   value="@categoria.Id"
-                                   id="cat-@categoria.Id"
-                                   @(Model.SelectedCategoriaIds.Contains(categoria.Id) ? "checked" : "")/>
+                                   value="@categoria.TN_Id"
+                                   id="cat-@categoria.TN_Id"
+                                   @(Model.SelectedCategoriaIds.Contains(categoria.TN_Id) ? "checked" : "")/>
                         </li>
                     }
                 </ul>
@@ -76,12 +76,12 @@
                     @foreach (var subcategoria in Model.ProductosSubcategorias)
                     {
                         <li>
-                            <label for="sub-@subcategoria.Id">@subcategoria.Nombre</label>
+                            <label for="sub-@subcategoria.TN_Id">@subcategoria.TC_Nombre</label>
                             <input type="checkbox"
                                    name="SelectedSubcategoryIds"
-                                   value="@subcategoria.Id"
-                                   id="sub-@subcategoria.Id"
-                                   @(Model.SelectedSubcategoryIds.Contains(subcategoria.Id) ? "checked" : "")/>
+                                   value="@subcategoria.TN_Id"
+                                   id="sub-@subcategoria.TN_Id"
+                                   @(Model.SelectedSubcategoryIds.Contains(subcategoria.TN_Id) ? "checked" : "")/>
                         </li>
                     }
                 </ul>
@@ -97,12 +97,12 @@
                     @foreach (var marca in Model.ProductosMarcas)
                     {
                         <li>
-                            <label for="marca-@marca.Id">@marca.Nombre</label>
+                            <label for="marca-@marca.TN_Id">@marca.TC_Nombre</label>
                             <input type="checkbox"
                                    name="SelectedMarcaIds"
-                                   value="@marca.Id"
-                                   id="marca-@marca.Id"
-                                   @(Model.SelectedMarcaIds.Contains(marca.Id) ? "checked" : "")/>
+                                   value="@marca.TN_Id"
+                                   id="marca-@marca.TN_Id"
+                                   @(Model.SelectedMarcaIds.Contains(marca.TN_Id) ? "checked" : "")/>
                         </li>
                     }
                 </ul>
@@ -114,7 +114,7 @@
         {
             @foreach (var producto in Model.ProductosList)
             {
-                @await Component.InvokeAsync("ProductCard", new { productId = @producto.Id })
+                @await Component.InvokeAsync("ProductCard", new { productId = @producto.TN_Id })
             }
         }
         else

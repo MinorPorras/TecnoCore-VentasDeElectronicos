@@ -1,4 +1,4 @@
-﻿@model Inventario_Productos_Tecnologicos.Models.Productos
+﻿@model Inventario_Productos_Tecnologicos.Models.TECO_A_Producto
 
 @{
     ViewBag.Title = "Crear Producto";
@@ -9,56 +9,56 @@
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
-        <label asp-for="Nombre"></label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+        <label asp-for="TC_Nombre"></label>
+        <input asp-for="TC_Nombre" class="form-control"/>
+        <span asp-validation-for="TC_Nombre" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Descripcion"></label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
-        <span asp-validation-for="Descripcion" class="text-danger"></span>
+        <label asp-for="TC_Descripcion"></label>
+        <textarea asp-for="TC_Descripcion" class="form-control"></textarea>
+        <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Precio"></label>
-        <input asp-for="Precio" class="form-control" type="number" step="0.01" min="0" />
-        <span asp-validation-for="Precio" class="text-danger"></span>
+        <label asp-for="TN_Precio"></label>
+        <input asp-for="TN_Precio" class="form-control" type="number" step="0.01" min="0"/>
+        <span asp-validation-for="TN_Precio" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Stock"></label>
-        <input asp-for="Stock" class="form-control" />
-        <span asp-validation-for="Stock" class="text-danger"></span>
+        <label asp-for="TN_Stock"></label>
+        <input asp-for="TN_Stock" class="form-control"/>
+        <span asp-validation-for="TN_Stock" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Imagen"></label>
-        <input asp-for="Imagen" class="form-control" type="file" accept="image/*" 
+        <label asp-for="TC_Imagen"></label>
+        <input asp-for="TC_Imagen" class="form-control" type="file" accept="image/*"
                onchange="mostrarImagen(this)" id="imgSelector"/>
-        <span asp-validation-for="Imagen" class="text-danger"></span>
+        <span asp-validation-for="TC_Imagen" class="text-danger"></span>
         <img id="preview" src="" alt="Vista previa" style="max-width: 200px; margin-top: 10px; display: none"/>
     </div>
 
     <div class="form-group form-check">
-        <input asp-for="Novedad" class="form-check-input" />
-        <label asp-for="Novedad" class="form-check-label"></label>
+        <input asp-for="TB_Novedad" class="form-check-input"/>
+        <label asp-for="TB_Novedad" class="form-check-label"></label>
     </div>
 
     <div class="form-group">
-        <label asp-for="MarcaId"></label>
-        <select asp-for="MarcaId" class="form-control" asp-items="ViewBag.MarcaId">
+        <label asp-for="TN_MarcaId"></label>
+        <select asp-for="TN_MarcaId" class="form-control" asp-items="ViewBag.MarcaId">
             <option value="">-- Seleccione Marca --</option>
         </select>
-        <span asp-validation-for="MarcaId" class="text-danger"></span>
+        <span asp-validation-for="TN_MarcaId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="SubcategoriaId"></label>
-        <select asp-for="SubcategoriaId" class="form-control" asp-items="ViewBag.SubcategoriaId">
+        <label asp-for="TN_SubcategoriaId"></label>
+        <select asp-for="TN_SubcategoriaId" class="form-control" asp-items="ViewBag.SubcategoriaId">
             <option value="">-- Seleccione Subcategoría --</option>
         </select>
-        <span asp-validation-for="SubcategoriaId" class="text-danger"></span>
+        <span asp-validation-for="TN_SubcategoriaId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Crear</button>
@@ -66,5 +66,5 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

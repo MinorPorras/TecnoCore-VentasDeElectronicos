@@ -1,4 +1,4 @@
-﻿@model Inventario_Productos_Tecnologicos.Models.Productos
+﻿@model Inventario_Productos_Tecnologicos.Models.TECO_A_Producto
 
 @{
     ViewBag.Title = "Editar Producto";
@@ -8,73 +8,75 @@
 <h1>Editar Producto</h1>
 
 <form asp-action="Edit" method="post" enctype="multipart/form-data">
-    <input type="hidden" asp-for="Id"/>
+    <input type="hidden" asp-for="TN_Id"/>
 
     <div class="form-group">
-        <label asp-for="Nombre"></label>
-        <input asp-for="Nombre" class="form-control"/>
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+        <label asp-for="TC_Nombre"></label>
+        <input asp-for="TC_Nombre" class="form-control"/>
+        <span asp-validation-for="TC_Nombre" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Descripcion"></label>
-        <textarea asp-for="Descripcion" class="form-control"></textarea>
-        <span asp-validation-for="Descripcion" class="text-danger"></span>
+        <label asp-for="TC_Descripcion"></label>
+        <textarea asp-for="TC_Descripcion" class="form-control"></textarea>
+        <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Precio"></label>
-        <input asp-for="Precio" class="form-control"
-               value="@Model.Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)"
+        <label asp-for="TN_Precio"></label>
+        <input asp-for="TN_Precio" class="form-control"
+               value="@Model.TN_Precio.ToString(System.Globalization.CultureInfo.InvariantCulture)"
                step="0.01" min="0" type="number"/>
-        <span asp-validation-for="Precio" class="text-danger"></span>
+        <span asp-validation-for="TN_Precio" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="Stock">Gestión de inventario</label>
-        <a asp-controller="Productos" asp-action="CreateKardexEntry" asp-route-id="@Model.Id">Entrada de inventario</a>
-        <a asp-controller="Productos" asp-action="CreateKardexExit" asp-route-id="@Model.Id">Salida de inventario</a>
+        <label asp-for="TN_Stock">Gestión de inventario</label>
+        <a asp-controller="Productos" asp-action="CreateKardexEntry" asp-route-id="@Model.TN_Id">Entrada de
+            inventario</a>
+        <a asp-controller="Productos" asp-action="CreateKardexExit" asp-route-id="@Model.TN_Id">Salida de inventario</a>
 
     </div>
 
     <div class="form-group">
-        <label asp-for="Imagen"></label>
+        <label asp-for="TC_Imagen"></label>
         <input name="imagen" class="form-control" type="file" accept="image/*"
-               onchange="mostrarImagen(this)" id="imgSelector" value="@Model.Imagen"/>
-        <img id="preview" src="@Model.Imagen" alt="@Model.Nombre"
-             style="max-width: 200px; margin-top: 10px; @(string.IsNullOrEmpty(Model.Imagen) ? "display: none" : "")"/>
+               onchange="mostrarImagen(this)" id="imgSelector" value="@Model.TC_Imagen"/>
+        <img id="preview" src="@Model.TC_Imagen" alt="@Model.TC_Nombre"
+             style="max-width: 200px; margin-top: 10px; @(string.IsNullOrEmpty(Model.TC_Imagen) ? "display: none" : "")"/>
     </div>
 
     <div class="form-group form-check">
-        <input asp-for="Novedad" class="form-check-input"/>
-        <label asp-for="Novedad" class="form-check-label"></label>
+        <input asp-for="TB_Novedad" class="form-check-input"/>
+        <label asp-for="TB_Novedad" class="form-check-label"></label>
     </div>
 
     <div class="formgroup">
         <label>Estado:</label>
         <div>
-            <input type="radio" name="Activo" id="active" value="true" @(Model.Activo == true ? "checked" : "")>
+            <input type="radio" name="TB_Activo" id="active" value="true" @(Model.TB_Activo == true ? "checked" : "")>
             <label for="active">Activo</label>
 
-            <input type="radio" name="Activo" id="inactive" value="false" @(Model.Activo == false ? "checked" : "")>
+            <input type="radio" name="TB_Activo" id="inactive" value="false"
+                   @(Model.TB_Activo == false ? "checked" : "")>
             <label for="inactive">Inactivo</label>
         </div>
     </div>
 
     <div class="form-group">
-        <label asp-for="MarcaId"></label>
-        <select asp-for="MarcaId" class="form-control" asp-items="ViewBag.MarcaId">
+        <label asp-for="TN_MarcaId"></label>
+        <select asp-for="TN_MarcaId" class="form-control" asp-items="ViewBag.MarcaId">
             <option value="">-- Seleccione Marca --</option>
         </select>
-        <span asp-validation-for="MarcaId" class="text-danger"></span>
+        <span asp-validation-for="TN_MarcaId" class="text-danger"></span>
     </div>
 
     <div class="form-group">
-        <label asp-for="SubcategoriaId"></label>
-        <select asp-for="SubcategoriaId" class="form-control" asp-items="ViewBag.SubcategoriaId">
+        <label asp-for="TN_SubcategoriaId"></label>
+        <select asp-for="TN_SubcategoriaId" class="form-control" asp-items="ViewBag.SubcategoriaId">
             <option value="">-- Seleccione Subcategoría --</option>
         </select>
-        <span asp-validation-for="SubcategoriaId" class="text-danger"></span>
+        <span asp-validation-for="TN_SubcategoriaId" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-primary">Guardar</button>

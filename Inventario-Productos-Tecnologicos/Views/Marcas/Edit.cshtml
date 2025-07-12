@@ -1,4 +1,4 @@
-@model Marcas
+@model TECO_M_Marca
 
 @{
     ViewBag.Title = "Actualizar Marca";
@@ -11,16 +11,16 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="controller" id="controller" value="Marcas">
         <input type="hidden" name="action" id="action" value="Edit">
-        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id">
         <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre" required>
+            <label for="TC_Nombre">Nombre:</label>
+            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre" required>
         </div>
         <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
-                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
-                <option value="false" selected="@(!Model.Activo ? "selected" : null)">Inactivo</option>
+            <label for="TB_Activo">Estado:</label>
+            <select name="TB_Activo" id="TB_Activo">
+                <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(!Model.TB_Activo ? "selected" : null)">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">

@@ -1,4 +1,4 @@
-@model List<Cupones>
+@model List<TECO_M_Cupon>
 
 @{
     ViewBag.Title = "Cupones";
@@ -79,27 +79,27 @@
                 @foreach (var cupon in Model)
                 {
                     <div class="tableRow TCupon">
-                        <span class="tableCell">@cupon.Codigo</span>
-                        <span class="tableCell">@cupon.Descripcion</span>
-                        @if (cupon.TipoDescuento == "1")
+                        <span class="tableCell">@cupon.TC_Codigo</span>
+                        <span class="tableCell">@cupon.TC_Descripcion</span>
+                        @if (cupon.TC_TipoDescuento == "P")
                         {
                             <span class="tableCell">Porcentaje</span>
-                            <span class="tableCell">@cupon.Valor%</span>
+                            <span class="tableCell">@cupon.TN_Valor%</span>
                         }
                         else
                         {
                             <span class="tableCell">Fijo</span>
-                            <span class="tableCell">₡@cupon.Valor</span>
+                            <span class="tableCell">₡@cupon.TN_Valor</span>
                         }
                         <span
-                            class="tableCell">@(cupon.FechaInicio.Day + "/" + cupon.FechaInicio.Month + "/" + cupon.FechaInicio.Year)</span>
+                            class="tableCell">@(cupon.TF_FechaInicio.Day + "/" + cupon.TF_FechaInicio.Month + "/" + cupon.TF_FechaInicio.Year)</span>
                         <span
-                            class="tableCell">@(cupon.FechaFin.Day + "/" + cupon.FechaFin.Month + "/" + cupon.FechaFin.Year)</span>
-                        <span class="tableCell">@cupon.UsosActuales</span>
-                        <span class="tableCell">@cupon.UsosMaximos</span>
+                            class="tableCell">@(cupon.TF_FechaFin.Day + "/" + cupon.TF_FechaFin.Month + "/" + cupon.TF_FechaFin.Year)</span>
+                        <span class="tableCell">@cupon.TN_UsosActuales</span>
+                        <span class="tableCell">@cupon.TN_UsosMaximos</span>
 
                         <div class="columnEstado tableCell">
-                            @if (cupon.Activo)
+                            @if (cupon.TB_Activo)
                             {
                                 <span class="badge text-bg-success tableCell">Activo</span>
                             }
@@ -109,18 +109,14 @@
                             }
                         </div>
                         <div class="tableButtonsColumn">
-                            <a class="DetailsBtn tooltipContainer" asp-action="Details" asp-route-id="@cupon.Id">
-                                <img src="~/img/ICO_Details.svg" alt="Detalles"/>
-                                <span class="TooltipText">Detalles</span>
-                            </a>
-                            <a asp-action="Edit" asp-route-id="@cupon.Id" class="EditBtn tooltipContainer">
+                            <a asp-action="Edit" asp-route-id="@cupon.TN_Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
                                 <span class="TooltipText">Editar</span>
                             </a>
-                            <button type="button" data-id="@cupon.Id"
-                                    class="showModal tooltipContainer btnSwicthActive @(cupon.Activo ? "redHighlight" : "greenHighlight")"
-                                    value="@cupon.Codigo" data-active="@cupon.Activo">
-                                @if (cupon.Activo)
+                            <button type="button" data-id="@cupon.TN_Id"
+                                    class="showModal tooltipContainer btnSwicthActive @(cupon.TB_Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@cupon.TC_Codigo" data-active="@cupon.TB_Activo">
+                                @if (cupon.TB_Activo)
                                 {
                                     <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
                                 }
@@ -128,7 +124,7 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                <span class="TooltipText">@(cupon.Activo ? "Desactivar" : "Activar")</span>
+                                <span class="TooltipText">@(cupon.TB_Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
@@ -140,5 +136,5 @@
             }
         </div>
     </div>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "Delete", controllerName = "Cupones" })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Cupones" })
 </div>

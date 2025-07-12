@@ -21,8 +21,8 @@ public class ProductCardListViewComponent : ViewComponent
         ViewBag.ListTitle = title;
         if (subcategoryId > 0)
         {
-            var productosSubcategoria = await _context.Productos
-                .Where(p => p.SubcategoriaId == subcategoryId && p.Activo)
+            var productosSubcategoria = await _context.TECO_A_Producto
+                .Where(p => p.TN_SubcategoriaId == subcategoryId && p.TB_Activo)
                 .Include(p => p.Subcategoria)
                 .Take(lenght)
                 .ToListAsync();
@@ -30,8 +30,8 @@ public class ProductCardListViewComponent : ViewComponent
         }
         else if (categoryId > 0)
         {
-            var productosCategoria = await _context.Productos
-                .Where(p => p.Subcategoria!.CategoriaId == categoryId && p.Activo)
+            var productosCategoria = await _context.TECO_A_Producto
+                .Where(p => p.Subcategoria!.TN_CategoriaId == categoryId && p.TB_Activo)
                 .Include(p => p.Subcategoria)
                 .ThenInclude(s => s.Categoria)
                 .Take(lenght)
@@ -39,8 +39,8 @@ public class ProductCardListViewComponent : ViewComponent
             return View(productosCategoria);
         }
 
-        var products = await _context.Productos
-            .Where(p => p.Activo)
+        var products = await _context.TECO_A_Producto
+            .Where(p => p.TB_Activo)
             .Include(p => p.Subcategoria)
             .ThenInclude(s => s.Categoria)
             .Take(lenght)

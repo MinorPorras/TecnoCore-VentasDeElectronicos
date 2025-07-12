@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Inventario_Productos_Tecnologicos.Models.Marcas>
+﻿@model IEnumerable<Inventario_Productos_Tecnologicos.Models.TECO_M_Marca>
 
 @{
     ViewBag.Title = "Listado de Marcas";
@@ -27,8 +27,8 @@
             </div>
         </div>
     </form>
-    
-    
+
+
     <div class="tableContainer">
         <div class="tbl-header TMarca">
             <span class="headerText">ID</span>
@@ -48,10 +48,10 @@
                 @foreach (var marca in Model)
                 {
                     <div class="tableRow TMarca">
-                        <span class="tableCell">@marca.Id</span>
-                        <span class="tableCell">@marca.Nombre</span>
+                        <span class="tableCell">@marca.TN_Id</span>
+                        <span class="tableCell">@marca.TC_Nombre</span>
                         <span class="columnEstado tableCell">
-                                @if (marca.Activo)
+                                @if (marca.TB_Activo)
                             {
                                 <span class="badge text-bg-success tableCell">Activo</span>
                             }
@@ -61,14 +61,14 @@
                             }
                             </span>
                         <div class="tableButtonsColumn">
-                            <a asp-action="Edit" asp-route-id="@marca.Id" class="EditBtn tooltipContainer">
+                            <a asp-action="Edit" asp-route-id="@marca.TN_Id" class="EditBtn tooltipContainer">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
                                 <span class="TooltipText">Editar</span>
                             </a>
-                            <button type="button" data-id="@marca.Id"
-                                    class="showModal tooltipContainer btnSwicthActive @(marca.Activo ? "redHighlight" : "greenHighlight")"
-                                    value="@marca.Nombre" data-active="@marca.Activo">
-                                @if (marca.Activo)
+                            <button type="button" data-id="@marca.TN_Id"
+                                    class="showModal tooltipContainer btnSwicthActive @(marca.TB_Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@marca.TC_Nombre" data-active="@marca.TB_Activo">
+                                @if (marca.TB_Activo)
                                 {
                                     <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
                                 }
@@ -76,11 +76,12 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                <span class="TooltipText">@(marca.Activo ? "Desactivar" : "Activar")</span>
+                                <span class="TooltipText">@(marca.TB_Activo ? "Desactivar" : "Activar")</span>
                             </button>
                         </div>
                     </div>
                 }
+
                 <div class="tableRow listEnd">
                     <span>Fin de la Lista</span>
                 </div>

@@ -483,11 +483,11 @@ h1 {
             grid-template-columns: minmax(100px, 1fr) minmax(300px, 3fr) minmax(100px, 1fr) minmax(150px, 1fr);
         }
 
-        /*----Tablas con 7 columnas----*/
+        /*----Tablas con 8 columnas----*/
 
         & .tbl-header.tUsers, .tableRow.tUsers {
-            grid-template-columns: minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(200px, 2fr) 
-            minmax(120px, 1fr) minmax(80px, 1fr) minmax(150px, 1fr);
+            grid-template-columns: minmax(200px, 1fr) minmax(150px, 1fr) minmax(200px, 1fr) minmax(80px, 2fr) 
+            minmax(80px, 1fr) minmax(120px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr);
         }
 
 

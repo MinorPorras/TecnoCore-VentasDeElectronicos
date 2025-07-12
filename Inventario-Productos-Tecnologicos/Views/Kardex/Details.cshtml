@@ -1,4 +1,4 @@
-﻿@model Inventario_Productos_Tecnologicos.Models.Kardex
+﻿@model Inventario_Productos_Tecnologicos.Models.TECO_P_Kardex
 
 @{
     ViewBag.Title = "Detalle Movimiento de Kardex";
@@ -11,28 +11,28 @@
     <div class="card-body">
         <dl class="row">
             <dt class="col-sm-3">Producto</dt>
-            <dd class="col-sm-9">@Model.Producto?.Nombre</dd>
+            <dd class="col-sm-9">@Model.Producto?.TC_Nombre</dd>
 
             <dt class="col-sm-3">Fecha</dt>
-            <dd class="col-sm-9">@Model.Fecha?.ToString("dd/MM/yyyy")</dd>
+            <dd class="col-sm-9">@Model.TF_Fecha?.ToString("dd/MM/yyyy")</dd>
 
             <dt class="col-sm-3">Movimiento</dt>
-            <dd class="col-sm-9">@Model.TipoMovimientoKardex?.Tipo</dd>
+            <dd class="col-sm-9">@Model.TipoMovimientoKardex?.TC_Tipo</dd>
 
             <dt class="col-sm-3">Stock Anterior</dt>
-            <dd class="col-sm-9">@Model.StockAnterior</dd>
+            <dd class="col-sm-9">@Model.TN_StockAnterior</dd>
 
             <dt class="col-sm-3">Cantidad</dt>
-            <dd class="col-sm-9">@Model.Cantidad</dd>
+            <dd class="col-sm-9">@Model.TN_Cantidad</dd>
 
             <dt class="col-sm-3">Stock Actual</dt>
-            <dd class="col-sm-9">@Model.StockActual</dd>
+            <dd class="col-sm-9">@Model.TN_StockActual</dd>
 
             <dt class="col-sm-3">Descripción</dt>
-            <dd class="col-sm-9">@Model.Descripcion</dd>
+            <dd class="col-sm-9">@Model.TC_Descripcion</dd>
 
             <dt class="col-sm-3">Activo</dt>
-            <dd class="col-sm-9">@(Model.Activo ? "Sí" : "No")</dd>
+            <dd class="col-sm-9">@(Model.TB_Activo ? "Sí" : "No")</dd>
         </dl>
         <a asp-action="Index" class="btn btn-primary">Volver al listado</a>
     </div>

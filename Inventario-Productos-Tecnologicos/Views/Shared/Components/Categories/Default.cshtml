@@ -1,25 +1,25 @@
-@model IEnumerable<Inventario_Productos_Tecnologicos.Models.Categorias>
+@model IEnumerable<Inventario_Productos_Tecnologicos.Models.TECO_M_Categoria>
 
 @foreach (var categoria in Model)
 {
-    @if (categoria.Subcategorias.Any())
+    @if (categoria.Subcategoria.Any())
     {
         <li class="dropdown-container">
             <a asp-controller="Productos"
                asp-action="ListaProductos"
-               asp-route-categoriaId="@categoria.Id"
+               asp-route-categoriaId="@categoria.TN_Id"
                asp-route-subcategoriaId="0"
                class="dropbtn">
-                @categoria.Nombre
+                @categoria.TC_Nombre
             </a>
             <div class="dropdown-content">
-                @foreach (var subcategoria in categoria.Subcategorias)
+                @foreach (var subcategoria in categoria.Subcategoria)
                 {
                     <a asp-controller="Productos"
                        asp-action="ListaProductos"
                        asp-route-categoriaId="0"
-                       asp-route-subcategoriaId="@subcategoria.Id">
-                        @subcategoria.Nombre
+                       asp-route-subcategoriaId="@subcategoria.TN_Id">
+                        @subcategoria.TC_Nombre
                     </a>
                 }
             </div>

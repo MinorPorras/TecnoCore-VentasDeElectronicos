@@ -1,5 +1,6 @@
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
+using Inventario_Productos_Tecnologicos.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ public class CategoriasController : Controller
     // GET: Categorias
     public async Task<IActionResult> Index()
     {
-        var categorias = await _context.Categorias.ToListAsync();
+        var categorias = await _context.TECO_M_Categoria.ToListAsync();
         return View(categorias);
     }
 
@@ -30,15 +31,18 @@ public class CategoriasController : Controller
     // POST: Categorias/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Nombre,Activo")] Categorias categoria)
+    public async Task<IActionResult> Create([Bind("TC_Nombre,TB_Activo")] TECO_M_Categoria categoria)
     {
         if (ModelState.IsValid)
         {
             _context.Add(categoria);
             await _context.SaveChangesAsync();
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
             return RedirectToAction(nameof(Index));
         }
 
+        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            Alert.ErrorAlert("Los datos ingresados no son válidos"));
         return View(categoria);
     }
 
@@ -47,61 +51,109 @@ public class CategoriasController : Controller
         ViewBag.SearchString = searchElement;
         ViewBag.ActiveFilter = activeFilter;
 
-        var query = _context.Categorias.AsQueryable();
-
-        // Aplicar filtro de búsqueda si existe
-        if (!string.IsNullOrEmpty(searchElement))
-            query = query.Where(c => c.Nombre.Contains(searchElement)
-                                     || c.Id.ToString().Contains(searchElement));
-
-        // Aplicar filtro de estado si no es "all"
-        if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
+        try
         {
-            var isActive = activeFilter == "true";
-            query = query.Where(c => c.Activo == isActive);
-        }
+            var query = _context.TECO_M_Categoria.AsQueryable();
 
-        var categorias = await query.ToListAsync();
-        return View("Index", categorias);
+            // Aplicar filtro de búsqueda si existe
+            if (!string.IsNullOrEmpty(searchElement))
+                query = query.Where(c => c.TC_Nombre.Contains(searchElement)
+                                         || c.TN_Id.ToString().Contains(searchElement));
+
+            // Aplicar filtro de estado si no es "all"
+            if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
+            {
+                var isActive = activeFilter == "true";
+                query = query.Where(c => c.TB_Activo == isActive);
+            }
+
+            var categorias = await query.ToListAsync();
+            if (!categorias.Any())
+                TempData["info"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.InfoAlert("No se encontraron categorías con los criterios especificados"));
+            return View("Index", categorias);
+        }
+        catch (Exception e)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al buscar categorías"));
+            return NotFound();
+        }
     }
 
     // GET: Categorias/Edit/5
     public async Task<IActionResult> Edit(int id)
     {
-        Console.WriteLine("Pasa por aquí edit");
+        var categoria = await _context.TECO_M_Categoria.FindAsync(id);
+        if (categoria == null)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("la categoría"));
+            return NotFound();
+        }
 
-        var categoria = await _context.Categorias.FindAsync(id);
-        if (categoria == null) return NotFound();
-        ViewBag.Subcategorias = _context.Subcategorias.Where(s => s.CategoriaId == id).ToList();
+        ViewBag.Subcategorias = _context.TECO_M_Subcategoria.Where(s => s.TN_CategoriaId == id).ToList();
         return View(categoria);
     }
 
     // POST: Categorias/Edit/5
     [HttpPut]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Activo")] Categorias categoria)
+    public async Task<IActionResult> Edit([FromBody] [Bind("TN_Id,TC_Nombre,TB_Activo")] TECO_M_Categoria categoria)
     {
-        Console.WriteLine("Pasa por aquí Edit submit");
-
-        if (id != categoria.Id) return NotFound();
-
-        if (ModelState.IsValid)
+        var existingCategory = await _context.TECO_M_Categoria.FindAsync(categoria.TN_Id);
+        if (existingCategory == null)
         {
-            try
-            {
-                _context.Update(categoria);
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CategoriaExists(categoria.Id)) return NotFound();
-                else throw;
-            }
-
-            return RedirectToAction(nameof(Index));
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("la categoría"));
+            return NoContent();
         }
 
-        return View(categoria);
+        existingCategory.TC_Nombre = categoria.TC_Nombre;
+        existingCategory.TB_Activo = categoria.TB_Activo;
+
+        var subcategorias = await _context.TECO_M_Subcategoria.Where(s => s.TN_CategoriaId == categoria.TN_Id)
+            .ToListAsync();
+        if (!categoria.TB_Activo)
+            foreach (var sub in subcategorias)
+            {
+                sub.TB_Activo = false; // Cambia el estado de cada subcategoría
+                _context.TECO_M_Subcategoria.Update(sub);
+            }
+
+        if (!ModelState.IsValid)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Los datos ingresados no son válidos"));
+            return View(categoria);
+        }
+
+        try
+        {
+            _context.Update(existingCategory);
+            await _context.SaveChangesAsync();
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+            return Ok();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!CategoriaExists(existingCategory.TN_Id))
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.NotFoundAlert("la categoría"));
+                return NotFound();
+            }
+
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error de concurrencia al actualizar la categoría"));
+            return StatusCode(500);
+        }
+        catch (Exception ex)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al actualizar la categoría"));
+            return StatusCode(500);
+        }
     }
 
     // POST: Categorias/Delete/5
@@ -109,99 +161,160 @@ public class CategoriasController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> SwitchActive(int id)
     {
-        var categoria = await _context.Categorias.FindAsync(id);
-        var subcategorias = await _context.Subcategorias.Where(s => s.CategoriaId == id).ToListAsync();
-        if (categoria != null)
+        var categoria = await _context.TECO_M_Categoria.FindAsync(id);
+        if (categoria == null)
         {
-            foreach (var sub in subcategorias)
-            {
-                sub.Activo = !sub.Activo; // Cambia el estado de cada subcategoría
-                _context.Subcategorias.Update(sub);
-            }
-
-            categoria.Activo = !categoria.Activo;
-            _context.Categorias.Update(categoria);
-            await _context.SaveChangesAsync();
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("la categoría"));
+            return RedirectToAction(nameof(Index));
         }
 
+        var subcategorias = await _context.TECO_M_Subcategoria.Where(s => s.TN_CategoriaId == id).ToListAsync();
+
+        if (categoria.TB_Activo)
+            foreach (var sub in subcategorias)
+            {
+                sub.TB_Activo = false;
+                _context.TECO_M_Subcategoria.Update(sub);
+            }
+
+        categoria.TB_Activo = !categoria.TB_Activo;
+        _context.TECO_M_Categoria.Update(categoria);
+        await _context.SaveChangesAsync();
+
+        TempData["info"] =
+            System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
         return RedirectToAction(nameof(Index));
     }
 
     private bool CategoriaExists(int id)
     {
-        return _context.Categorias.Any(e => e.Id == id);
+        return _context.TECO_M_Categoria.Any(e => e.TN_Id == id);
     }
 
     public IActionResult CreateSubcategoria(int idCategoria)
     {
+        if (idCategoria == 0)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Categoría no válida"));
+            return RedirectToAction(nameof(Index));
+        }
+
         ViewBag.CategoriaId = idCategoria;
         return View();
     }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult CreateSubcategoria([Bind("Nombre", "CategoriaId", "Activo")] Subcategorias subcategoria)
+    public IActionResult CreateSubcategoria(
+        [Bind("TC_Nombre", "TN_CategoriaId", "TB_Activo")]
+        TECO_M_Subcategoria subcategoria)
     {
-        Console.WriteLine("Pasa acá");
-        Console.WriteLine(subcategoria.Nombre);
-        Console.WriteLine(subcategoria.CategoriaId);
-        Console.WriteLine(subcategoria.Activo);
-        if (ModelState.IsValid)
+        if (string.IsNullOrEmpty(subcategoria.TC_Nombre))
         {
-            _context.Subcategorias.Add(subcategoria);
-            _context.SaveChanges();
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("El nombre no puede estar vacío"));
+            return View(subcategoria);
         }
 
-        return RedirectToAction("Edit", new { id = subcategoria.CategoriaId });
+        if (!ModelState.IsValid)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Los datos ingresados no son válidos"));
+            return View(subcategoria);
+        }
+
+        _context.TECO_M_Subcategoria.Add(subcategoria);
+        _context.SaveChanges();
+        TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+        return RedirectToAction("Edit", new { Id = subcategoria.TN_CategoriaId });
     }
 
     public async Task<IActionResult> EditSubcategoria(int id)
     {
-        var subcategoria = await _context.Subcategorias.FindAsync(id);
+        var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);
+        if (subcategoria == null)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("la subcategoría"));
+            return RedirectToAction(nameof(Index));
+        }
+
         return View(subcategoria);
     }
 
     [HttpPut]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditSubcategoria([FromBody] Subcategorias sub)
+    public async Task<IActionResult> EditSubcategoria([FromBody] TECO_M_Subcategoria sub)
     {
         try
         {
-            Console.WriteLine(ModelState.IsValid);
-            if (!ModelState.IsValid) return BadRequest(new { message = "Datos inválidos enviados al servidor." });
-            var existingSub = await _context.Subcategorias.FirstOrDefaultAsync(s => s.Id == sub.Id);
-            if (existingSub == null) return NotFound();
+            if (!ModelState.IsValid)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.ErrorAlert("Los datos ingresados no son válidos"));
+                return BadRequest();
+            }
 
-            Console.WriteLine(sub.Nombre);
-            Console.WriteLine(sub.CategoriaId);
-            Console.WriteLine(sub.Activo);
+            var existingSub = await _context.TECO_M_Subcategoria.FirstOrDefaultAsync(s => s.TN_Id == sub.TN_Id);
+            if (existingSub == null)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.NotFoundAlert("la subcategoría"));
+                return NotFound();
+            }
 
-            existingSub.Nombre = sub.Nombre;
-            existingSub.Activo = sub.Activo;
-            existingSub.CategoriaId = sub.CategoriaId; // Aseguramos que se mantenga la relación
+            var categoria = await _context.TECO_M_Categoria.Include(c => c.Subcategoria)
+                .FirstOrDefaultAsync(c => c.Subcategoria.Any(s => s.TN_Id == existingSub.TN_Id));
+            if (!existingSub.TB_Activo && categoria != null)
+            {
+                categoria.TB_Activo = true;
+                _context.TECO_M_Categoria.Update(categoria);
+            }
+
+            existingSub.TC_Nombre = sub.TC_Nombre;
+            existingSub.TB_Activo = sub.TB_Activo;
+            existingSub.TN_CategoriaId = sub.TN_CategoriaId;
             await _context.SaveChangesAsync();
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
             return Ok();
         }
         catch (DbUpdateException)
         {
-            return StatusCode(500, new { message = "No se pudo guardar los cambios en la base de datos" });
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Error al guardar los cambios en la base de datos"));
+            return StatusCode(500);
         }
     }
 
-    // POST: Categorias/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteSubcategoria(int id)
+    public async Task<IActionResult> SubCatSwitchActive(int id)
     {
-        Console.WriteLine("Pasa por aquí");
-        var subcategoria = await _context.Subcategorias.FindAsync(id);
-        if (subcategoria != null)
+        var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);
+        if (subcategoria == null)
         {
-            _context.Subcategorias.Remove(subcategoria);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Edit), new { id = subcategoria.CategoriaId });
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.NotFoundAlert("la subcategoría"));
+            return RedirectToAction(nameof(Index));
         }
 
-        return NotFound();
+        var categoria = await _context.TECO_M_Categoria.Include(c => c.Subcategoria)
+            .FirstOrDefaultAsync(c => c.Subcategoria.Any(s => s.TN_Id == subcategoria.TN_Id));
+
+        if (!subcategoria.TB_Activo && categoria != null)
+        {
+            categoria.TB_Activo = true;
+            _context.TECO_M_Categoria.Update(categoria);
+        }
+
+        subcategoria.TB_Activo = !subcategoria.TB_Activo;
+        _context.TECO_M_Subcategoria.Update(subcategoria);
+        await _context.SaveChangesAsync();
+
+        TempData["info"] =
+            System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
+        return RedirectToAction("Edit", new { Id = subcategoria.TN_CategoriaId });
     }
 }

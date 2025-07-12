@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<TecnoCoreDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("SQLExpress")));
 
-builder.Services.AddDefaultIdentity<Usuarios>(options =>
+builder.Services.AddDefaultIdentity<TECO_A_Usuario>(options =>
     {
         //Opciones de contraseñas
         options.Password.RequireDigit = false;
@@ -34,7 +34,7 @@ builder.Services.AddDefaultIdentity<Usuarios>(options =>
         options.SignIn.RequireConfirmedPhoneNumber = false;
         options.SignIn.RequireConfirmedAccount = false;
     })
-    .AddRoles<Roles>()
+    .AddRoles<TECO_A_Roles>()
     .AddEntityFrameworkStores<TecnoCoreDbContext>();
 
 builder.Services.AddSession(options =>

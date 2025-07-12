@@ -4,32 +4,32 @@ namespace Inventario_Productos_Tecnologicos.Models.ViewModels;
 
 public class ProductListViewModel
 {
-    private List<Productos>? _productosList;
-    private List<Marcas>? _productosMarcas;
-    private List<Categorias>? _productosCategorias;
-    private List<Subcategorias>? _productosSubcategorias;
+    private List<TECO_A_Producto>? _productosList;
+    private List<TECO_M_Marca>? _productosMarcas;
+    private List<TECO_M_Categoria>? _productosCategorias;
+    private List<TECO_M_Subcategoria>? _productosSubcategorias;
 
-    public List<Productos> ProductosList
+    public List<TECO_A_Producto> ProductosList
     {
-        get => _productosList ??= new List<Productos>();
+        get => _productosList ??= new List<TECO_A_Producto>();
         set => _productosList = value;
     }
 
-    public List<Marcas> ProductosMarcas
+    public List<TECO_M_Marca> ProductosMarcas
     {
-        get => _productosMarcas ??= new List<Marcas>();
+        get => _productosMarcas ??= new List<TECO_M_Marca>();
         set => _productosMarcas = value;
     }
 
-    public List<Categorias>? ProductosCategorias
+    public List<TECO_M_Categoria>? ProductosCategorias
     {
-        get => _productosCategorias ??= new List<Categorias>();
+        get => _productosCategorias ??= new List<TECO_M_Categoria>();
         set => _productosCategorias = value;
     }
 
-    public List<Subcategorias>? ProductosSubcategorias
+    public List<TECO_M_Subcategoria>? ProductosSubcategorias
     {
-        get => _productosSubcategorias ??= new List<Subcategorias>();
+        get => _productosSubcategorias ??= new List<TECO_M_Subcategoria>();
         set => _productosSubcategorias = value;
     }
 

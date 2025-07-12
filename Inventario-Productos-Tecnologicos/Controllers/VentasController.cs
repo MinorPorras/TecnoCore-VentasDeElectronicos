@@ -21,7 +21,7 @@ public class VentasController : Controller
         return View();
     }
 
-    public IActionResult Carro_Compras(List<Productos> listaCompras)
+    public IActionResult Carro_Compras(List<TECO_A_Producto> listaCompras)
     {
         return View();
     }
@@ -56,7 +56,7 @@ public class VentasController : Controller
     }*/
 
 
-    public IActionResult ConfirmarCompra(List<Productos> listaCompras)
+    public IActionResult ConfirmarCompra(List<TECO_A_Producto> listaCompras)
     {
         // Aquí se puede implementar la lógica para confirmar la compra
         // Por ejemplo, guardar la compra en una base de datos o procesar el pago

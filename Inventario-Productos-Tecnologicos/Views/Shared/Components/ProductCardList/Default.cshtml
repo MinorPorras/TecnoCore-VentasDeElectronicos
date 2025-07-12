@@ -1,4 +1,4 @@
-@model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.Productos>
+@model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.TECO_A_Producto>
 
 <div class="List-header">
     <div class="List-title">
@@ -16,7 +16,7 @@
 <div class="ListArticlesContainer">
     @foreach (var prod in Model)
     {
-        @await Component.InvokeAsync("ProductCard", new { productId = @prod.Id })
+        @await Component.InvokeAsync("ProductCard", new { productId = @prod.TN_Id })
         ;
     }
     <article class="card-producto-last-item">

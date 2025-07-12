@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Inventario_Productos_Tecnologicos.webcomponent;
 
-public class CategoriesViewComponent: ViewComponent
+public class CategoriesViewComponent : ViewComponent
 {
     private readonly TecnoCoreDbContext _context;
 
@@ -15,8 +15,9 @@ public class CategoriesViewComponent: ViewComponent
 
     public async Task<IViewComponentResult> InvokeAsync()
     {
-        var categorias =  await _context.Categorias
-            .Include(c => c.Subcategorias)
+        var categorias = await _context.TECO_M_Categoria
+            .Include(c => c.Subcategoria)
+            .Where(c => c.TB_Activo == true)
             .ToListAsync();
         return View(categorias);
     }

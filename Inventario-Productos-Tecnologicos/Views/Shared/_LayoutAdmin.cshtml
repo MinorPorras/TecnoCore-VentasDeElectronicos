@@ -21,7 +21,7 @@
             <ul>
                 <li><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
                 <li class="dropdown-container">
-                    <a class="dropbtn" asp-action="Index" asp-controller="Usuarios">Usuarios</a>
+                    <a class="dropbtn" asp-action="Index" asp-controller="Usuario">Usuarios</a>
                     <div class="dropdown-content">
                         <a asp-action="Index" asp-controller="Roles">Roles</a>
                     </div>
@@ -42,7 +42,7 @@
                 </li>
                 <li><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
             </ul>
-            <a class="nav-account tooltipContainer btnLogOut" asp-action="Logout" asp-controller="Usuarios">
+            <a class="nav-account tooltipContainer btnLogOut" asp-action="Logout" asp-controller="Account">
                 <img
                     src="~/img/ICO_Logout.svg"
                     alt="cuenta"
@@ -68,32 +68,67 @@
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/admin.js" asp-append-version="true"></script>
+<script>
+    function tryDeserializeAlert(jsonStr) {
+        try {
+            return JSON.parse(jsonStr);
+        } catch (e) {
+            console.error('Error parsing alert JSON:', e);
+            return null;
+        }
+    }
+
+    // Para alertas dentro de la misma pestaña (e.g., ViewBag)
+    @if (ViewBag.Alert != null)
+    {
+        var alert = ViewBag.Alert as Alert;
+        if (alert != null)
+        {
+            <text>
+                document.addEventListener('DOMContentLoaded', function () {
+                    showAlert(@Json.Serialize(alert.Message), @Json.Serialize(alert.Type));
+                });
+            </text>
+        }
+    }
+
+    // Para alertas donde se realizan redirecciones (e.g., TempData)
+    @if (TempData["Alert"] is string alertJson)
+    {
+        <text>
+            document.addEventListener('DOMContentLoaded', function () {
+                const alert = tryDeserializeAlert(@Json.Serialize(alertJson));
+                if (alert) {
+                    showAlert(alert.Message, alert.Type);
+                }
+            });
+        </text>
+    }
+
+    @if (TempData["success"] is string successJson)
+    {
+        <text>
+            document.addEventListener('DOMContentLoaded', function () {
+                const alert = tryDeserializeAlert(@Json.Serialize(successJson));
+                if (alert) {
+                    showAlert(alert.Message, alert.Type);
+                }
+            });
+        </text>
+    }
+
+    @if (TempData["info"] is string infoJson)
+    {
+        <text>
+            document.addEventListener('DOMContentLoaded', function () {
+                const alert = tryDeserializeAlert(@Json.Serialize(infoJson));
+                if (alert) {
+                    showAlert(alert.Message, alert.Type);
+                }
+            });
+        </text>
+    }
+</script>
 @await RenderSectionAsync("Scripts", false)
 </body>
 </html>
-
-@section Scripts{
-    @if (TempData["Alert"] != null)
-    {
-        var alert = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Alert"]?.ToString()!);
-        <script>
-            console.log(@alert.Message);
-            console.log(@alert.Type)
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert('@Html.Raw(alert?.Message)', '@alert?.Type');
-            });
-        </script>
-    }
-
-    @if (TempData["Sucess"] != null)
-    {
-        var sucess = System.Text.Json.JsonSerializer.Deserialize<Alert>(TempData["Sucess"]?.ToString()!);
-        <script>
-            console.log(@sucess.Message);
-            console.log(@sucess.Type)
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert('@Html.Raw(sucess?.Message)', '@sucess?.Type');
-            });
-        </script>
-    }
-}

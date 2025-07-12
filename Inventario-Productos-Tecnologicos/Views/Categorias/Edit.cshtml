@@ -1,4 +1,4 @@
-﻿@model Inventario_Productos_Tecnologicos.Models.Categorias
+﻿@model Inventario_Productos_Tecnologicos.Models.TECO_M_Categoria
 
 @{
     ViewBag.Title = "Editar Categoría";
@@ -12,64 +12,82 @@
         <input type="hidden" name="controller" id="controller" value="Categorias">
         <input type="hidden" name="action" id="action" value="Edit">
 
-        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id">
         <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre">
+            <label for="TC_Nombre">Nombre:</label>
+            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre">
         </div>
         <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
-                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
-                <option value="false" selected="@(Model.Activo ? null : "selected")">Inactivo</option>
+            <label for="TB_Activo">Estado:</label>
+            <select name="TB_Activo" id="TB_Activo">
+                <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
-        <div>
-            <h3>Subcategorías</h3>
-            <a asp-action="CreateSubcategoria" asp-route-idCategoria="@Model.Id">Crear</a>
-            <table>
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>Estado</th>
-                    <th>Opciones</th>
-                </tr>
-                </thead>
-                <tbody>
-                @if (ViewBag.Subcategorias.Count == 0)
-                {
-                    <tr>
-                        <td colspan="4" class="text-center bg-dark-subtle">No hay @ViewBag.Title</td>
-                    </tr>
-                }
-                else
-                {
-                    @foreach (var sub in ViewBag.Subcategorias)
+        <div class="pageIndexContainer">
+            <h3 class="pageTitle">Subcategorías</h3>
+            <a asp-action="CreateSubcategoria" asp-route-idCategoria="@Model.TN_Id" class="btnCreate">Crear</a>
+            <div class="tableContainer">
+                <div class="tbl-header TMarca">
+                    <span class="headerText">ID</span>
+                    <span class="headerText">Nombre</span>
+                    <span class="headerText">Estado</span>
+                    <span class="headerText">Opciones</span>
+                </div>
+                <div class="tbl-content">
+                    @if (ViewBag.Subcategorias.Count == 0)
                     {
-                        <tr>
-                            <td>@sub.Id</td>
-                            <td>@sub.Nombre</td>
-                            <td>
-                                @if (sub.Activo)
-                                {
-                                    <span class="badge text-bg-success">Activo</span>
-                                }
-                                else
-                                {
-                                    <span class="badge text-bg-danger">Inactivo</span>
-                                }
-                            </td>
-                            <td>
-                                <a asp-action="EditSubcategoria" asp-route-id="@sub.Id">Edit</a>
-                                <button type="button" class="showModal" data-id="@sub.Id" value="@sub.Nombre">Eliminar
-                                </button>
-                            </td>
-                        </tr>
+                        <div class="tableRow">
+                            <span class="NoElements">No hay subcategorías</span>
+                        </div>
                     }
-                }
-                </tbody>
-            </table>
+                    else
+                    {
+                        @foreach (var sub in ViewBag.Subcategorias)
+                        {
+                            <div class="tableRow TMarca">
+                                <span class="tableCell">@sub.TN_Id</span>
+                                <span class="tableCell">@sub.TC_Nombre</span>
+                                <span class="columnEstado tableCell">
+                                    @if (sub.TB_Activo)
+                                    {
+                                        <span class="badge text-bg-success tableCell">Activo</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge text-bg-danger tableCell">Inactivo</span>
+                                    }
+                                </span>
+                                <div class="tableButtonsColumn">
+                                    <a asp-action="EditSubcategoria" asp-route-idCategoria="@sub.TN_Id"
+                                       class="EditBtn tooltipContainer">
+                                        <img src="~/img/ICO_Edit.svg" alt="Editar"/>
+                                        <span class="TooltipText">Editar</span>
+                                    </a>
+                                    <button type="button" data-id="@sub.TN_Id"
+                                            class="showModal tooltipContainer btnSwicthActive @(sub.TB_Activo ? "redHighlight" : "greenHighlight")"
+                                            value="@sub.TC_Nombre" data-active="@sub.TB_Activo">
+                                        @if (sub.TB_Activo)
+                                        {
+                                            <img src="~/img/ICO_deactivate.svg" alt="Desactivar"
+                                                 class="iconDeactivate"/>
+                                        }
+                                        else
+                                        {
+                                            <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
+                                        }
+                                        <span class="TooltipText">@(sub.TB_Activo ? "Desactivar" : "Activar")</span>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="tableRow listEnd">
+                            <span>Fin de la Lista</span>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
         <div class="btngroup">
             <button type="submit" id="updateBtn">Actualizar</button>
@@ -77,6 +95,6 @@
         </div>
         <p class="pageTitle" hidden>subcategoría</p>
     </form>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "DeleteSubcategoria", controllerName = "Categorias" })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SubCatSwitchActive", controllerName = "Categorias" })
 
 </div>

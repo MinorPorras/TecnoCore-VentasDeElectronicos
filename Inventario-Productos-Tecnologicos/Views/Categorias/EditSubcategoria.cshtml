@@ -1,4 +1,4 @@
-@model Inventario_Productos_Tecnologicos.Models.Subcategorias
+@model Inventario_Productos_Tecnologicos.Models.TECO_M_Subcategoria
 
 @{
     ViewBag.Title = "Actualizar Subcategoría";
@@ -11,22 +11,22 @@
         @Html.AntiForgeryToken()
         <input type="hidden" name="controller" id="controller" value="Categorias">
         <input type="hidden" name="action" id="action" value="EditSubcategoria">
-        <input type="hidden" id="Id" name="Id" value="@Model.Id">
+        <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id">
         <div class="formgroup">
-            <label for="Nombre">Nombre:</label>
-            <input type="text" name="Nombre" id="Nombre" value="@Model.Nombre">
+            <label for="TC_Nombre">Nombre:</label>
+            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre">
         </div>
-        <input type="hidden" name="CategoriaId" id="CategoriaId" value="@Model.CategoriaId">
+        <input type="hidden" name="TN_CategoriaId" id="TN_CategoriaId" value="@Model.TN_CategoriaId">
         <div class="formgroup">
-            <label for="Activo">Estado:</label>
-            <select name="Activo" id="Activo">
-                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
-                <option value="false" selected="@(Model.Activo ? null : "selected")">Inactivo</option>
+            <label for="TB_Activo">Estado:</label>
+            <select name="TB_Activo" id="TB_Activo">
+                <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
             <button type="submit" id="updateBtn">Actualizar</button>
-            <a type="button" asp-action="Edit" asp-route-id="@Model.CategoriaId">Regresar</a>
+            <a type="button" asp-action="Edit" asp-route-id="@Model.TN_CategoriaId">Regresar</a>
         </div>
     </form>
 </div>

@@ -1,0 +1,72 @@
+@model TECO_A_Usuario
+
+@{
+    ViewBag.Title = "Crear Usuario";
+    Layout = "_LayoutAdmin";
+}
+
+<div>
+    <h2>Crear Usuario</h2>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+        <div class="formgroup">
+            <label asp-for="Email">Correo:</label>
+            <input asp-for="Email" type="email" class="form-control">
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label asp-for="TC_Nombre">Nombre:</label>
+            <input asp-for="TC_Nombre" type="text" class="form-control">
+            <span asp-validation-for="TC_Nombre" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label asp-for="TC_Apellidos">Apellidos:</label>
+            <input asp-for="TC_Apellidos" type="text" class="form-control">
+            <span asp-validation-for="TC_Apellidos" class="text-danger"></span>
+        </div>
+        @*<div class="formgroup">
+            <label asp-for="Contrasena">Contraseña:</label>
+            <input asp-for="Contrasena" type="password" class="form-control">
+            <span asp-validation-for="Contrasena" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label asp-for="Telefono">Teléfono:</label>
+            <input asp-for="Telefono" type="tel" class="form-control">
+            <span asp-validation-for="Telefono" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label asp-for="">Rol:</label>
+            <select asp-for="Rol" class="form-control">
+                <option value="">Seleccione un rol</option>
+                @if (ViewBag.Roles != null)
+                {
+                    @foreach (var rol in ViewBag.Roles)
+                    {
+                        <option value="@rol.Id">@rol.Name</option>
+                    }
+                }
+            </select>
+            <span asp-validation-for="Rol" class="text-danger"></span>
+        </div>*@
+        <div class="formgroup">
+            <label>Estado:</label>
+            <div>
+                <input type="radio" name="active" id="active" value="true" checked>
+                <label for="active">Activo</label>
+
+                <input type="radio" name="active" id="inactive" value="false">
+                <label for="inactive">Inactivo</label>
+            </div>
+        </div>
+
+        <div class="formgroup">
+            <button type="submit" class="btn btn-primary">Crear</button>
+            <a asp-action="Index" class="btn btn-secondary">Volver</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

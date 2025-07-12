@@ -1,4 +1,4 @@
-@model Roles
+@model TECO_A_Roles
 
 @{
     ViewBag.Title = "Editar Rol";
@@ -17,8 +17,8 @@
         <div class="formgroup">
             <label for="Activo">Estado:</label>
             <select name="Activo" id="Activo">
-                <option value="true" selected="@(Model.Activo ? "selected" : null)">Activo</option>
-                <option value="false" selected="@(Model.Activo ? null : "selected")">Inactivo</option>
+                <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
+                <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">

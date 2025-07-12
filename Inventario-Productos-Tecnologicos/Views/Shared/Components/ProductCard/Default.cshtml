@@ -1,12 +1,12 @@
-@model Inventario_Productos_Tecnologicos.Models.Productos
+@model Inventario_Productos_Tecnologicos.Models.TECO_A_Producto
 
 <article class="card-producto">
     <header>
-        <img src="@Model.Imagen" alt="@Model.Nombre"/>
-        <h3>@Model.Nombre</h3>
-        <p>₡ @Model.Precio</p>
+        <img src="@Model.TC_Imagen" alt="@Model.TC_Nombre"/>
+        <h3>@Model.TC_Nombre</h3>
+        <p>₡ @Model.TN_Precio</p>
     </header>
-    <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@Model.Id">Ver más</a>
+    <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@Model.TN_Id">Ver más</a>
     <button class="btnAddToCart">
         <img src="~/img/ICO_BolsaCompra.svg" alt="">
         Agregar al carrito

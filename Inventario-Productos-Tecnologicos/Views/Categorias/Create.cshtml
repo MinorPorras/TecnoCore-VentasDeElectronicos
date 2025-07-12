@@ -1,4 +1,4 @@
-﻿@model Inventario_Productos_Tecnologicos.Models.Categorias
+﻿@model Inventario_Productos_Tecnologicos.Models.TECO_M_Categoria
 
 @{
     ViewBag.Title = "Crear Categoría";
@@ -10,17 +10,17 @@
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
     <div class="formgroup">
-        <label asp-for="Nombre">Nombre:</label>
-        <input asp-for="Nombre" class="form-control">
-        <span asp-validation-for="Nombre" class="text-danger"></span>
+        <label asp-for="TC_Nombre">Nombre:</label>
+        <input asp-for="TC_Nombre" class="form-control">
+        <span asp-validation-for="TC_Nombre" class="text-danger"></span>
     </div>
     <div class="formgroup">
-        <label asp-for="Activo">Estado:</label>
-        <select asp-for="Activo" class="form-control">
+        <label asp-for="TB_Activo">Estado:</label>
+        <select asp-for="TB_Activo" class="form-control">
             <option value="true">Activo</option>
             <option value="false">Inactivo</option>
         </select>
-        <span asp-validation-for="Activo" class="text-danger"></span>
+        <span asp-validation-for="TB_Activo" class="text-danger"></span>
     </div>
     <div class="btngroup">
         <button type="submit" class="btn btn-primary">Guardar</button>
@@ -29,5 +29,5 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
