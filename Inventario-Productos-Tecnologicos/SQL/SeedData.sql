@@ -44,46 +44,46 @@ VALUES ('Mouse', 3, 1),
 -- Procesadores
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('AMD Ryzen 7 5800X', 'Procesador AMD Ryzen 7 5800X, 8 Cores, 16 Threads, hasta 4.7GHz', 299.99, 15, 1, 1, 1, 1),
-       ('Intel Core i7-12700K', N'Procesador Intel Core i7 de 12va generación, 12 Cores, 20 Threads', 409.99, 10, 2, 1,
+VALUES ('AMD Ryzen 7 5800X', 'Procesador AMD Ryzen 7 5800X, 8 Cores, 16 Threads, hasta 4.7GHz', 159995, 15, 1, 1, 1, 1),
+       ('Intel Core i7-12700K', N'Procesador Intel Core i7 de 12va generación, 12 Cores, 20 Threads', 220995, 10, 2, 1,
         1, 1);
 
 -- Tarjetas Madre
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('ASUS ROG STRIX B550-F', 'Tarjeta madre AMD B550, Socket AM4, PCIe 4.0', 179.99, 8, 4, 2, 1, 0),
-       ('MSI MPG B760', 'Tarjeta madre Intel B760, Socket LGA 1700', 189.99, 12, 5, 2, 1, 1);
+VALUES ('ASUS ROG STRIX B550-F', 'Tarjeta madre AMD B550, Socket AM4, PCIe 4.0', 94995, 8, 4, 2, 1, 0),
+       ('MSI MPG B760', 'Tarjeta madre Intel B760, Socket LGA 1700', 101995, 12, 5, 2, 1, 1);
 
 -- Tarjetas Gráficas
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('ASUS TUF Gaming RTX 3060', N'Tarjeta gráfica NVIDIA GeForce RTX 3060 12GB GDDR6', 399.99, 5, 4, 3, 1, 0),
-       ('MSI Gaming X RX 6700 XT', N'Tarjeta gráfica AMD Radeon RX 6700 XT 12GB GDDR6', 479.99, 7, 5, 3, 1, 1);
+VALUES ('ASUS TUF Gaming RTX 3060', N'Tarjeta gráfica NVIDIA GeForce RTX 3060 12GB GDDR6', 214995, 5, 4, 3, 1, 0),
+       ('MSI Gaming X RX 6700 XT', N'Tarjeta gráfica AMD Radeon RX 6700 XT 12GB GDDR6', 256995, 7, 5, 3, 1, 1);
 
 -- Memoria RAM
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('Corsair Vengeance RGB 32GB', 'Kit de memoria DDR4 32GB (2x16GB) 3600MHz', 129.99, 20, 6, 4, 1, 0),
-       ('Kingston Fury Beast 16GB', 'Kit de memoria DDR4 16GB (2x8GB) 3200MHz', 79.99, 25, 7, 4, 1, 0);
+VALUES ('Corsair Vengeance RGB 32GB', 'Kit de memoria DDR4 32GB (2x16GB) 3600MHz', 69995, 20, 6, 4, 1, 0),
+       ('Kingston Fury Beast 16GB', 'Kit de memoria DDR4 16GB (2x8GB) 3200MHz', 44995, 25, 7, 4, 1, 0);
 
 -- Almacenamiento
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('WD Black SN850X 1TB', 'SSD NVMe PCIe Gen4 1TB', 149.99, 15, 8, 5, 1, 1),
-       ('Kingston KC3000 2TB', 'SSD NVMe PCIe Gen4 2TB', 229.99, 10, 7, 5, 1, 0);
+VALUES ('WD Black SN850X 1TB', 'SSD NVMe PCIe Gen4 1TB', 79995, 15, 8, 5, 1, 1),
+       ('Kingston KC3000 2TB', 'SSD NVMe PCIe Gen4 2TB', 124995, 10, 7, 5, 1, 0);
 
 -- PC Prearmadas y Laptops
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('Dell OptiPlex 3000', 'PC de Oficina, Core i5, 8GB RAM, 256GB SSD', 699.99, 5, 11, 8, 1, 0),
-       ('HP Pavilion Gaming', 'Laptop Gaming, Ryzen 5, 16GB RAM, 512GB SSD, RTX 3050', 999.99, 8, 12, 9, 1, 1);
+VALUES ('Dell OptiPlex 3000', 'PC de Oficina, Core i5, 8GB RAM, 256GB SSD', 374995, 5, 11, 8, 1, 0),
+       ('HP Pavilion Gaming', 'Laptop Gaming, Ryzen 5, 16GB RAM, 512GB SSD, RTX 3050', 534995, 8, 12, 9, 1, 1);
 
 -- Periféricos
 INSERT INTO TECO_A_Producto (TC_Nombre, TC_Descripcion, TN_Precio, TN_Stock, TN_MarcaId, TN_SubcategoriaId, TB_Activo,
                              TB_Novedad)
-VALUES ('Logitech G502 HERO', 'Mouse Gaming, 25600 DPI, RGB', 59.99, 30, 9, 10, 1, 0),
-       ('HyperX Alloy Origins', N'Teclado Mecánico RGB, Switches Red', 109.99, 15, 10, 11, 1, 1),
-       ('HyperX Cloud II', N'Audífonos Gaming 7.1, USB', 99.99, 20, 10, 12, 1, 0);
+VALUES ('Logitech G502 HERO', 'Mouse Gaming, 25600 DPI, RGB', 31995, 30, 9, 10, 1, 0),
+       ('HyperX Alloy Origins', N'Teclado Mecánico RGB, Switches Red', 59995, 15, 10, 11, 1, 1),
+       ('HyperX Cloud II', N'Audífonos Gaming 7.1, USB', 54995, 20, 10, 12, 1, 0);
 
 -- Insertar estados de pedido
 INSERT INTO TECO_M_EstadoPedido (TC_NombreEstado, TB_Activo)

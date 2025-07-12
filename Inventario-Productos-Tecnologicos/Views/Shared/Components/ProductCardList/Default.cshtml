@@ -28,57 +28,52 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        console.log("Entra a las listas")
-        const listContainer = document.querySelector('.ListArticlesContainer');
-        const prevBtn = document.querySelector('.ListLastElement');
-        const nextBtn = document.querySelector('.ListNextElement');
-        if (prevBtn && listContainer && nextBtn) {
-            console.log("Si existen los 3 elementos");
-            //Calculo del tamaño del desplazamiento
-            const itemWidth = 250;
-            const gapwidth = parseFloat(getComputedStyle(listContainer).gap);
-            //Si el gap nop está definido se agrega
-            const scrollAmount = itemWidth + (isNaN(gapwidth) ? 16 : gapwidth);
-            console.log(scrollAmount);
+        // Seleccionamos todas las listas
+        const lists = document.querySelectorAll('.list');
 
-            function scrollList(direccion) {
-                if (direccion === 'prev') {
-                    console.log("Anterior elemento");
-                    listContainer.scrollBy({
-                        left: -scrollAmount,
-                        behavior: 'smooth'
-                    });
-                } else if (direccion === 'next') {
-                    console.log("Siguiente elemento");
-                    listContainer.scrollBy({
-                        left: scrollAmount,
-                        behavior: 'smooth'
-                    });
+        lists.forEach((list, index) => {
+            const listContainer = list.querySelector('.ListArticlesContainer');
+            const prevBtn = list.querySelector('.ListLastElement');
+            const nextBtn = list.querySelector('.ListNextElement');
+
+            if (prevBtn && listContainer && nextBtn) {
+                //Calculo del tamaño del desplazamiento
+                const itemWidth = 250;
+                const gapwidth = parseFloat(getComputedStyle(listContainer).gap);
+                //Si el gap no está definido se agrega
+                const scrollAmount = itemWidth + (isNaN(gapwidth) ? 16 : gapwidth);
+
+                function scrollList(direccion) {
+                    if (direccion === 'prev') {
+                        listContainer.scrollBy({
+                            left: -scrollAmount,
+                            behavior: 'smooth'
+                        });
+                    } else if (direccion === 'next') {
+                        listContainer.scrollBy({
+                            left: scrollAmount,
+                            behavior: 'smooth'
+                        });
+                    }
                 }
+
+                //Se añaden los eventos a los botones de scroll
+                prevBtn.addEventListener('click', () => scrollList('prev'));
+                nextBtn.addEventListener('click', () => scrollList('next'));
+
+                //Función que activa o desactiva los botones en función de si este llega a los extremos
+                function checkScrollPosition() {
+                    //Desabilita el botón "Anterior" en caso de que este en el inicio
+                    prevBtn.disabled = listContainer.scrollLeft <= 5;
+                    //Deshabilita el botón "Siguiente" si está al final
+                    nextBtn.disabled = (listContainer.scrollLeft + listContainer.clientWidth) >= (listContainer.scrollWidth - 5);
+                }
+
+                //Revisamos la posición inicial
+                checkScrollPosition();
+                //Añadimos el la función al evento scroll de la lista
+                listContainer.addEventListener('scroll', checkScrollPosition);
             }
-
-            //Se añaden los eventos a los botones de scroll
-            prevBtn.addEventListener('click', () => {
-                scrollList('prev')
-            });
-            nextBtn.addEventListener('click', () => {
-                scrollList('next')
-            });
-
-            //Función que activa o desactiva los botones en función de si este llega a los extremos
-            function checkScrollPosition() {
-                //Desabilita el botón "Anterior" en caso de que este en el inicio
-                prevBtn.disabled = listContainer.scrollLeft <= 5
-                //Deshabilita el botón "Siguiente" si está al final
-                //Scrollwidth = ancho del contenido
-                //clienwidth = ancho visible del contenedor
-                nextBtn.disabled = (listContainer.scrollLeft + listContainer.clientWidth) >= (listContainer.scrollWidth - 5);
-            }
-
-            //Revisamos la posición inicial
-            checkScrollPosition()
-            //Añadimos el la función al evento scroll de la lista
-            listContainer.addEventListener('scroll', checkScrollPosition)
-        }
+        });
     });
 </script>

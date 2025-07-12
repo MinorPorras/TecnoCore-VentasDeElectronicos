@@ -1,4 +1,4 @@
-@model List<object>
+@model List<TECO_A_Roles>
 
 @{
     ViewBag.Title = "Roles";
@@ -9,7 +9,7 @@
     <h2 class="pageTitle">Roles del sistema</h2>
 
     <form asp-action="Search" method="GET">
-        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre o Id:"
+        <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
         <div class="radio-group-grid">
@@ -30,10 +30,9 @@
         </div>
     </form>
 
-    @*
+
     <div class="tableContainer">
         <div class="tbl-header TRoles">
-            <span class="headerText">ID</span>
             <span class="headerText">Nombre</span>
             <span class="headerText">Estado</span>
             <span class="headerText">Opciones</span>
@@ -50,16 +49,15 @@
                 @foreach (var rol in Model)
                 {
                     <div class="tableRow TRoles">
-                        <span>@rol.Id</span>
-                        <span>@rol.Name</span>
-                        <span class="columnEstado">
-                                @if (rol.Activo)
+                        <span class="tableCell">@rol.Name</span>
+                        <span class="tableCell columnEstado">
+                                @if (rol.TB_Activo)
                             {
-                                <span class="badge text-bg-success">Activo</span>
+                                <span class="tableCell badge text-bg-success">Activo</span>
                             }
                             else
                             {
-                                <span class="badge text-bg-danger">Inactivo</span>
+                                <span class="tableCell badge text-bg-danger">Inactivo</span>
                             }
                             </span>
                         <div class="tableButtonsColumn">
@@ -68,9 +66,9 @@
                                 Editar
                             </a>
                             <button type="button" data-id="@rol.Id"
-                                    class="showModal btnSwicthActive @(rol.Activo ? "redHighlight" : "greenHighlight")"
-                                    value="@rol.Name" data-active="@rol.Activo">
-                                @if (rol.Activo)
+                                    class="showModal btnSwicthActive @(rol.TB_Activo ? "redHighlight" : "greenHighlight")"
+                                    value="@rol.Name" data-active="@rol.TB_Activo">
+                                @if (rol.TB_Activo)
                                 {
                                     <img src="~/img/ICO_deactivate.svg" alt="Desactivar" class="iconDeactivate"/>
                                 }
@@ -78,17 +76,18 @@
                                 {
                                     <img src="~/img/ICO_activate.svg" alt="Activar" class="iconActivate"/>
                                 }
-                                @(rol.Activo ? "Desactivar" : "Activar")
+                                @(rol.TB_Activo ? "Desactivar" : "Activar")
                             </button>
                         </div>
                     </div>
                 }
+
                 <div class="tableRow listEnd">
                     <span>Fin de la Lista</span>
                 </div>
             }
         </div>
-    </div>*@
+    </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Roles" })
 </div>
 

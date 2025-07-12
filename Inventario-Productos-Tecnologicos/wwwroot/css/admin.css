@@ -475,6 +475,12 @@ h1 {
             }
         }
 
+        /*----Tablas con 3 columnas----*/
+
+        & .tbl-header.TRoles, .tableRow.TRoles {
+            grid-template-columns: minmax(300px, 3fr) minmax(100px, 1fr) minmax(150px, 1fr);
+        }
+
         /*----Tablas con 4 columnas----*/
 
         & .tbl-header.TRoles, .tableRow.TRoles,
