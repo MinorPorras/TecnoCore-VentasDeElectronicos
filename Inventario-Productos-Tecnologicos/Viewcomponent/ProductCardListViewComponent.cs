@@ -19,6 +19,8 @@ public class ProductCardListViewComponent : ViewComponent
     {
         ViewBag.ListLenght = lenght;
         ViewBag.ListTitle = title;
+        ViewBag.CategoryId = categoryId;
+        ViewBag.SubcategoryId = subcategoryId;
         if (subcategoryId > 0)
         {
             var productosSubcategoria = await _context.TECO_A_Producto

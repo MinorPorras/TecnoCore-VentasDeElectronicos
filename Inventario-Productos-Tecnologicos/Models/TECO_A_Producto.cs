@@ -14,6 +14,11 @@ public partial class TECO_A_Producto
     [Key]
     public int TN_Id { get; set; }
 
+    [Required]
+    [StringLength(50)]
+    [Display(Name = "Código")]
+    public string TC_Codigo { get; set; }
+
     /// <summary>
     /// Nombre del producto.
     /// Máximo 100 caracteres.

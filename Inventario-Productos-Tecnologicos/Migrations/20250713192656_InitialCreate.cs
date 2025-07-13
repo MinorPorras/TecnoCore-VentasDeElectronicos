@@ -357,6 +357,7 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                 {
                     TN_Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    TC_Codigo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     TC_Nombre = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     TC_Descripcion = table.Column<string>(type: "nvarchar(300)", maxLength: 300, nullable: true),
                     TN_Precio = table.Column<decimal>(type: "decimal(10,2)", nullable: false),

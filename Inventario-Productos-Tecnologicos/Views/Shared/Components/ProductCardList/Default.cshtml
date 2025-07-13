@@ -17,11 +17,15 @@
     @foreach (var prod in Model)
     {
         @await Component.InvokeAsync("ProductCard", new { productId = @prod.TN_Id })
-        ;
     }
     <article class="card-producto-last-item">
         <h2 class="card-producto-last-item-title">
-            Ver todos
+            <a asp-controller="Productos"
+               asp-action="ListaProductos"
+               asp-route-categoriaId="@ViewBag.CategoriaId"
+               asp-route-subcategoriaId="@ViewBag.SubcategoriaId">
+                Ver todos los artículos
+            </a>
         </h2>
     </article>
 </div>

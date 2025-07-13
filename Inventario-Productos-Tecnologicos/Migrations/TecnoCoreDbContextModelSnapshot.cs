@@ -79,6 +79,11 @@ namespace Inventario_Productos_Tecnologicos.Migrations
                     b.Property<bool>("TB_Novedad")
                         .HasColumnType("bit");
 
+                    b.Property<string>("TC_Codigo")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("TC_Descripcion")
                         .HasMaxLength(300)
                         .HasColumnType("nvarchar(300)");

@@ -29,12 +29,14 @@
         {
             <div class="carousel-item @(itemIndex == 0 ? "active" : "")"
                  data-bs-interval="5000"> @* Solo el primer item es 'active' *@
-                <img src="@prod.TC_Imagen" class="d-block w-100"
-                     alt="@prod.TC_Nombre"> @* Usa Url.Content para rutas relativas *@
-                <div class="carousel-caption">
-                    <h5>@prod.TC_Nombre</h5>
-                    <p>Precio: @prod.TN_Precio</p>
-                </div>
+                <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@prod.TN_Id">
+                    <img src="@prod.TC_Imagen" class="d-block w-100"
+                         alt="@prod.TC_Nombre"> @* Usa Url.Content para rutas relativas *@
+                    <div class="carousel-caption">
+                        <h5>@prod.TC_Nombre</h5>
+                        <p>Precio: @prod.TN_Precio</p>
+                    </div>
+                </a>
             </div>
             itemIndex++;
         }

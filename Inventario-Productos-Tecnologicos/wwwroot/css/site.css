@@ -591,13 +591,13 @@ section {
         text-align: center;
     }
 
-    input[type="text"], input[type="password"] {
+    .inputLogin {
         width: 100%;
         padding: 10px;
         border-radius: 1rem;
         color: var(--Azure);
         font-size: 1rem;
-        background-image: var(--Azure);
+        background: var(--dBlueEnphasis3);
         border: 5px solid var(--TiffBlue);
         transition: all 0.3s ease;
 
@@ -612,6 +612,8 @@ section {
 
         &:focus {
             outline: none;
+            background: var(--Azure);
+            color: var(--darkBlue);
             border-color: var(--indianRed);
             filter: drop-shadow(0px 1px 5px var(--indianRed));
         }
@@ -674,10 +676,9 @@ section {
     width: 100%;
     padding: 10px;
     border-radius: 1rem;
-    background-color: var(--dBlueEnphasis3);
     color: var(--Azure);
     font-size: 1rem;
-    background-image: var(--darkGradient);
+    background: var(--dBlueEnphasis3);
     border: 5px solid var(--TiffBlue);
     transition: all 0.3s ease;
 
@@ -692,8 +693,15 @@ section {
 
     &:focus {
         outline: none;
+        background: var(--Azure);
+        color: var(--darkBlue);
         border-color: var(--indianRed);
         filter: drop-shadow(0px 1px 5px var(--indianRed));
+
+        &::placeholder {
+            color: var(--darkBlue);
+            opacity: 0.7;
+        }
     }
 }
 
@@ -1593,20 +1601,8 @@ section {
         scroll-behavior: smooth;
         scroll-snap-type: x mandatory;
         scroll-padding: 1rem;
+        scrollbar-width: none;
 
-        &::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        &::-webkit-scrollbar-track {
-            background: var(--dBlueEnphasis1);
-            border-radius: 4px;
-        }
-
-        &::-webkit-scrollbar-thumb {
-            background: var(--TiffBlue);
-            border-radius: 4px;
-        }
 
         & .card-producto {
             position: relative;
@@ -1745,6 +1741,11 @@ section {
             transform-origin: center;
             z-index: 1;
 
+            & a {
+                text-decoration: none;
+                color: var(--Azure);
+            }
+
 
             & .card-producto-last-item-title {
                 text-align: center;
@@ -1781,4 +1782,9 @@ section {
             }
         }
     }
+}
+
+.productDetailsContainer {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) minmax(300px, 1.5fr);
 }

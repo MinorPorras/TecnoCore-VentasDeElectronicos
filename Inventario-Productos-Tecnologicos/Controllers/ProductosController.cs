@@ -29,9 +29,24 @@ public class ProductosController : Controller
             .Include(p => p.Marca)
             .Include(p => p.Subcategoria)
             .ToListAsync();
-        ViewBag.Marcas = new SelectList(_context.TECO_M_Marca, "TN_Id", "TC_Nombre");
-        ViewBag.Subcategorias = new SelectList(_context.TECO_M_Subcategoria, "TN_Id", "TC_Nombre");
+        await LoadDropdowns();
         return View(productos);
+    }
+
+    public async Task LoadDropdowns()
+    {
+        ViewBag.marcas = new SelectList(await _context.TECO_M_Marca.Where(m => m.TB_Activo == true).ToListAsync(),
+            "TN_Id", "TC_Nombre");
+        ViewBag.subcategorias =
+            new SelectList(await _context.TECO_M_Subcategoria.Where(s => s.TB_Activo == true).ToListAsync(), "TN_Id",
+                "TC_Nombre");
+    }
+
+    public async Task loadViewData()
+    {
+        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre");
+        ViewData["SubcategoriaId"] =
+            new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id", "TC_Nombre");
     }
 
     // GET: Productos/Details/5
@@ -74,11 +89,9 @@ public class ProductosController : Controller
     }
 
     // GET: Productos/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre");
-        ViewData["SubcategoriaId"] =
-            new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id", "TC_Nombre");
+        await loadViewData();
         return View();
     }
 
@@ -86,7 +99,7 @@ public class ProductosController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(
-        [Bind("TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TB_Novedad,TN_MarcaId,TN_SubcategoriaId")]
+        [Bind("TC_Codigo, TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TB_Novedad,TN_MarcaId,TN_SubcategoriaId")]
         TECO_A_Producto producto, IFormFile TC_Imagen)
     {
         if (TC_Imagen.Length > 0)
@@ -124,10 +137,7 @@ public class ProductosController : Controller
             return RedirectToAction(nameof(Index));
         }
 
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await loadViewData();
         TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(Alert.ErrorAlert("Error al crear el producto"));
         return View(producto);
     }
@@ -148,10 +158,7 @@ public class ProductosController : Controller
             return NotFound();
         }
 
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await loadViewData();
         return View(producto);
     }
 
@@ -160,7 +167,7 @@ public class ProductosController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(int id,
         [Bind(
-            "TN_Id,TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
+            "TN_Id,TC_Codigo,TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
         TECO_A_Producto producto,
         IFormFile? imagen)
     {
@@ -224,10 +231,7 @@ public class ProductosController : Controller
                 _logger.LogError(ex, "Error al actualizar el producto {ProductoId}", id);
             }
 
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await loadViewData();
         TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
             Alert.ErrorAlert("Por favor, revise los datos ingresados"));
         return View(producto);
@@ -279,11 +283,7 @@ public class ProductosController : Controller
         ViewBag.ActiveFilter = activeFilter;
 
         // Obtener las listas para los dropdowns
-        ViewBag.marcas =
-            new SelectList(await _context.TECO_M_Marca.Where(m => m.TB_Activo == true).ToListAsync(), "Id", "Nombre");
-        ViewBag.subcategorias = new SelectList(
-            await _context.TECO_M_Subcategoria.Where(s => s.TB_Activo == true).ToListAsync(),
-            "Id", "Nombre");
+        await LoadDropdowns();
 
         var query = _context.TECO_A_Producto
             .Include(p => p.Marca)
