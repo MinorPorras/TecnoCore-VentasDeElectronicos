@@ -49,11 +49,9 @@ public class RolesController : Controller
             ViewBag.ActiveFilter = activeFilter;
 
             var query = _roleManager.Roles;
-
             // Aplicar filtro de búsqueda si existe
             if (!string.IsNullOrEmpty(searchElement))
-                query = query.Where(r => r.Name.Contains(searchElement)
-                                         || r.Id.ToString().Contains(searchElement));
+                query = query.Where(r => r.Name.Contains(searchElement));
 
             // Aplicar filtro de estado si no es "all"
             if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
@@ -95,7 +93,7 @@ public class RolesController : Controller
 
         try
         {
-            _context.Roles.Add(rol);
+            await _roleManager.CreateAsync(rol);
             await _context.SaveChangesAsync();
             TempData["success"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.SuccessAlert());

@@ -249,6 +249,17 @@ public class AccountController : Controller
             return View(model);
         }
 
+        // Primero verificamos si el usuario existe y está activo
+        var user = await _userManager.FindByNameAsync(model.UserName);
+        if (user != null && !user.TB_Activo)
+        {
+            _logger.LogWarning("Intento de inicio de sesión de usuario inactivo: {Username}", model.UserName);
+            var inactiveAlert = new Alert
+                { Message = "Su cuenta se encuentra inactiva. Por favor contacte al administrador.", Type = "error" };
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(inactiveAlert);
+            return View(model);
+        }
+
         var result = await _signInManager.PasswordSignInAsync(model.UserName, model.Password, false, true);
         if (result.Succeeded)
         {

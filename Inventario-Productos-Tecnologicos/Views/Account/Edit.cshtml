@@ -18,55 +18,32 @@
             <input name="Email" type="email" class="form-control" value="@Model.Email">
             <span asp-validation-for="Email" class="text-danger"></span>
         </div>
-        @*<div class="formgroup">
-            <label asp-for="Nombre">Nombre:</label>
-            <input name="Nombre" type="text" class="form-control" value="@Model.Nombre">
-            <span asp-validation-for="Nombre" class="text-danger"></span>
+        <div class="formgroup">
+            <label asp-for="TC_Nombre">Nombre:</label>
+            <input name="TC_Nombre" type="text" class="form-control" value="@Model.TC_Nombre">
+            <span asp-validation-for="TC_Nombre" class="text-danger"></span>
         </div>
         <div class="formgroup">
-            <label asp-for="Apellidos">Apellidos:</label>
-            <input name="Apellidos" type="text" class="form-control" value="@Model.Apellidos">
-            <span asp-validation-for="Apellidos" class="text-danger"></span>
+            <label asp-for="TC_Apellidos">Apellidos:</label>
+            <input name="TC_Apellidos" type="text" class="form-control" value="@Model.TC_Apellidos">
+            <span asp-validation-for="TC_Apellidos" class="text-danger"></span>
         </div>
         <div class="formgroup">
-            <label asp-for="Contrasena">Contraseña:</label>
-            <input asp-for="Contrasena" type="password" class="form-control" value="@Model.Contrasena">
-            <span asp-validation-for="Contrasena" class="text-danger"></span>
-        </div>
-        <div class="formgroup">
-            <label asp-for="Telefono">Teléfono:</label>
-            <input name="Telefono" type="tel" class="form-control" value="@Model.Telefono">
-            <span asp-validation-for="Telefono" class="text-danger"></span>
-        </div>
-        <div class="formgroup">
-            <label>Rol:</label>
-            <select name="Rol" class="form-control">
-                @if (ViewBag.Roles != null)
-                {
-                    @foreach (var rol in ViewBag.Roles)
-                    {
-                        if (Model.Rol == rol.Id)
-                        {
-                            <option value="@rol.Id" selected>@rol.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@rol.Id">@rol.Name</option>
-                        }
-                    }
-                }
-            </select>
+            <label asp-for="PhoneNumber">Teléfono:</label>
+            <input name="PhoneNumber" type="tel" class="form-control" value="@Model.PhoneNumber">
+            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
         </div>
         <div class="formgroup">
             <label>Estado:</label>
             <div>
-                <input type="radio" name="Activo" id="active" value="true" @(Model.Activo == true ? "checked" : "")>
+                <input type="radio" name="Activo" id="active" value="true" @(Model.TB_Activo == true ? "checked" : "")>
                 <label for="active">Activo</label>
 
-                <input type="radio" name="Activo" id="inactive" value="false" @(Model.Activo == false ? "checked" : "")>
+                <input type="radio" name="Activo" id="inactive" value="false"
+                       @(Model.TB_Activo == false ? "checked" : "")>
                 <label for="inactive">Inactivo</label>
             </div>
-        </div>*@
+        </div>
 
         <div class="formgroup">
             <button type="button" id="updateBtn" class="btn btn-primary">Actualizar</button>
