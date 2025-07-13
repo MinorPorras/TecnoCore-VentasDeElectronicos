@@ -29,9 +29,16 @@ public class ProductosController : Controller
             .Include(p => p.Marca)
             .Include(p => p.Subcategoria)
             .ToListAsync();
-        ViewBag.Marcas = new SelectList(_context.TECO_M_Marca, "TN_Id", "TC_Nombre");
-        ViewBag.Subcategorias = new SelectList(_context.TECO_M_Subcategoria, "TN_Id", "TC_Nombre");
+        await LoadDropdowns();
         return View(productos);
+    }
+    
+    public async Task LoadDropdowns()
+    {
+        ViewBag.marcas = new SelectList(await _context.TECO_M_Marca.
+            Where(m => m.TB_Activo == true).ToListAsync(), "TN_Id", "TC_Nombre");
+        ViewBag.subcategorias = new SelectList(await _context.TECO_M_Subcategoria.
+            Where(s => s.TB_Activo == true).ToListAsync(), "TN_Id", "TC_Nombre");
     }
 
     // GET: Productos/Details/5
@@ -74,11 +81,9 @@ public class ProductosController : Controller
     }
 
     // GET: Productos/Create
-    public IActionResult Create()
+    public async Task<IActionResult> Create()
     {
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre");
-        ViewData["SubcategoriaId"] =
-            new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id", "TC_Nombre");
+        await LoadDropdowns();
         return View();
     }
 
@@ -123,11 +128,7 @@ public class ProductosController : Controller
             TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
             return RedirectToAction(nameof(Index));
         }
-
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await LoadDropdowns();
         TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(Alert.ErrorAlert("Error al crear el producto"));
         return View(producto);
     }
@@ -147,11 +148,7 @@ public class ProductosController : Controller
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(Alert.NotFoundAlert("el producto"));
             return NotFound();
         }
-
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await LoadDropdowns();
         return View(producto);
     }
 
@@ -224,10 +221,7 @@ public class ProductosController : Controller
                 _logger.LogError(ex, "Error al actualizar el producto {ProductoId}", id);
             }
 
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre",
-            producto.TN_MarcaId);
-        ViewData["SubcategoriaId"] = new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id",
-            "TC_Nombre", producto.TN_SubcategoriaId);
+        await LoadDropdowns();
         TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
             Alert.ErrorAlert("Por favor, revise los datos ingresados"));
         return View(producto);
@@ -279,11 +273,7 @@ public class ProductosController : Controller
         ViewBag.ActiveFilter = activeFilter;
 
         // Obtener las listas para los dropdowns
-        ViewBag.marcas =
-            new SelectList(await _context.TECO_M_Marca.Where(m => m.TB_Activo == true).ToListAsync(), "Id", "Nombre");
-        ViewBag.subcategorias = new SelectList(
-            await _context.TECO_M_Subcategoria.Where(s => s.TB_Activo == true).ToListAsync(),
-            "Id", "Nombre");
+        await LoadDropdowns();
 
         var query = _context.TECO_A_Producto
             .Include(p => p.Marca)
