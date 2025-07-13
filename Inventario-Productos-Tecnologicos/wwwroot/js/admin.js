@@ -112,6 +112,7 @@ function modifyElement() {
             }
 
             if (response.ok) {
+                console.log('Elemento modificado correctamente');
                 if (action !== 'EditSubcategoria') {
                     window.location.href = `/${controller}/Index`;
                 } else {

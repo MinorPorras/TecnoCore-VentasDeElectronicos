@@ -1,14 +1,13 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Rendering; // Para SelectListItem
 
 namespace Inventario_Productos_Tecnologicos.Models.ViewModels;
 
-public class RegisterViewModel
+public class EditUserViewModel
 {
-    // El ID es opcional y se genera automáticamente
-    public string? Id { get; set; }
+    [Required] // El ID es crucial para saber qué usuario se está editando
+    public string Id { get; set; } = string.Empty;
 
-    //------------Campos de usuario--------------------------
     [Required(ErrorMessage = "El usuario es obligatorio.")]
     [Display(Name = "Usuario")]
     public string UserName { get; set; } = string.Empty;
@@ -18,18 +17,6 @@ public class RegisterViewModel
     [Display(Name = "Correo")]
     public string Email { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "La contraseña es obligatoria.")]
-    [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} y como máximo {1} caracteres de longitud.",
-        MinimumLength = 6)]
-    [DataType(DataType.Password)]
-    [Display(Name = "Contraseña")]
-    public string Password { get; set; } = string.Empty;
-
-    [DataType(DataType.Password)]
-    [Display(Name = "Confirmar contraseña")]
-    [Compare("Password", ErrorMessage = "La contraseña y la confirmación no coinciden.")]
-    public string ConfirmPassword { get; set; } = string.Empty;
-
     [Required(ErrorMessage = "El nombre es obligatorio.")]
     [Display(Name = "Nombre")]
     public string Nombre { get; set; } = string.Empty;
@@ -38,9 +25,8 @@ public class RegisterViewModel
     [Display(Name = "Apellidos")]
     public string Apellidos { get; set; } = string.Empty;
 
-    [DataType(DataType.PhoneNumber)] // Sigue siendo útil para el input type="tel"
-    [RegularExpression(@"^\d{8}$", // Debe de tener exactamente 8 digitos
-        ErrorMessage = "El número de teléfono debe contener exactamente 8 dígitos.")]
+    [DataType(DataType.PhoneNumber)]
+    [RegularExpression(@"^\d{8}$", ErrorMessage = "El número de teléfono debe contener exactamente 8 dígitos.")]
     [Required(ErrorMessage = "El número de telefono es obligatorio.")]
     [Display(Name = "Número de Teléfono")]
     public string PhoneNumber { get; set; } = string.Empty;
@@ -65,11 +51,11 @@ public class RegisterViewModel
     [Display(Name = "Cantón")]
     public int? SelectedCantonId { get; set; }
 
-    // Listas para poblar los Dropdowns en la vista
-    public List<SelectListItem> Provincias { get; set; } = [];
-    public List<SelectListItem> Cantones { get; set; } = [];
+    // Listas para poblar los Dropdowns en la vista (pueden ser nulas si se cargan en el controlador)
+    public List<SelectListItem>? Provincias { get; set; } = [];
+    public List<SelectListItem>? Cantones { get; set; } = [];
 
     [Required(ErrorMessage = "El rol es obligatorio")]
     [Display(Name = "Rol")]
-    public string Rol { get; set; } = string.Empty;
+    public string Rol { get; set; } = string.Empty; // Este es el ID del rol seleccionado
 }

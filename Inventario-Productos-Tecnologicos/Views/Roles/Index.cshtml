@@ -51,7 +51,7 @@
                     <div class="tableRow TRoles">
                         <span class="tableCell">@rol.Name</span>
                         <span class="tableCell columnEstado">
-                                @if (rol.TB_Activo)
+                            @if (rol.TB_Activo)
                             {
                                 <span class="tableCell badge text-bg-success">Activo</span>
                             }
@@ -59,7 +59,7 @@
                             {
                                 <span class="tableCell badge text-bg-danger">Inactivo</span>
                             }
-                            </span>
+                        </span>
                         <div class="tableButtonsColumn">
                             <a asp-action="Edit" asp-route-id="@rol.Id" class="EditBtn">
                                 <img src="~/img/ICO_Edit.svg" alt="Editar"/>
@@ -90,5 +90,19 @@
     </div>
     @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Roles" })
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleccionar todos los inputs de tipo radio y checkbox en los filtros
+        const filterInputs = document.querySelectorAll('input[type="radio"][name="OrderForm"], input[type="radio"][name="OrderBy"], input[type="radio"][name="activeFilter"], input[type="checkbox"][name="SelectedCategoriaIds"], input[type="checkbox"][name="SelectedSubcategoryIds"], input[type="checkbox"][name="SelectedMarcaIds"], select[class= "searchSelect"]');
+
+        // Agregar el evento change a cada input
+        filterInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Enviar el formulario automáticamente
+                this.closest('form').submit();
+            });
+        });
+    });
+</script>
 
 

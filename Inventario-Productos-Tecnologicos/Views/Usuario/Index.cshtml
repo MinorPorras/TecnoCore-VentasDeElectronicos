@@ -97,7 +97,7 @@
                             
                     
 
-                    @if (usuario.TB_Activo)
+                            @if (usuario.TB_Activo)
                             {
                                 <span class="badge text-bg-success tableCell">Activo</span>
                             }
@@ -136,5 +136,22 @@
             }
         </div>
     </div>
-    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Usuarios" })
+    @await Component.InvokeAsync("DeleteDialog", new { actionName = "SwitchActive", controllerName = "Usuario" })
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleccionar todos los inputs de tipo radio y checkbox en los filtros
+        const filterInputs = document.querySelectorAll('input[type="radio"][name="OrderForm"], input[type="radio"][name="OrderBy"], input[type="radio"][name="activeFilter"], input[type="checkbox"][name="SelectedCategoriaIds"], input[type="checkbox"][name="SelectedSubcategoryIds"], input[type="checkbox"][name="SelectedMarcaIds"], select[class= "searchSelect"]');
+
+        // Agregar el evento change a cada input
+        filterInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Enviar el formulario automáticamente
+                this.closest('form').submit();
+            });
+        });
+    });
+</script>
+
+
+
