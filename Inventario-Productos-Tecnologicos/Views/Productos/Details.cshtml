@@ -1,52 +1,58 @@
 ﻿@model Inventario_Productos_Tecnologicos.Models.TECO_A_Producto
 
 @{
-    ViewBag.Title = "Detalle - " + Model.TC_Nombre;
-    Layout = "_LayoutAdmin";
-}
-
-<h1>Detalle del Producto</h1>
-
-<div>
-    <h4>@Model.TC_Nombre</h4>
-    <dl class="row">
-        <dt class="col-sm-2">Descripción</dt>
-        <dd class="col-sm-10">@Model.TC_Descripcion</dd>
-
-        <dt class="col-sm-2">Marca</dt>
-        <dd class="col-sm-10">@Model.Marca?.TC_Nombre</dd>
-
-        <dt class="col-sm-2">Subcategoría</dt>
-        <dd class="col-sm-10">@Model.Subcategoria?.TC_Nombre</dd>
-
-        <dt class="col-sm-2">Precio</dt>
-        <dd class="col-sm-10">@Model.TN_Precio.ToString("C")</dd>
-
-        <dt class="col-sm-2">Stock</dt>
-        <dd class="col-sm-10">@Model.TN_Stock</dd>
-
-        <dt class="col-sm-2">Novedad</dt>
-        <dd class="col-sm-10">@(Model.TB_Novedad ? "Sí" : "No")</dd>
-
-        <dt class="col-sm-2">Activo</dt>
-        <dd class="col-sm-10">@(Model.TB_Activo ? "Sí" : "No")</dd>
-
-        @if (!string.IsNullOrEmpty(Model.TC_Imagen))
-        {
-            <dt class="col-sm-2">Imagen</dt>
-            <dd class="col-sm-10">
-                <img src="@Model.TC_Imagen" alt="Imagen de @Model.TC_Nombre"
-                     style="max-width:200px; max-height:200px;"/>
-            </dd>
-        }
-    </dl>
-</div>
-
-<p>
-    @if (ViewBag.UserRole == "Admin")
+    if (User.IsInRole("Administrador"))
     {
-        <a asp-action="Edit" asp-route-id="@Model.TN_Id" class="btn btn-warning">Editar</a>
+        Layout = "_LayoutAdmin";
     }
-    <a onclick="window.history.back()" class="btn btn-danger">Regresar</a>
+    else
+    {
+        Layout = "_Layout";
+    }
+}
+<div class="pageContainer">
+    <div class="productDetailsContainer">
+        <div class="productDetailsimageContainer">
+            @if (!string.IsNullOrEmpty(Model.TC_Imagen))
+            {
+                <dd class="">
+                    <img src="@Model.TC_Imagen" alt="Imagen de @Model.TC_Nombre"
+                         style="max-width:200px; max-height:200px;"/>
+                </dd>
+            }
+        </div>
+        <div class="productDetails">
+            <div class="dataGroup">
+                <h4>@Model.TC_Nombre</h4>
+            </div>
+            
+            <div class="dataGroup">
+                <label class="">Descripción</label>
+                <span class="">@Model.TC_Descripcion</span>
+            </div>
 
-</p>
+            <div class="dataGroup">
+                <label class="">Marca</label>
+                <span class="">@Model.Marca?.TC_Nombre</span>
+            </div>
+
+            <div class="dataGroup">
+                <label class="">Subcategoría</label>
+                <span class="">@Model.Subcategoria?.TC_Nombre</span>
+            </div>
+
+            <div class="dataGroup">
+                <label class="">Precio</label>
+                <span class="">@Model.TN_Precio.ToString("C")</span>
+            </div>
+
+        </div>
+        <div class="btnContainer">
+            @if (User.IsInRole("Administrador"))
+            {
+                <a asp-action="Edit" asp-route-id="@Model.TN_Id" class="btn btn-warning">Editar</a>
+            }
+            <a onclick="window.history.back()" class="btn btn-danger">Regresar</a>
+        </div>
+    </div>
+</div>
