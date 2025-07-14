@@ -493,8 +493,6 @@ public class ProductosController : Controller
         try
         {
             //Persistencia en para los ID de navegación de categoría y subcategoría
-            Console.WriteLine("Categoría: " + categoriaId);
-            Console.WriteLine("Subcategoría: " + subcategoriaId);
             filterModel.CurrentCategoriaId = categoriaId;
             filterModel.CurrentSubcategoriaId = subcategoriaId;
 
