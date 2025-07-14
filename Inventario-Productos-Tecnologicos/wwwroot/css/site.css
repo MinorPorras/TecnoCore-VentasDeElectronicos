@@ -68,6 +68,8 @@ section {
     min-height: 6rem;
     min-width: 7rem;
     max-height: 400px;
+    animation: showfromtop 0.6s ease;
+
 }
 
 .InicioCard {
@@ -1564,6 +1566,251 @@ section {
     }
 }
 
+.productDetailsContainer {
+    display: grid;
+    grid-template-columns: minmax(200px, 1fr) minmax(300px, 1.5fr);
+    gap: 2.5rem;
+    margin: .5rem 1rem 0rem 1rem;
+
+    .productDetailsImage {
+        width: 100%;
+        height: 100%;
+        max-height: 450px;
+        object-fit: cover;
+        border-radius: 0.8rem;
+        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        transition: all 0.3s ease;
+        animation: showfromtop 0.6s ease;
+    }
+
+    .productDetails {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1rem;
+        grid-template-rows: repeat(3, fit-content(100%));
+        background: var(--darkGradient);
+        border-radius: 0.8rem;
+        position: relative;
+        padding: 1rem;
+        min-width: 100%;
+        animation: showfromtop 0.6s ease;
+        animation-delay: .2s;
+
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            scale: 1.03;
+            background: var(--darkGradient);
+            rotate: 180deg;
+            border-radius: 0.8rem;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        & .bold {
+            font-weight: bold;
+        }
+
+        & .DetailsText-title {
+            grid-column: 1 / -1;
+            font-size: clamp(1.5rem, 2vw, 2rem);
+            text-align: center;
+            color: var(--darkBlue);
+            background: var(--lightgradient);
+            padding: 1rem;
+            border-radius: 0.8rem;
+        }
+
+        & .cantGroup {
+            display: grid;
+            align-items: center;
+            justify-content: center;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 1fr 2fr;
+            gap: 1rem;
+
+            & .cant {
+                font-size: clamp(1.2rem, 2vw, 1.5rem);
+                font-weight: bold;
+                color: var(--Azure);
+                text-align: center;
+            }
+
+            & .DetailsText-header {
+                font-size: clamp(1.2rem, 2vw, 1.5rem);
+                font-weight: bold;
+                color: var(--Azure);
+                text-align: center;
+                grid-column: 1 / -1;
+            }
+
+            & .cantInput {
+                -moz-appearance: textfield;
+                text-align: center;
+            }
+
+            /*Oculta las flechas del input type Number en webkit*/
+
+            & .cantInput::-webkit-outer-spin-button,
+            & .cantInput::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+            }
+
+
+            & .btnPlus, .btnMinus {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                border: 5px solid var(--indianRed);
+                background: var(--darkGradient);
+                color: var(--Azure);
+                font-weight: bold;
+                transition: all 0.3s ease;
+                text-align: center;
+                padding: .2rem 0 .2rem 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                justify-self: center;
+
+                &:hover {
+                    scale: 1.05;
+                    background: var(--indianRed);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                }
+
+                &:active {
+                    scale: 0.95;
+                    border-color: var(--okGreen);
+                    background: var(--okGreen);
+                    color: var(--Azure);
+                }
+
+                & img {
+                    width: 40px;
+                    height: 40px;
+                    object-fit: cover;
+                }
+            }
+
+            & .btnPlus {
+                border: 5px solid var(--okGreen);
+
+                &:hover {
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
+                }
+
+                &:active {
+                    border-color: var(--indianRed);
+                    background: var(--indianRed);
+                    color: var(--darkBlue);
+                }
+            }
+        }
+
+        & .DetailsText-Price {
+            font-size: clamp(1.2rem, 2vw, 1.8rem);
+            color: var(--Azure);
+            text-align: center;
+        }
+
+        & .DetailsText-Price-red {
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            color: var(--indianRed);
+            text-align: center;
+            filter: drop-shadow(0px 0px 10px var(--indianRed));
+        }
+
+        & .dataGroup.price, .dataType {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: flex-end;
+        }
+
+
+        & .btnContainer {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+            grid-column-end: -1;
+            grid-row: span 2;
+        }
+
+        & .btnAddToCart, .btnBack, .btnEdit {
+            border: 5px solid var(--indianRed);
+            background: var(--darkGradient);
+            color: var(--Azure);
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+            display: block;
+
+            &:hover {
+                background: var(--indianRed);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+            }
+
+            &:active {
+                background: var(--TiffBlue);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                border-color: var(--TiffBlue);
+            }
+
+            & img {
+                width: 25px;
+                height: 25px;
+                object-fit: cover;
+            }
+        }
+
+        & .btnEdit {
+            border: 5px solid var(--yellowWarning);
+
+            &:hover {
+                background: var(--yellowWarning);
+                filter: drop-shadow(0px 1px 5px var(--yellowWarning));
+            }
+
+            &:active {
+                background: var(--indianRed);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+                border-color: var(--indianRed);
+            }
+        }
+    }
+}
+
+@keyframes showfromtop {
+    0% {
+        transform: translateY(-100%);
+        opacity: 0;
+        filter: motionBlur(20px);
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
 .list {
     grid-column: 1/-1;
     display: grid;
@@ -1823,15 +2070,9 @@ section {
                 & .card-producto-last-item-title {
                     color: var(--indianRed);
                     background-color: var(--dBlueEnphasis2);
-                drop-shadow(0 px 1 px 5 px var(--indianRed);
                     filter: drop-shadow(0px 1px 5px var(--indianRed));
                 }
             }
         }
     }
-}
-
-.productDetailsContainer {
-    display: grid;
-    grid-template-columns: minmax(200px, 1fr) minmax(300px, 1.5fr);
 }

@@ -15,44 +15,57 @@
         <div class="productDetailsimageContainer">
             @if (!string.IsNullOrEmpty(Model.TC_Imagen))
             {
-                <dd class="">
-                    <img src="@Model.TC_Imagen" alt="Imagen de @Model.TC_Nombre"
-                         style="max-width:200px; max-height:200px;"/>
-                </dd>
+                <img src="@Model.TC_Imagen" alt="Imagen de @Model.TC_Nombre" class="productDetailsImage"/>
             }
         </div>
         <div class="productDetails">
+            <h4 class="DetailsText-title bold">@Model.TC_Nombre</h4>
             <div class="dataGroup">
-                <h4>@Model.TC_Nombre</h4>
-            </div>
-            
-            <div class="dataGroup">
-                <label class="">Descripción</label>
-                <span class="">@Model.TC_Descripcion</span>
+                <label class="DetailsText bold">Descripción:</label>
+                <span class="DetailsText">@Model.TC_Descripcion</span>
             </div>
 
-            <div class="dataGroup">
-                <label class="">Marca</label>
-                <span class="">@Model.Marca?.TC_Nombre</span>
+            <div class="cantGroup">
+                <label class="DetailsText-header bold">Cantidad:</label>
+                <button class="btnMinus">
+                    <img src="~/img/ICO_Minus.svg" alt="-">
+                </button>
+                <input type="number" class="inputBase cantInput" value="1" min="1" max="@Model.TN_Stock"/>
+                <button class="btnPlus">
+                    <img src="~/img/ICO_Add.svg" alt="+">
+                </button>
             </div>
 
-            <div class="dataGroup">
-                <label class="">Subcategoría</label>
-                <span class="">@Model.Subcategoria?.TC_Nombre</span>
+            <div class="dataGroup dataType">
+                <div class="dataType-sub">
+                    <label class="DetailsText bold">Marca:</label>
+                    <span class="DetailsText">@Model.Marca?.TC_Nombre</span>
+                </div>
+                <div class="dataType-sub">
+                    <label class="DetailsText bold">Subcategoría:</label>
+                    <span class="DetailsText">@Model.Subcategoria?.TC_Nombre</span>
+                </div>
             </div>
 
-            <div class="dataGroup">
-                <label class="">Precio</label>
-                <span class="">@Model.TN_Precio.ToString("C")</span>
+            <div class="btnContainer">
+                @if (User.IsInRole("Administrador"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.TN_Id" class="btnEdit">Editar</a>
+                }
+                else
+                {
+                    <button class="btnAddToCart">
+                        <img src="~/img/ICO_BolsaCompra.svg" alt="">
+                        Agregar al carrito
+                    </button>
+                }
+                <a onclick="window.history.back()" class="btnBack">Regresar</a>
             </div>
 
-        </div>
-        <div class="btnContainer">
-            @if (User.IsInRole("Administrador"))
-            {
-                <a asp-action="Edit" asp-route-id="@Model.TN_Id" class="btn btn-warning">Editar</a>
-            }
-            <a onclick="window.history.back()" class="btn btn-danger">Regresar</a>
+            <div class="dataGroup price">
+                <label class="DetailsText-Price bold">Precio:</label>
+                <span class="DetailsText-Price-red bold">@Model.TN_Precio.ToString("C")</span>
+            </div>
         </div>
     </div>
 </div>

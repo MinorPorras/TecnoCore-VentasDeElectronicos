@@ -178,16 +178,17 @@ public class DbInitializer
         }
 
         // 4. Crear Usuario Administrador si no existe
-        var adminUserEmail = "admin@tecnocore.com";
-        var adminPassword = "Password123!";
+        const string adminUserName = "cliente";
+        const string adminUserEmail = "admin@tecnocore.com";
+        const string adminPassword = "Password123!";
 
-        var adminUser = await userManager.FindByEmailAsync(adminUserEmail);
+        var adminUser = await userManager.FindByEmailAsync(adminUserName);
 
         if (adminUser == null)
         {
             adminUser = new TECO_A_Usuario
             {
-                UserName = adminUserEmail,
+                UserName = adminUserName,
                 Email = adminUserEmail,
                 NormalizedEmail = adminUserEmail.ToUpper(),
                 EmailConfirmed = true,
@@ -208,7 +209,6 @@ public class DbInitializer
                     c.TC_Nombre == "San José" && c.TN_ProvinciaId == provincia.TN_Id);
 
                 var createAdminUser = await userManager.FindByEmailAsync(adminUserEmail);
-                Console.WriteLine("-----------------------------------Admin user created: " + createAdminUser.UserName);
                 // Crear y asignar dirección
                 var direccionAdmin = new TECO_A_Direccion
                 {
@@ -253,15 +253,16 @@ public class DbInitializer
         }
 
         //Crear un usuario cliente 
-        var clientUserEmail = "cliente@tecnocore.com";
-        var clientPassword = "Password123!";
+        const string clientUserName = "cliente";
+        const string clientUserEmail = "cliente@tecnocore.com";
+        const string clientPassword = "Password123!";
 
-        var clientUser = await userManager.FindByEmailAsync(clientUserEmail);
+        var clientUser = await userManager.FindByEmailAsync(clientUserName);
         if (clientUser == null)
         {
             clientUser = new TECO_A_Usuario
             {
-                UserName = clientUserEmail,
+                UserName = clientUserName,
                 Email = clientUserEmail,
                 EmailConfirmed = true,
                 TC_Nombre = "Cliente",
