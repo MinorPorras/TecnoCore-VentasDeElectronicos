@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Identity; // Necesario para UserManager y SignInManager
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Models; // Tu modelo Usuarios, Provincia, Canton, Direccion
@@ -188,48 +189,6 @@ public class AccountController : Controller
         // Si el ModelState no es válido o hubo errores, re-renderizar la vista
         await RellenarProvinciasCantones(model);
         return View(model);
-    }
-
-    public async Task<IActionResult> Informacion_personal(string id)
-    {
-        var usuario = await _userManager.FindByIdAsync(id);
-        if (usuario == null) return NotFound();
-        var direccion = await _context.TECO_A_Direccion.Where(d => d.TN_UsuarioId == usuario.Id)
-            .Include(d => d.Canton).FirstOrDefaultAsync();
-        if (direccion == null) return NotFound();
-        try
-        {
-            if (direccion.Canton != null && usuario is
-                    { Email: not null, UserName: not null, PhoneNumber: not null })
-            {
-                var model = new RegisterViewModel
-                {
-                    UserName = usuario.UserName,
-                    Email = usuario.Email,
-                    Nombre = usuario.TC_Nombre,
-                    Apellidos = usuario.TC_Apellidos,
-                    PhoneNumber = usuario.PhoneNumber,
-                    DireccionExacta = direccion.TC_Direccion,
-                    CodigoPostal = direccion.TC_CodigoPostal,
-                    SelectedCantonId = direccion.TN_CantonId,
-                    SelectedProvinciaId = direccion.Canton.TN_ProvinciaId
-                };
-                var provincia = await _context.TECO_M_Provincia.Where(p => p.TN_Id == model.SelectedProvinciaId)
-                    .FirstOrDefaultAsync();
-                var canton = await _context.TECO_M_Canton.Where(c => c.TN_Id == model.SelectedCantonId)
-                    .FirstOrDefaultAsync();
-                ViewBag.ProvinciaName = provincia?.TC_Nombre;
-                ViewBag.CantonName = canton?.TC_Nombre;
-                return View(model);
-            }
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw;
-        }
-
-        return RedirectToAction("Index", "Home");
     }
 
     public ViewResult Login()

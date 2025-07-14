@@ -1239,23 +1239,70 @@ section {
 
     &.personalInfo {
         display: grid;
-        grid-template-rows: minmax(40px, 1fr) minmax(300px, 10fr);
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows:fit-content(100%) fit-content(100%);
         width: 100%;
         justify-content: center;
         align-items: center;
+        gap: 1.5rem;
 
         & h2 {
-            grid-column: 1 / -1;
             font-size: clamp(1.5rem, 2vw, 3rem);
             font-weight: bold;
             text-align: center;
         }
 
+        & .personalInfo-btn {
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            justify-self: center;
+            width: 80%;
+            background: var(--darkGradient);
+            border-radius: 0.8rem;
+            border: 5px solid var(--okGreen);
+            color: var(--Azure);
+            font-size: clamp(1rem, 1.5vw, 1.5rem);
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            font-weight: bold;
+
+            &:hover {
+                background: var(--okGreen);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--okGreen));
+            }
+
+            &:active {
+                background: var(--indianRed);
+                color: var(--Azure);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+                border-color: var(--indianRed);
+                scale: 0.9;
+            }
+
+            &.update {
+                border: 5px solid var(--yellowWarning);
+
+                &:hover {
+                    background: var(--yellowWarning);
+                    filter: drop-shadow(0px 1px 5px var(--yellowWarning));
+                }
+            }
+        }
+
         & .accountForm {
+            grid-column: 1 / -1;
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows:fit-content(100%) 4.6rem;
-            justify-content: space-between;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows:fit-content(100%);
+            margin: 1rem;
+            padding: 0 2rem;
+            justify-content: space-evenly;
             gap: 1.5rem;
 
             & .formBtn {

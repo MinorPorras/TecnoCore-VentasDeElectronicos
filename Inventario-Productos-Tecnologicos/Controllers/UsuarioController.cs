@@ -559,4 +559,47 @@ public class UsuarioController : Controller
             Console.WriteLine(e);
         }
     }
+
+    public IActionResult Informacion_personal()
+    {
+        try
+        {
+            var currentUserId = _userManager.GetUserId(HttpContext.User);
+            if (currentUserId == null)
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.ErrorAlert($"Id de Usuario no encontrado"));
+            var usuario = _userManager.Users
+                .Include(u => u.Direccion)
+                .ThenInclude(d => d.Canton)
+                .ThenInclude(c => c.Provincia)
+                .FirstOrDefault(u => u.Id == currentUserId);
+            if (usuario == null)
+            {
+                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                    Alert.ErrorAlert($"Usuario no encontrado"));
+                return View("Index");
+            }
+
+            var model = new RegisterViewModel
+            {
+                UserName = usuario.UserName ?? string.Empty,
+                Email = usuario.Email ?? "No agregado",
+                Nombre = usuario.TC_Nombre,
+                Apellidos = usuario.TC_Apellidos,
+                PhoneNumber = usuario.PhoneNumber ?? "No agregado",
+                DireccionExacta = usuario.Direccion?.TC_Direccion ?? "No agregado",
+                CodigoPostal = usuario.Direccion?.TC_CodigoPostal ?? "No agregado"
+            };
+            ViewBag.ProvinciaName = usuario.Direccion?.Canton?.Provincia?.TC_Nombre ?? "No disponible";
+            ViewBag.CantonName = usuario.Direccion?.Canton?.TC_Nombre ?? "No disponible";
+            return View(model);
+        }
+        catch (Exception e)
+        {
+            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert($"Error al cargar la información personal: {e.Message}"));
+            _logger.LogError(e.Message);
+            return RedirectToAction(nameof(Index));
+        }
+    }
 }

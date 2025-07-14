@@ -129,7 +129,8 @@ function modifyElement() {
 function deleteElement() {
     const showModalBtns = document.querySelectorAll('.showModal');
     const deleteDialog = document.querySelector('.deleteDialog');
-    const btnCancel = document.querySelector('.btnCancel');
+    const dialogContent = deleteDialog.querySelector('.dialogContent');
+    const btnCancel = document.querySelector('#btnCancel');
     const btnSubmit = document.querySelector('#btnSubmit');
 
     if (!deleteDialog || !showModalBtns.length) return;
@@ -152,26 +153,26 @@ function deleteElement() {
             switch (isActive) {
                 case 'true':
                     accion = 'desactivar';
-                    btnSubmit.classList.add('btn-danger');
-                    btnSubmit.classList.remove('btn-success');
+                    btnSubmit.classList.add('btnDeactivate');
+                    btnSubmit.classList.remove('btnActivate');
                     btnSubmit.textContent = 'Desactivar';
                     break;
                 case 'false':
                     accion = 'activar';
-                    btnSubmit.classList.add('btn-success');
-                    btnSubmit.classList.remove('btn-danger');
+                    btnSubmit.classList.add('btnActivate');
+                    btnSubmit.classList.remove('btnDeactivate');
                     btnSubmit.textContent = 'Activar';
                     break;
                 case 'delete':
                     accion = 'eliminar';
-                    btnSubmit.classList.add('btn-danger');
-                    btnSubmit.classList.remove('btn-success');
+                    btnSubmit.classList.add('btnDeactivate');
+                    btnSubmit.classList.remove('btnActivate');
                     btnSubmit.textContent = 'Eliminar';
                     break;
                 default:
                     accion = 'realizar esta acción sobre';
-                    btnSubmit.classList.add('btn-success');
-                    btnSubmit.classList.remove('btn-danger');
+                    btnSubmit.classList.add('btnActivate');
+                    btnSubmit.classList.remove('btnDeactivate');
                     btnSubmit.textContent = 'Confirmar';
                     break;
             }
@@ -187,15 +188,15 @@ function deleteElement() {
     });
 
     // Cerrar el diálogo al hacer clic fuera de él
-    deleteDialog.addEventListener('click', (e) => {
-        const dialogDimensions = deleteDialog.getBoundingClientRect();
+    dialogContent.addEventListener('click', (e) => {
+        const dialogDimensions = dialogContent.getBoundingClientRect();
         if (
             e.clientX < dialogDimensions.left ||
             e.clientX > dialogDimensions.right ||
             e.clientY < dialogDimensions.top ||
             e.clientY > dialogDimensions.bottom
         ) {
-            deleteDialog.close();
+            dialogContent.close();
         }
     });
 }
