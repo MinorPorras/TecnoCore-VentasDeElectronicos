@@ -4,72 +4,76 @@
     ViewBag.Title = "Crear Producto";
     Layout = "_LayoutAdmin";
 }
+<div class="createContainer">
+    <h1>Crear nuevo Producto</h1>
 
-<h1>Crear nuevo Producto</h1>
+    <form asp-action="Create" method="post" enctype="multipart/form-data" class="createFormContainer product">
+        <div class="createFormGroup codigo">
+            <label asp-for="TC_Codigo"></label>
+            <input asp-for="TC_Codigo" class="inputBase"/>
+            <span asp-validation-for="TC_Codigo" class="text-danger"></span>
+        </div>
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="form-group">
-        <label asp-for="TC_Codigo"></label>
-        <input asp-for="TC_Codigo" class="form-control"/>
-        <span asp-validation-for="TC_Codigo" class="text-danger"></span>
-    </div>
+        <div class="createFormGroup nombre">
+            <label asp-for="TC_Nombre"></label>
+            <input asp-for="TC_Nombre" class="inputBase"/>
+            <span asp-validation-for="TC_Nombre" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TC_Nombre"></label>
-        <input asp-for="TC_Nombre" class="form-control"/>
-        <span asp-validation-for="TC_Nombre" class="text-danger"></span>
-    </div>
+        <div class="createFormGroup descripcion">
+            <label asp-for="TC_Descripcion"></label>
+            <textarea asp-for="TC_Descripcion" class="inputBase"></textarea>
+            <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
+        </div>
+        <div class="createFormGroup previewProductImageContainer">
+            <img id="preview" src="" alt="Vista previa" class="previewProductImage"/>
+        </div>
+        <div class="createFormGroup precio">
+            <label asp-for="TN_Precio"></label>
+            <input asp-for="TN_Precio" class="inputBase" type="number" step="0.01" min="0"/>
+            <span asp-validation-for="TN_Precio" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TC_Descripcion"></label>
-        <textarea asp-for="TC_Descripcion" class="form-control"></textarea>
-        <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
-    </div>
+        <div class="createFormGroup stock">
+            <label asp-for="TN_Stock"></label>
+            <input asp-for="TN_Stock" class="inputBase" type="number" min="0"/>
+            <span asp-validation-for="TN_Stock" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TN_Precio"></label>
-        <input asp-for="TN_Precio" class="form-control" type="number" step="0.01" min="0"/>
-        <span asp-validation-for="TN_Precio" class="text-danger"></span>
-    </div>
+        <div class="createFormGroup marca">
+            <label asp-for="TN_MarcaId"></label>
+            <select asp-for="TN_MarcaId" class="inputBase" asp-items="ViewBag.MarcaId">
+                <option value="">-- Seleccione Marca --</option>
+            </select>
+            <span asp-validation-for="TN_MarcaId" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TN_Stock"></label>
-        <input asp-for="TN_Stock" class="form-control"/>
-        <span asp-validation-for="TN_Stock" class="text-danger"></span>
-    </div>
+        <div class="createFormGroup subcategoria">
+            <label asp-for="TN_SubcategoriaId"></label>
+            <select asp-for="TN_SubcategoriaId" class="inputBase" asp-items="ViewBag.SubcategoriaId">
+                <option value="">-- Seleccione Subcategoría --</option>
+            </select>
+            <span asp-validation-for="TN_SubcategoriaId" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TC_Imagen"></label>
-        <input asp-for="TC_Imagen" class="form-control" type="file" accept="image/*"
-               onchange="mostrarImagen(this)" id="imgSelector"/>
-        <span asp-validation-for="TC_Imagen" class="text-danger"></span>
-        <img id="preview" src="" alt="Vista previa" style="max-width: 200px; margin-top: 10px; display: none"/>
-    </div>
+        <div class="createFormGroup novedad">
+            <label asp-for="TB_Novedad" class="form-check-label"></label>
+            <input asp-for="TB_Novedad" class="inputBase" type="checkbox"/>
+        </div>
 
-    <div class="form-group form-check">
-        <input asp-for="TB_Novedad" class="form-check-input"/>
-        <label asp-for="TB_Novedad" class="form-check-label"></label>
-    </div>
+        <div class="createFormGroup imagen">
+            <label asp-for="TC_Imagen"></label>
+            <input asp-for="TC_Imagen" class="inputBase" type="file" accept="image/*"
+                   onchange="mostrarImagen(this)" id="imgSelector"/>
+            <span asp-validation-for="TC_Imagen" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="TN_MarcaId"></label>
-        <select asp-for="TN_MarcaId" class="form-control" asp-items="ViewBag.MarcaId">
-            <option value="">-- Seleccione Marca --</option>
-        </select>
-        <span asp-validation-for="TN_MarcaId" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label asp-for="TN_SubcategoriaId"></label>
-        <select asp-for="TN_SubcategoriaId" class="form-control" asp-items="ViewBag.SubcategoriaId">
-            <option value="">-- Seleccione Subcategoría --</option>
-        </select>
-        <span asp-validation-for="TN_SubcategoriaId" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Crear</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-</form>
+        <div class="createFormGroup CreatebuttonGroup">
+            <a asp-action="Index" class="btnExit">Cancelar</a>
+            <button type="submit" class="btnCreate">Crear</button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

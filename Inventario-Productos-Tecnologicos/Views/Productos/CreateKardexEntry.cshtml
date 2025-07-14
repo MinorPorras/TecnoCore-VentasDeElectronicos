@@ -3,15 +3,14 @@
 @{
     ViewBag.Title = "Crear entrada Kardex";
     Layout = "_LayoutAdmin";
-    
 }
 <div class="kardexForm">
     <h2>@ViewBag.Title</h2>
     <form asp-action="CreateKardexEntry" method="Post">
         <div class="form-group">
-            <input type="hidden" asp-for="ProductoId" value="@ViewBag.Producto.Id"/>
+            <input type="hidden" asp-for="ProductoId" value="@ViewBag.Producto.TN_Id"/>
             <label asp-for="ProductoNombre" class="control-label">Producto</label>
-            <input class="form-control" asp-for="ProductoNombre" value="@ViewBag.Producto.Nombre" readonly/>
+            <input class="form-control" asp-for="ProductoNombre" value="@ViewBag.Producto.TC_Nombre" readonly/>
         </div>
         <div>
             <label asp-for="Fecha">Fecha:</label>
@@ -28,7 +27,7 @@
         </div>
         <div class="form-group">
             <label asp-for="StockAnterior">Stock Anterior</label>
-            <input asp-for="StockAnterior" class="form-control" value="@ViewBag.Producto.Stock" readonly/>
+            <input asp-for="StockAnterior" class="form-control" value="@ViewBag.Producto.TN_Stock" readonly/>
             <span asp-validation-for="StockAnterior" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -38,7 +37,7 @@
         </div>
         <div class="form-group">
             <label asp-for="StockActual">Stock Nuevo</label>
-            <input asp-for="StockActual" class="form-control" value="@ViewBag.Producto.Stock" readonly/>
+            <input asp-for="StockActual" class="form-control" value="@ViewBag.Producto.TN_Stock" readonly/>
             <span asp-validation-for="StockActual" class="text-danger"></span>
         </div>
         <div class="form-group">
@@ -57,7 +56,7 @@
             </div>
         </div>
         <button type="submit" class="btn btn-primary">Guardar</button>
-        <a asp-action="Edit" asp-route-id="@ViewBag.Producto.Id" class="btn btn-secondary">Cancelar</a>
+        <a asp-action="Edit" asp-route-id="@ViewBag.Producto.TN_Id" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 

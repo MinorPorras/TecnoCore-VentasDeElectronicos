@@ -158,6 +158,8 @@ public class ProductosController : Controller
             return NotFound();
         }
 
+        _logger.LogCritical("Imagen del producto: {Imagen}", producto.TC_Imagen);
+
         await loadViewData();
         return View(producto);
     }
@@ -327,7 +329,7 @@ public class ProductosController : Controller
             new SelectList(
                 await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
                     .ToListAsync(),
-                "Id", "Tipo");
+                "TN_Id", "TC_Tipo");
 
         ViewBag.Producto = await _context.TECO_A_Producto.FindAsync(id);
 
@@ -381,9 +383,11 @@ public class ProductosController : Controller
             .Where(p => p.TB_Activo == true)
             .ToListAsync();
 
-        ViewData["TipoMovimientoId"] = new SelectList(
-            await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada).ToListAsync(),
-            "Id", "Tipo", viewModel.TipoMovimientoId);
+        ViewData["TipoMovimientoId"] =
+            new SelectList(
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
+                    .ToListAsync(),
+                "TN_Id", "TC_Tipo");
 
         return View(viewModel);
     }
@@ -400,9 +404,9 @@ public class ProductosController : Controller
 
         ViewData["TipoMovimientoId"] =
             new SelectList(
-                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada)
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
                     .ToListAsync(),
-                "Id", "Tipo");
+                "TN_Id", "TC_Tipo");
 
         ViewBag.Producto = await _context.TECO_A_Producto.FindAsync(id);
 
@@ -456,9 +460,11 @@ public class ProductosController : Controller
             .Where(p => p.TB_Activo == true)
             .ToListAsync();
 
-        ViewData["TipoMovimientoId"] = new SelectList(
-            await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
-            "Id", "Tipo", viewModel.TipoMovimientoId);
+        ViewData["TipoMovimientoId"] =
+            new SelectList(
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
+                    .ToListAsync(),
+                "TN_Id", "TC_Tipo");
 
         return View(viewModel);
     }
