@@ -4,12 +4,16 @@
 }
 
 <dialog class="deleteDialog">
-    <h1></h1>
-    <input type="hidden" name="active" id="active">
-    <form asp-action="@actionName" asp-controller="@controllerName" method="post" class="deleteform">
-        @Html.AntiForgeryToken()
-        <input type="hidden" name="id" id="idDelete">
-        <button type="submit" class="btn" id="btnSubmit"></button>
-    </form>
-    <button type="button" class="btn btn-secondary btnCancel">Cancelar</button>
+    <div class="dialogContent">
+        <h1></h1>
+        <input type="hidden" name="active" id="active">
+        <form asp-action="@actionName" asp-controller="@controllerName" method="post" class="deleteform">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" id="idDelete">
+            <div class="btnSeccion">
+                <button type="submit" class="btnCancel btnSubmit" id="btnSubmit"></button>
+                <button type="button" class="btnCancel" id="btnCancel">Cancelar</button>
+            </div>
+        </form>
+    </div>
 </dialog>

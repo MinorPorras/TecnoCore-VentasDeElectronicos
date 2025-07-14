@@ -207,18 +207,21 @@ public class DbInitializer
                 var canton = await context.TECO_M_Canton.FirstOrDefaultAsync(c =>
                     c.TC_Nombre == "San José" && c.TN_ProvinciaId == provincia.TN_Id);
 
+                var createAdminUser = await userManager.FindByEmailAsync(adminUserEmail);
+                Console.WriteLine("-----------------------------------Admin user created: " + createAdminUser.UserName);
                 // Crear y asignar dirección
                 var direccionAdmin = new TECO_A_Direccion
                 {
-                    TC_Direccion = "Dirección Administrativa TecnoCore",
+                    TC_Direccion = "Dirección Admin TecnoCore",
                     TC_CodigoPostal = "10101",
                     TN_CantonId = canton.TN_Id,
-                    TN_UsuarioId = adminUser.Id,
+                    TN_UsuarioId = createAdminUser.Id,
                     TB_Activo = true
                 };
 
                 context.TECO_A_Direccion.Add(direccionAdmin);
                 await context.SaveChangesAsync();
+                Console.WriteLine("Dirección Admin creada: " + direccionAdmin.TC_Direccion);
 
                 // Asignar el rol de Administrador
                 var addRoleResult = await userManager.AddToRoleAsync(adminUser, "Administrador");
