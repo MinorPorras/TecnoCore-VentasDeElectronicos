@@ -39,8 +39,8 @@
 
         <div class="createFormGroup gestionInventario">
             <label asp-for="TN_Stock">Gestión de inventario</label>
-            <a asp-controller="Productos" asp-action="CreateKardexEntry" asp-route-id="@Model.TN_Id" class="btnExit">Entrada</a>
-            <a asp-controller="Productos" asp-action="CreateKardexExit" asp-route-id="@Model.TN_Id" class="btnCreate">Salida</a>
+            <a asp-controller="Productos" asp-action="CreateKardexEntry" asp-route-id="@Model.TN_Id" class="btnCreate">Entrada</a>
+            <a asp-controller="Productos" asp-action="CreateKardexExit" asp-route-id="@Model.TN_Id" class="btnExit">Salida</a>
         </div>
 
         <div class="createFormGroup marca">
