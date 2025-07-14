@@ -34,7 +34,7 @@
             <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
         </div>
         <div class="createFormGroup previewProductImageContainer">
-            <img id="preview" src="@Model.TC_Imagen" alt="Vista previa" class="previewProductImage"/>
+            <img id="preview" src="@Url.Content(Model.TC_Imagen)" alt="Vista previa" class="previewProductImage alwaysShow"/>
         </div>
 
         <div class="createFormGroup gestionInventario">

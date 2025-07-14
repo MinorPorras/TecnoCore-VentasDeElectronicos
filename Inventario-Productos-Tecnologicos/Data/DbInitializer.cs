@@ -178,7 +178,7 @@ public class DbInitializer
         }
 
         // 4. Crear Usuario Administrador si no existe
-        const string adminUserName = "cliente";
+        const string adminUserName = "admin";
         const string adminUserEmail = "admin@tecnocore.com";
         const string adminPassword = "Password123!";
 
