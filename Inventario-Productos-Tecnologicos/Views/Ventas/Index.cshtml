@@ -1,8 +1,290 @@
-@model dynamic
+﻿@model dynamic
 
 @{
-    ViewBag.Title = "Caja";
+    ViewData["Title"] = "Caja";
     Layout = "_LayoutAdmin";
 }
 
-<h1>Caja</h1>
+<div class="container-fluid">
+    <!-- Título -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="display-4 text-center">Caja</h1>
+        </div>
+    </div>
+
+    <!-- Cliente -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text">Cliente:</span>
+                                <input type="text" class="form-control" id="clienteNombre" placeholder="Nombre del cliente" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="clienteCodigo" placeholder="Código">
+                                <button type="button" class="btn btn-primary" id="buscarCliente">
+                                    <i class="fas fa-search"></i> Buscar
+                                </button>
+                                <button type="button" class="btn btn-success" id="agregarCliente">
+                                    <i class="fas fa-plus"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Factura -->
+    <div class="row mb-3">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5>Información de factura</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Código</th>
+                                    <th>Producto</th>
+                                    <th>Precio Und.</th>
+                                    <th>Cantidad</th>
+                                    <th>Total</th>
+                                    <th>Opciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaProductos">
+                                <tr id="sinProductos">
+                                    <td colspan="6" class="text-center">No hay productos agregados</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cupones, Productos y Total -->
+    <div class="row">
+        <!-- Cupones -->
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">Cupones</h6>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" id="cuponCodigo" placeholder="código...">
+                        <button type="button" class="btn btn-warning" id="aplicarCupon">Aplicar</button>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Descuento:</span>
+                        <span id="descuentoTotal">₡0.00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Producto -->
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h6 class="card-title">Producto</h6>
+                    <div class="input-group mb-2">
+                        <input type="text" class="form-control" id="productoBuscar" placeholder="Buscar">
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="productoCodigo" placeholder="Código">
+                        <button type="button" class="btn btn-success" id="agregarProducto">Agregar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h4 class="mb-3">Total: <span id="totalVenta">₡0.00</span></h4>
+                    <button type="button" class="btn btn-primary btn-lg" id="terminarVenta">
+                        <i class="fas fa-check-circle"></i> Terminar venta
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            let productos = [];
+            let cupones = [];
+            let cliente = null;
+
+            $('#buscarCliente').click(function () {
+                const codigo = $('#clienteCodigo').val().trim();
+                if (!codigo) return;
+
+                $.get('@Url.Action("ObtenerPorCodigo", "Clientes")?codigo=' + codigo, function (data) {
+                    if (data) {
+                        $('#clienteNombre').val(data.nombre);
+                        cliente = data;
+                    } else {
+                        alert('Cliente no encontrado');
+                    }
+                }).fail(() => alert('Error al buscar cliente'));
+            });
+
+            $('#agregarProducto').click(function () {
+                const codigo = $('#productoCodigo').val().trim();
+                if (!codigo) return;
+
+                $.get('@Url.Action("ObtenerPorCodigo", "Productos")?codigo=' + codigo, function (data) {
+                    if (data) {
+                        agregarProductoATabla(data);
+                        $('#productoCodigo').val('');
+                        actualizarTotal();
+                    } else {
+                        alert('Producto no encontrado');
+                    }
+                }).fail(() => alert('Error al buscar producto'));
+            });
+
+            function agregarProductoATabla(producto) {
+                const index = productos.findIndex(p => p.id === producto.id);
+
+                if (index >= 0) {
+                    productos[index].cantidad += 1;
+                    $(`#cantidad-${producto.id}`).val(productos[index].cantidad);
+                } else {
+                    producto.cantidad = 1;
+                    productos.push(producto);
+
+                    if ($('#sinProductos').length) {
+                        $('#sinProductos').remove();
+                    }
+
+                    $('#tablaProductos').append(`
+                        <tr id="fila-${producto.id}">
+                            <td>${producto.codigo}</td>
+                            <td>${producto.nombre}</td>
+                            <td class="precio-unitario">₡${producto.precio.toFixed(2)}</td>
+                            <td>
+                                <input type="number" id="cantidad-${producto.id}" class="form-control cantidad" min="1" value="1" data-producto-id="${producto.id}">
+                            </td>
+                            <td class="total-producto">₡${producto.precio.toFixed(2)}</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-danger eliminar-producto" data-producto-id="${producto.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `);
+                }
+            }
+
+            $(document).on('change', '.cantidad', function () {
+                const id = $(this).data('producto-id');
+                const cantidad = parseInt($(this).val()) || 1;
+                const prod = productos.find(p => p.id === id);
+
+                if (prod) {
+                    prod.cantidad = cantidad;
+                    $(`#fila-${id} .total-producto`).text(`₡${(prod.precio * cantidad).toFixed(2)}`);
+                    actualizarTotal();
+                }
+            });
+
+            $(document).on('click', '.eliminar-producto', function () {
+                const id = $(this).data('producto-id');
+                productos = productos.filter(p => p.id !== id);
+                $(`#fila-${id}`).remove();
+
+                if (productos.length === 0) {
+                    $('#tablaProductos').append(`
+                        <tr id="sinProductos">
+                            <td colspan="6" class="text-center">No hay productos agregados</td>
+                        </tr>
+                    `);
+                }
+
+                actualizarTotal();
+            });
+
+            $('#aplicarCupon').click(function () {
+                const codigo = $('#cuponCodigo').val().trim();
+                if (!codigo) return;
+
+                $.get('@Url.Action("ObtenerPorCodigo", "Cupones")?codigo=' + codigo, function (data) {
+                    if (data) {
+                        if (cupones.some(c => c.id === data.id)) {
+                            alert('Este cupón ya fue aplicado');
+                            return;
+                        }
+                        cupones.push(data);
+                        $('#cuponCodigo').val('');
+                        actualizarTotal();
+                    } else {
+                        alert('Cupón no válido');
+                    }
+                }).fail(() => alert('Error al buscar cupón'));
+            });
+
+            function actualizarTotal() {
+                let subtotal = productos.reduce((sum, p) => sum + p.precio * p.cantidad, 0);
+                let descuento = 0;
+
+                cupones.forEach(c => {
+                    if (c.tipoDescuento === 'P') descuento += subtotal * (c.valor / 100);
+                    else if (c.tipoDescuento === 'M') descuento += c.valor;
+                });
+
+                descuento = Math.min(descuento, subtotal);
+                const total = subtotal - descuento;
+
+                $('#descuentoTotal').text(`-₡${descuento.toFixed(2)}`);
+                $('#totalVenta').text(`₡${total.toFixed(2)}`);
+            }
+
+            $('#terminarVenta').click(function () {
+                if (!cliente) return alert('Debe seleccionar un cliente');
+                if (productos.length === 0) return alert('Debe agregar productos');
+
+                const venta = {
+                    clienteId: cliente.id,
+                    productos: productos.map(p => ({ productoId: p.id, cantidad: p.cantidad, precioUnitario: p.precio })),
+                    cuponesIds: cupones.map(c => c.id),
+                    total: parseFloat($('#totalVenta').text().replace(/[^\d.-]/g, ''))
+                };
+
+                $.post('@Url.Action("Crear", "Ventas")', venta, function (res) {
+                    if (res.success) {
+                        alert('Venta registrada exitosamente');
+                        productos = [];
+                        cupones = [];
+                        cliente = null;
+                        $('#clienteNombre, #clienteCodigo, #cuponCodigo').val('');
+                        $('#descuentoTotal').text('₡0.00');
+                        $('#totalVenta').text('₡0.00');
+                        $('#tablaProductos').html(`
+                            <tr id="sinProductos">
+                                <td colspan="6" class="text-center">No hay productos agregados</td>
+                            </tr>
+                        `);
+                    } else {
+                        alert('Error: ' + res.message);
+                    }
+                }).fail(() => alert('Error al conectar con el servidor'));
+            });
+        });
+    </script>
+}

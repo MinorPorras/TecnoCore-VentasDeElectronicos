@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\tayra\\Desktop\\VIRTUALSTUDIOTECHCORE\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj": {}
+    "C:\\Users\\tayra\\Desktop\\VirtualStudioTechCore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj": {}
   },
   "projects": {
-    "C:\\Users\\tayra\\Desktop\\VIRTUALSTUDIOTECHCORE\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj": {
+    "C:\\Users\\tayra\\Desktop\\VirtualStudioTechCore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\tayra\\Desktop\\VIRTUALSTUDIOTECHCORE\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
+        "projectUniqueName": "C:\\Users\\tayra\\Desktop\\VirtualStudioTechCore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
         "projectName": "Inventario-Productos-Tecnologicos",
-        "projectPath": "C:\\Users\\tayra\\Desktop\\VIRTUALSTUDIOTECHCORE\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
+        "projectPath": "C:\\Users\\tayra\\Desktop\\VirtualStudioTechCore\\Inventario-Productos-Tecnologicos\\Inventario-Productos-Tecnologicos.csproj",
         "packagesPath": "C:\\Users\\tayra\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\tayra\\Desktop\\VIRTUALSTUDIOTECHCORE\\Inventario-Productos-Tecnologicos\\obj\\",
+        "outputPath": "C:\\Users\\tayra\\Desktop\\VirtualStudioTechCore\\Inventario-Productos-Tecnologicos\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -85,7 +85,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.302/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
