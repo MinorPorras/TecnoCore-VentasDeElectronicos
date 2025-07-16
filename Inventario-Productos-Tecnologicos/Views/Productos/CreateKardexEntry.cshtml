@@ -9,15 +9,10 @@
     <form asp-action="CreateKardexEntry" method="Post" class="createKardexEntryForm">
         <button type="button" id="showModalBtn" hidden="">Buscar Producto</button>
 
-        <div class="formGroup">
+        <div class="formGroup producto">
             <label asp-for="ProductoNombre">Producto</label>
             <input type="hidden" asp-for="ProductoId" value="@ViewBag.Producto.TN_Id" class="inputBase"/>
             <input class="form-control" asp-for="ProductoNombre" value="@ViewBag.Producto.TC_Nombre" readonly/>
-        </div>
-        <div class="formGroup">
-            <label asp-for="Fecha">Fecha:</label>
-            <input type="date" asp-for="Fecha" class="inputBase" required/>
-            <span asp-validation-for="Fecha" class="text-danger"></span>
         </div>
         <div class="formGroup">
             <label asp-for="TipoMovimientoId">Tipo de Movimiento</label>
@@ -42,18 +37,10 @@
             <input asp-for="StockActual" class="inputBase" value="@ViewBag.Producto.TN_Stock" readonly/>
             <span asp-validation-for="StockActual" class="text-danger"></span>
         </div>
-        <div class="formGroup estado">
-            <label>Estado:</label>
-            <div class="estadoRadioinput">
-                <div>
-                    <input type="radio" asp-for="Activo" id="active" value="true" checked class="inputBase">
-                    <label for="active">Activo</label>
-                </div>
-                <div>
-                    <input type="radio" asp-for="Activo" id="inactive" value="false" class="inputBase"    >
-                    <label for="inactive">Inactivo</label>
-                </div>
-            </div>
+        <div class="formGroup">
+            <label asp-for="Fecha">Fecha:</label>
+            <input type="date" asp-for="Fecha" class="inputBase" required/>
+            <span asp-validation-for="Fecha" class="text-danger"></span>
         </div>
         <div class="formGroup descripcion">
             <label asp-for="Descripcion">Descripción</label>

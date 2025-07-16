@@ -286,8 +286,8 @@ public partial class TecnoCoreDbContext : IdentityDbContext<TECO_A_Usuario, TECO
                 .OnDelete(DeleteBehavior.Cascade);
 
             entity.HasOne(d => d.Producto)
-                .WithMany(p => p.CarritoCompras)
-                .HasForeignKey(d => d.TN_ProductoId)
+                .WithMany(p => p.CarritoCompras) // 'CarritoCompras' es la propiedad de navegación en TECO_A_Producto
+                .HasForeignKey(d => d.TN_ProductoId) // Especifica la clave foránea
                 .OnDelete(DeleteBehavior.Cascade);
         });
 

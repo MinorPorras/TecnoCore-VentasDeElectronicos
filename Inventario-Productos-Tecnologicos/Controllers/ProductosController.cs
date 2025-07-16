@@ -164,16 +164,16 @@ public class ProductosController : Controller
         return View(producto);
     }
 
-    // POST: Productos/Edit/5
-    [HttpPost]
+    // PUT: Productos/Edit/5
+    [HttpPut]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id,
+    public async Task<IActionResult> Edit(int TN_Id,
         [Bind(
-            "TN_Id,TC_Codigo,TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
+            "TN_Id,TC_Codigo,TC_Nombre,TC_Descripcion,TN_Precio,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
         TECO_A_Producto producto,
-        IFormFile? imagen)
+        IFormFile? TC_Imagen)
     {
-        if (id != producto.TN_Id)
+        if (TN_Id != producto.TN_Id)
         {
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.ErrorAlert("ID de producto no válido"));
@@ -183,19 +183,19 @@ public class ProductosController : Controller
         if (ModelState.IsValid)
             try
             {
-                if (imagen != null && imagen.Length > 0)
+                if (TC_Imagen != null && TC_Imagen.Length > 0)
                 {
                     // Genera un nombre único para el archivo
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(imagen.FileName);
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(TC_Imagen.FileName);
                     var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/productos");
                     var rutaGuardado = Path.Combine(uploadPath, fileName);
-
+                    _logger.LogInformation("Ruta de guardado: {RutaGuardado}", rutaGuardado);
                     if (!Directory.Exists(uploadPath))
                         Directory.CreateDirectory(uploadPath);
 
                     await using (var stream = new FileStream(rutaGuardado, FileMode.Create))
                     {
-                        await imagen.CopyToAsync(stream);
+                        await TC_Imagen.CopyToAsync(stream);
                     }
 
                     producto.TC_Imagen = "/img/productos/" + fileName;
@@ -203,7 +203,7 @@ public class ProductosController : Controller
                 else
                 {
                     var existingProduct = await _context.TECO_A_Producto.AsNoTracking()
-                        .FirstOrDefaultAsync(p => p.TN_Id == id);
+                        .FirstOrDefaultAsync(p => p.TN_Id == producto.TN_Id);
                     if (existingProduct != null)
                         producto.TC_Imagen = existingProduct.TC_Imagen;
                 }
@@ -230,7 +230,7 @@ public class ProductosController : Controller
             {
                 TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.ErrorAlert("Error al actualizar el producto: " + ex.Message));
-                _logger.LogError(ex, "Error al actualizar el producto {ProductoId}", id);
+                _logger.LogError(ex, "Error al actualizar el producto {ProductoId}", producto.TN_Id);
             }
 
         await loadViewData();

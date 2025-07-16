@@ -82,6 +82,8 @@ public class KardexController : Controller
                     .Where(p => p.TB_Activo == true)
                     .ToListAsync()
             };
+            
+            _logger.LogCritical("PRODUCTOS DISPONIBLES: {ProductosDisponiblesCount}", viewModel.ProductosDisponibles?.Count);
 
             ViewData["TipoMovimientoId"] =
                 new Microsoft.AspNetCore.Mvc.Rendering.SelectList(

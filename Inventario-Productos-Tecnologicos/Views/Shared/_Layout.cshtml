@@ -72,14 +72,28 @@
             <button class="tiffBlueBtn" role="button">Buscar</button>
 
             <div class="nav-cart">
-                <div id="showCart" class="btnCarrito tooltipContainer">
-                    <img
-                        src="~/img/ICO_Cart.svg"
-                        alt="compras"
-                        class="nav-cart-icon"
-                        id="shopping-cart"/>
-                    <span class="TooltipText">Carrito de compras</span>
-                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div id="showCart" class="btnCarrito tooltipContainer">
+                        <img
+                            src="~/img/ICO_Cart.svg"
+                            alt="compras"
+                            class="nav-cart-icon"
+                            id="shopping-cart"/>
+                        <span class="TooltipText">Carrito de compras</span>
+                    </div>
+                }
+                else
+                {
+                    <a class="btnCarrito tooltipContainer" asp-action="Login" asp-controller="Account">
+                        <img
+                            src="~/img/ICO_Cart.svg"
+                            alt="compras"
+                            class="nav-cart-icon"
+                            id="shopping-cart"/>
+                        <span class="TooltipText">Carrito de compras</span>
+                    </a>
+                }
                 <label for="shopping-cart">₡ 0.00</label>
             </div>
         </form>
@@ -92,22 +106,7 @@
     </main>
 </div>
 
-<dialog id="CarritoModal">
-    <div class="modalContent">
-        <h2>Carrito de compras</h2>
-        <div class="Cart-header">
-            <p>Productos en el carrito: <span id="cart-item-count">0</span></p>
-            <button class="btnClearCart">Vaciar carrito</button>
-        </div>
-        <div id="cart-item-container">
-        </div>
-        <p>Total: ₡ 0.00</p>
-        <div class="form-group">
-            <button type="button" class="btnClose" id="closeCart">Cerrar</button>
-            <a class="btnEndCompra" asp-action="Carro_Compras" asp-controller="Ventas">Terminar compra</a>
-        </div>
-    </div>
-</dialog>
+@await Component.InvokeAsync("CarritoCompras", new{ usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier) })
 
 <footer class="footer">
     <div class="container">

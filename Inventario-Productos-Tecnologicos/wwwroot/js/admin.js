@@ -1,6 +1,10 @@
 document.addEventListener("DOMContentLoaded", function () {
     if (document.querySelector('.modifyElement')) {
-        modifyElement();
+        if (document.querySelector('.EditProduct')) {
+            modifyProduct();
+        }else{
+            modifyElement();
+        }
         if (document.querySelector('#imgSelector')) {
             let imgForm = document.querySelector('#imgSelector');
             imgForm.addEventListener('change', () => mostrarImagen(imgForm));
@@ -49,6 +53,51 @@ function showAlert(message, type = 'success') {
         alert.classList.remove('show');
         setTimeout(() => alert.remove(), 150);
     }, 5000);
+}
+
+function modifyProduct(){
+    const updateBtn = document.getElementById('updateBtn');
+    updateBtn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const form = document.querySelector('.modifyElement'); // Referencia al formulario
+        const controller = document.getElementById('controller').value;
+        const action = document.getElementById('action').value;
+        
+        const formData = new FormData(form);
+
+        // Para el `TB_Novedad` (checkbox)
+        const novedadCheckbox = form.querySelector('input[name="TB_Novedad"]');
+        if (novedadCheckbox) {
+            formData.set('TB_Novedad', novedadCheckbox.checked); // Establece true/false
+        }
+        
+        try {
+            console.log(`Enviando la información del form de actualización`);
+            for (let pair of formData.entries()) {
+                console.log(`${pair[0]}: ${pair[1]}`);
+            }
+            
+            const response = await fetch(`/${controller}/${action}`, {
+                method: 'PUT',
+                body: formData
+            });
+            if (response.ok) {
+                if (response.status === 204) {
+                    console.log('No hay contenido por mostrar, se asume que la actualización fue exitosa');
+                } else {
+                    console.log('Elemento modificado correctamente');
+                }
+                window.history.back();
+                window.location.reload();
+            } else {
+                const errorText = await response.text();
+                console.error('Error al modificar el elemento:', errorText);
+                showAlert('Error al modificar el elemento: ' + errorText, 'danger');
+            }
+        }catch(err) {
+            console.error('Error al modificar el elemento: ' + err, 'danger');
+        }
+    })
 }
 
 function modifyElement() {

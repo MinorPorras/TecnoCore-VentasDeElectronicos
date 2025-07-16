@@ -1224,6 +1224,10 @@ h1 {
                 }
             }
             
+            &.producto{
+                grid-column: 1 / span 2;
+            }
+            
             &.estado{
                 display: flex;
                 flex-direction: row;

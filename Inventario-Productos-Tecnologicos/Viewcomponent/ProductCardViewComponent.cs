@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IO;
 
 
 namespace Inventario_Productos_Tecnologicos.webcomponent;

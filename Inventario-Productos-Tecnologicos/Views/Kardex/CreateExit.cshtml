@@ -1,109 +1,101 @@
 @model Inventario_Productos_Tecnologicos.Models.ViewModels.KardexViewModel
 
 @{
-    ViewBag.Title = "Agregar Salida de Kardex";
+    ViewBag.Title = "Crear entrada Kardex";
     Layout = "_LayoutAdmin";
 }
-
 <div class="kardexForm">
-    <h2>@ViewBag.Title</h2>
-    <form asp-action="CreateExit" method="Post">
-        <div class="form-group">
-            <input type="hidden" asp-for="ProductoId"/>
-            <label asp-for="ProductoNombre" class="control-label">Producto</label>
+    <h2>Salida de inventario</h2>
+    <form asp-action="CreateEntry" method="Post" class="createKardexEntryForm">
+
+        <div class="formGroup producto">
+            <label asp-for="ProductoNombre">Producto</label>
+            <input type="hidden" asp-for="ProductoId"  class="inputBase"/>
             <input class="form-control" asp-for="ProductoNombre" readonly/>
             <button type="button" class="btn btn-info mt-2" id="showModalBtn">Buscar Producto</button>
         </div>
-        <div>
+        <div class="formGroup">
             <label asp-for="Fecha">Fecha:</label>
-            <input type="date" asp-for="Fecha" class="form-control" required/>
+            <input type="date" asp-for="Fecha" class="inputBase" required/>
             <span asp-validation-for="Fecha" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="formGroup">
             <label asp-for="TipoMovimientoId">Tipo de Movimiento</label>
-            <select asp-for="TipoMovimientoId" class="form-control"
+            <select asp-for="TipoMovimientoId" class="inputBase"
                     asp-items="@ViewBag.TipoMovimientoId" required>
                 <option value="">-- Seleccione Movimiento --</option>
             </select>
             <span asp-validation-for="TipoMovimientoId" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="formGroup">
             <label asp-for="StockAnterior">Stock Anterior</label>
-            <input asp-for="StockAnterior" class="form-control" readonly min="0"/>
+            <input asp-for="StockAnterior" class="inputBase" readonly/>
             <span asp-validation-for="StockAnterior" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="formGroup">
             <label asp-for="Cantidad">Cantidad</label>
-            <input asp-for="Cantidad" class="form-control" required id="CantidadExit" min="0"/>
+            <input asp-for="Cantidad" class="inputBase" required id="Cantidad"  min="1" value="1"/>
             <span asp-validation-for="Cantidad" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="formGroup">
             <label asp-for="StockActual">Stock Nuevo</label>
-            <input asp-for="StockActual" class="form-control" readonly min="0"/>
+            <input asp-for="StockActual" class="inputBase" readonly/>
             <span asp-validation-for="StockActual" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="formGroup descripcion">
             <label asp-for="Descripcion">Descripción</label>
-            <textarea asp-for="Descripcion" class="form-control" rows="3"></textarea>
+            <textarea asp-for="Descripcion" class="inputBase" rows="3"></textarea>
             <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
-        <div class="formgroup">
-            <label>Estado:</label>
-            <div>
-                <input type="radio" asp-for="Activo" id="active" value="true" checked>
-                <label for="active">Activo</label>
-
-                <input type="radio" asp-for="Activo" id="inactive" value="false">
-                <label for="inactive">Inactivo</label>
-            </div>
+        <div class="formGroup CreatebuttonGroup">
+            <button type="submit" class="btnCreate">Guardar</button>
+            <a onclick="Window.history.back()" class="btnExit">Cancelar</a>
         </div>
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <button type="reset" class="btn btn-secondary">Limpiar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
     </form>
-
-    <dialog class="SearchProductoDialog" id="searchProductoDialog">
-        <div class="dialog-content">
-            <button type="button" class="btn-close" onclick="document.getElementById('searchProductoDialog').close()">
-                X
-            </button>
-            <h3>Buscar Producto</h3>
-            <div class="table-responsive">
-                <table class="table">
-                    <thead>
-                    <tr>
-                        <th>Id</th>
-                        <th>Nombre</th>
-                        <th>Stock</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @if (Model.ProductosDisponibles != null)
+</div>
+<dialog class="SearchProductoDialog" id="searchProductoDialog">
+    <div class="dialog-content">
+        <button class="btn-close" onclick="document.getElementById('searchProductoDialog').close()" type="button"></button>
+        <div class="tableContainer">
+            <div class="tbl-header TRoles">
+                <span class="headerText">Código</span>
+                <span class="headerText">Nombre</span>
+                <span class="headerText">Estado</span>
+                <span class="headerText">Opciones</span>
+            </div>
+            <div class="tbl-content">
+                @if (Model.ProductosDisponibles?.Count == 0)
+                {
+                    <div class="tableRow">
+                        <span class="NoElements">No hay productos seleccionables</span>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var prod in Model.ProductosDisponibles)
                     {
-                        foreach (var producto in Model.ProductosDisponibles)
-                        {
-                            <tr>
-                                <td>@producto.TN_Id</td>
-                                <td>@producto.TC_Nombre</td>
-                                <td>@producto.TN_Stock</td>
-                                <td>
-                                    <button type="button" class="btn btn-primary"
-                                            data-producto-id="@producto.TN_Id"
-                                            data-producto-nombre="@producto.TC_Nombre"
-                                            onclick="selectProductoKardex('@producto.TN_Id', '@producto.TC_Nombre', false)">
-                                        Seleccionar
-                                    </button>
-                                </td>
-                            </tr>
-                        }
+                        <div class="tableRow TRoles">
+                            <span class="tableCell">@prod.TC_Codigo</span>
+                            <span class="tableCell">@prod.TC_Nombre</span>
+                            <span class="tableCell">@prod.TN_Stock</span>
+                            <div class="tableButtonsColumn">
+                                <button type="button" class="btn btn-primary"
+                                        data-producto-id="@prod.TN_Id"
+                                        data-producto-nombre="@prod.TC_Nombre"
+                                        onclick="selectProductoKardex('@prod.TN_Id', '@prod.TC_Nombre', true)">
+                                    Seleccionar
+                                </button>
+                            </div>
+                        </div>
                     }
-                    </tbody>
-                </table>
+                    <div class="tableRow listEnd">
+                        <span>Fin de la Lista</span>
+                    </div>
+                }
             </div>
         </div>
-    </dialog>
-</div>
+    </div>
+</dialog>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
