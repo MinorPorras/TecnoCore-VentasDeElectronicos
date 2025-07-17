@@ -1,7 +1,7 @@
 @model List<TECO_P_CarritoCompras>
 
 @{
-
+    decimal totalCarrito = 0;
 }
 
 <dialog id="CarritoModal">
@@ -11,39 +11,53 @@
             <p>Productos en el carrito: <span id="cart-item-count">@(Model?.Count ?? 0)</span></p>
             <button class="btnClearCart">Vaciar carrito</button>
         </div>
-        <div id="cart-item-container">
+        <div class="tableContainer">
+            <div class="tbl-header tCart sticky-top">
+                <span class="headerText">Nombre</span>
+                <span class="headerText">Precio Unitario</span>
+                <span class="headerText">Cantidad</span>
+                <span class="headerText">Subtotal</span>
+                <span class="headerText">Opciones</span>
+            </div>
             @if (Model != null && Model.Count > 0)
             {
-                decimal totalCarrito = 0; // Para calcular el total
 
-                foreach (var item in Model)
-                {
-                    // Asegúrate de que item.Producto no sea null antes de acceder a sus propiedades
-                    if (item.Producto != null)
+                <div class="tbl-content">
+                    @if (Model.Count == 0)
                     {
-                        <div class="cart-item">
-                            <img src="@Url.Content(item.Producto.TC_Imagen)" alt="@item.Producto.TC_Nombre" class="cart-item-image" />
-                            <div class="cart-item-details">
-                                <h3>@item.Producto.TC_Nombre</h3>
-                                <p>Cantidad: @item.TN_Cantidad</p>
-                                <p>Precio Unitario: ₡ @item.TN_PrecioUnitario.ToString("N2")</p>
-                                <p>Subtotal: ₡ @(item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2")</p>
-                            </div>
-                            <button class="remove-from-cart-btn" data-product-id="@item.TN_ProductoId">X</button>
+                        <div class="tableRow">
+                            <span class="NoElements">No hay @ViewBag.Title</span>
                         </div>
-                        totalCarrito += (item.TN_Cantidad * item.TN_PrecioUnitario); // Sumar al total
                     }
-                }
-                <p>Total: ₡ @totalCarrito.ToString("N2")</p>
+                    else
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <div class="tableRow tCart">
+                                <span class="tableCell">@item.Producto.TC_Nombre</span>
+                                <span class="tableCell">@item.TN_Cantidad</span>
+                                <span class="tableCell">₡ @item.TN_PrecioUnitario.ToString("N2")</span>
+                                <span class="tableCell">₡ @((item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2"))</span>
+                                <div class="tableButtonsColumn">
+                                    <button type="button" 
+                                            class="DeleteBtn tooltipContainer btnSwicthActive redHighlight">
+                                        <img src="~/img/ICO_Delete.svg" alt="Desactivar" class="iconDeactivate"/>
+                                        <span class="TooltipText transM50">Eliminar </span>
+                                    </button>
+                                </div>
+                            </div>
+                                
+                            totalCarrito += item.TN_Cantidad * item.TN_PrecioUnitario; // Sumar al total
+                        }
+                    }
+                </div>
             }
             else
             {
                 <p>No hay productos en el carrito.</p>
             }
         </div>
-        
-        @* <p>Total: ₡ 0.00</p> *@
-        
+        <p id="total-Cart">Total: ₡ @totalCarrito.ToString("N2")</p>
         <div class="form-group">
             <button type="button" class="btnClose" id="closeCart">Cerrar</button>
             <a class="btnEndCompra" asp-action="Carro_Compras" asp-controller="Ventas">Terminar compra</a>
