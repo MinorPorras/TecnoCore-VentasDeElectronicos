@@ -4,10 +4,11 @@
     <header>
         <img src="@Model.TC_Imagen" alt="@Model.TC_Nombre"/>
         <h3>@Model.TC_Nombre</h3>
-        <p>₡ @Model.TN_Precio</p>
+        <p>₡ @Model.TN_Precio.ToString("N2")</p>
     </header>
+    <input id="product" value="@Model.TN_Id" hidden/>
     <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@Model.TN_Id">Ver más</a>
-    <button class="btnAddToCart">
+    <button class="btnAddToCart" data-productid="@Model.TN_Id" data-quantity="1" onclick="addToCart(this)">
         <img src="~/img/ICO_BolsaCompra.svg" alt="">
         Agregar al carrito
     </button>
