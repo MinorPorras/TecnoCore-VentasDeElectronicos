@@ -121,6 +121,32 @@ document.addEventListener('DOMContentLoaded', () => {
             emptyCart();
         });
 
+        // Event listener for the "plus" button (increase quantity)
+        $('body').on('click', '.btnPlus', function() {
+            const productId = $(this).data('productid');
+            const numericProductId = parseInt(productId);
+
+            if (!isNaN(numericProductId)) {
+                // Call addToCart with quantity 1 to increment
+                addToCart(numericProductId, 1);
+            } else {
+                console.error("Error: Product ID is not a valid number for increasing quantity.");
+            }
+        });
+
+        // Event listener for the "minus" button (decrease quantity)
+        $('body').on('click', '.btnMinus', function() {
+            const productId = $(this).data('productid');
+            const numericProductId = parseInt(productId);
+
+            if (!isNaN(numericProductId)) {
+                // You'll need a separate function for decreasing or modify removeFromCart
+                decreaseCartItemQuantity(numericProductId, 1);
+            } else {
+                console.error("Error: Product ID is not a valid number for decreasing quantity.");
+            }
+        });
+
     })
 });
 
@@ -143,12 +169,26 @@ function renderCartItems(cartItems) {
     if (cartItems && cartItems.length > 0) {
         cartItems.forEach(item => {
             console.log(item);
-            const subtotal = parseFloat(item.quantity) * parseFloat(item.productPrice); // Parse to float for calculation
+            const subtotal = item.quantity * item.productPrice; // Parse to float for calculation
             const row = `
                     <div class="tableRow tCart" data-product-id="${item.productId}">
                         <span class="tableCell">${item.productName}</span>
                         <span class="tableCell">₡ ${formatter.format(item.productPrice)}</span>
-                        <span class="tableCell cart-item-quantity">${item.quantity}</span>
+                        <div class="tableCell columnCant">
+                            <button class="btnMinus" data-productid="${item.productId}">
+                                <img src="${item.minusImage}" alt="-">
+                            </button>
+                            <input type="number" 
+                                   class="inputBase cantInput cart-item-quantity" 
+                                   value="${item.quantity}" 
+                                   min="1" 
+                                   max="${item.productMaxStock}"
+                                   data-productid="${item.productId}"
+                                   readonly />
+                            <button class="btnPlus" data-productid="${item.productId}">
+                                <img src="${item.plusImage}" alt="+">
+                            </button>
+                        </div>
                         <span class="tableCell cart-item-subtotal">₡ ${formatter.format(subtotal)}</span>
                         <div class="tableButtonsColumn">
                                 <button type="button"
@@ -250,6 +290,40 @@ function addToCart(productId, quantity = 1){
             console.error('Error adding to cart:', err);
             showAlert('Error al agregar el producto al carrito.', 'error');
         })
+}
+
+function decreaseCartItemQuantity(productId, quantityToDecrease = 1) {
+    // You'll need a new API endpoint in your VentasController for this
+    // e.g., POST /Ventas/DecreaseCartItem
+    fetch("/Ventas/DecreaseCartItem", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'accept': 'application/json'
+        },
+        body: JSON.stringify({
+            productId: productId,
+            quantity: quantityToDecrease, // Pass how much to decrease by
+        })
+    }).then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+    })
+        .then(data => {
+            if (data.success) {
+                showAlert(data.message, 'success');
+                // After successful update, refresh cart items
+                getCartItems();
+            } else {
+                showAlert(data.message, 'error');
+            }
+        })
+        .catch(err => {
+            console.error('Error decreasing cart item quantity:', err);
+            showAlert('Error al disminuir la cantidad del producto en el carrito.', 'error');
+        });
 }
 
 function emptyCart() {

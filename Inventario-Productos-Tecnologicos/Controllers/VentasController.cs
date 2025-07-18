@@ -118,15 +118,19 @@ public class VentasController : Controller
             success = true, 
             message = "Producto agregado al carrito de compras.",
             cartItemCount = cantidadCarrito,
-            cartTotal = totalCarrito.ToString("N2"), // Formatear el total a dos decimales
+            cartTotal = totalCarrito,
             cartItems = productosEnCarrito.Select(item => new
             {
                 productId = item.TN_ProductoId,
                 productName = item.Producto.TC_Nombre,
-                productPrice = item.TN_PrecioUnitario.ToString("N2"), // Formatear el precio a dos decimales
+                productPrice = item.TN_PrecioUnitario,
                 quantity = item.TN_Cantidad,
-                totalPrice = (item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2"), // Calcular el precio total del producto
-                deleteImage = Url.Content("~/img/ICO_Delete.svg") // Or if each product has its own image, use item.Producto.TC_Imagen
+                totalPrice = (item.TN_Cantidad * item.TN_PrecioUnitario), // Calcular el precio total del producto
+                deleteImage = Url.Content("~/img/ICO_Delete.svg"),
+                productMaxStock = item.Producto?.TN_Stock ?? 0,
+                plusImage = Url.Content("~/img/ICO_Add.svg"), 
+                minusImage = Url.Content("~/img/ICO_Minus.svg")
+
             })
         });
     }
@@ -172,7 +176,10 @@ public class VentasController : Controller
                     productPrice = item.TN_PrecioUnitario,
                     quantity = item.TN_Cantidad,
                     totalPrice = (item.TN_Cantidad * (item.Producto?.TN_Precio ?? 0m)),
-                    deleteImage = Url.Content("~/img/ICO_Delete.svg")
+                    deleteImage = Url.Content("~/img/ICO_Delete.svg"),
+                    productMaxStock = item.Producto?.TN_Stock ?? 0,
+                    plusImage = Url.Content("~/img/ICO_Add.svg"), 
+                    minusImage = Url.Content("~/img/ICO_Minus.svg")
                 }).ToList<object>(); 
             }
         
@@ -254,6 +261,63 @@ public class VentasController : Controller
             });
         }
     }
+    
+    
+public async Task<IActionResult> DecreaseCartItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
+{
+    if (!ModelState.IsValid || model.quantity <= 0)
+    {
+        return Json(new { success = false, message = "Datos inválidos para disminuir." });
+    }
+
+    var productId = model.productId;
+    var cantidadRestar = model.quantity ?? 1; // Default to decreasing by 1
+
+    var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    if (string.IsNullOrEmpty(usuarioId))
+    {
+        return Json(new { success = false, message = "Usuario no autenticado." });
+    }
+
+    var carritoExistente = await _context.TECO_P_CarritoCompras
+        .FirstOrDefaultAsync(c => c.TN_ProductoId == productId && c.TN_UsuarioId == usuarioId);
+
+    if (carritoExistente == null)
+    {
+        return Json(new { success = false, message = "Producto no encontrado en el carrito." });
+    }
+    if (carritoExistente.TN_Cantidad < cantidadRestar)
+    {
+        return Json(new { success = false, message = "No se puede restar más de la cantidad actual." });
+    }
+    carritoExistente.TN_Cantidad -= cantidadRestar;
+
+    if (carritoExistente.TN_Cantidad <= 0)
+    {
+        // If quantity drops to 0 or below, remove the item entirely
+        _context.TECO_P_CarritoCompras.Remove(carritoExistente);
+    }
+    
+    await _context.SaveChangesAsync();
+    
+    // After modification, get updated cart data to send back
+    // (You can reuse the logic from GetCartItems, or even call it directly if it's refactored)
+    var updatedCartItems = await _context.TECO_P_CarritoCompras
+        .Include(c => c.Producto)
+        .Where(c => c.TN_UsuarioId == usuarioId)
+        .ToListAsync();
+
+    int newCartItemCount = updatedCartItems.Count; // This counts unique items
+    decimal newCartTotal = updatedCartItems.Sum(c => c.TN_Cantidad * (c.Producto?.TN_Precio ?? 0m)); // Defensive sum
+
+    return Json(new
+    {
+        success = true,
+        message = carritoExistente.TN_Cantidad <= 0 ? "Producto eliminado del carrito." : "Cantidad actualizada.",
+        cartItemCount = newCartItemCount,
+        cartTotal = newCartTotal,
+    });
+}
 
     public async Task<IActionResult> EmptyCart()
     {

@@ -27,7 +27,21 @@
                         <div class="tableRow tCart">
                             <span class="tableCell">@item.Producto.TC_Nombre</span>
                             <span class="tableCell">₡ @item.TN_PrecioUnitario.ToString("N2")</span>
-                            <span class="tableCell cart-item-quantity">@item.TN_Cantidad</span>
+                            <div class="tableCell columnCant">
+                                <button class="btnMinus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Minus.svg")" alt="-">
+                                </button>
+                                <input type="number" 
+                                       class="inputBase cantInput cart-item-quantity" 
+                                       value="@item.TN_Cantidad" 
+                                       min="1" 
+                                       max="@item.Producto.TN_Stock"
+                                       data-productid="@item.TN_ProductoId"
+                                       readonly />
+                                <button class="btnPlus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Add.svg")" alt="+">
+                                </button>
+                            </div>
                             <span class="tableCell cart-item-subtotal">₡ @((item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2"))</span>
                             <div class="tableButtonsColumn">
                                 <button type="button" 
