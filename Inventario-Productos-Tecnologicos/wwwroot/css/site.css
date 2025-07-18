@@ -754,7 +754,7 @@ section {
         border-radius: 0.8rem;
         filter: drop-shadow(0px 1px 5px var(--TiffBlue));
         margin: auto;
-        width: 75vw;
+        width: 90vw;
         max-height: 95vh;
         animation-name: animatetop;
         animation-duration: 0.4s;
@@ -1907,6 +1907,20 @@ section {
                 &:hover {
                     background-color: var(--dBlueEnphasis2);
                 }
+                
+                &.columnCant{
+                    display: grid;
+                    grid-template-columns: repeat(3, 1fr);
+                    align-items: center;
+                    justify-content: center;
+                    gap: 0.5rem;
+                    
+                    & .cantInput {
+                        -moz-appearance: textfield;
+                        text-align: center;
+                        width: 100%;
+                    }
+                }
             }
 
             & .tableCell.columnEstado {
@@ -1976,13 +1990,59 @@ section {
                     scale: .8;
                 }
             }
+
+            & .btnPlus, & .btnMinus {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                border: 5px solid var(--indianRed);
+                background: var(--darkGradient);
+                color: var(--Azure);
+                font-weight: bold;
+                transition: all 0.3s ease;
+                text-align: center;
+                padding: .2rem 0 .2rem 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                align-self: center;
+                justify-self: center;
+
+                &:hover {
+                    background: var(--indianRed);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                }
+
+                &:active {
+                    border-color: var(--okGreen);
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                }
+            }
+            
+            & .btnPlus {
+                border: 5px solid var(--okGreen);
+
+                &:hover {
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
+                }
+
+                &:active {
+                    border-color: var(--indianRed);
+                    background: var(--indianRed);
+                    color: var(--darkBlue);
+                }
+            }
         }
     }
 
     /*----Tablas con 5 columnas----*/
 
     & .tbl-header.tCart, .tableRow.tCart {
-        grid-template-columns: minmax(280px, 3fr) minmax(150px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(60px, 1fr);
+        grid-template-columns: minmax(250px, 3fr) minmax(150px, 1fr) minmax(150px, 2fr) minmax(150px, 1fr) minmax(60px, 1fr);
     }
 }
 
