@@ -171,48 +171,6 @@
             });
         </text>
     }
-
-    function updateCartCount(newCount, newTotal) {
-        const cartItemCount = $('#cart-item-count');
-        cartItemCount.text(newCount);
-        const totalCart = $('#total-Cart');
-        totalCart.text(`₡ ${parseFloat(newTotal).toFixed(2)}`);
-        const cartTotalOutDisplay = $('#cart-total-out-display');
-        cartTotalOutDisplay.text(`₡ ${parseFloat(newTotal).toFixed(2)}`);
-    }
-
-    function addToCart(buttonElement){
-        const productId = $(buttonElement).data('productid');
-        const quantity = parseInt($(buttonElement).data('quantity')) || 1;
-        fetch("Ventas/AddToCart", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'accept': 'application/json'
-            },
-            body: JSON.stringify({
-                productId: productId,
-                quantity: quantity,
-            })
-        }).then(res => {
-            if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-            }
-            return res.json();
-        })
-            .then(data => {
-                if (data.success) {
-                    showAlert(data.message, 'success');
-                    updateCartCount(data.cartItemCount, data.cartTotal);
-                } else {
-                    showAlert(data.message, 'error');
-                }
-            })
-            .catch(err => {
-                console.error('Error adding to cart:', err);
-                showAlert('Error al agregar el producto al carrito.', 'error');
-            })
-    }
 </script>
 @await RenderSectionAsync("Scripts", false)
 </body>

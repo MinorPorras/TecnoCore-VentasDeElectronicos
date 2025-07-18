@@ -281,10 +281,6 @@ nav {
     transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
 
-.transM50{
-    transform: translate(-70%, 100%);
-}
-
 /* Mostrar el tooltip al pasar el ratón */
 .tooltipContainer:hover .TooltipText {
     visibility: visible; /* Hace que el elemento sea visible */
