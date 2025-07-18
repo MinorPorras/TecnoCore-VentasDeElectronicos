@@ -77,7 +77,6 @@ public class VentasController : Controller
             // Si el producto ya está en el carrito, actualizar la cantidad
             carritoExistente.TN_Cantidad += quantity ?? 1; // Aumentar la cantidad o establecer a 1 si no se proporciona
             _logger.LogCritical("Actualizando cantidad del producto en el carrito. Nueva cantidad: {NuevaCantidad}", carritoExistente.TN_Cantidad);
-            _context.TECO_P_CarritoCompras.Update(carritoExistente);
         }
         else
         {
@@ -96,6 +95,12 @@ public class VentasController : Controller
         // Guardar los cambios en la base de datos
         await _context.SaveChangesAsync();
         
+        // Obtener la nueva lista de productos en el carrito de compras
+        var productosEnCarrito = await _context.TECO_P_CarritoCompras
+            .Include(c => c.Producto) // Incluir el objeto Producto relacionado
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+        
         // Retornar la cantidad de productos en el carrito de compras (Cuenta solo productos únicos, si hay duplicados no los cuenta)
         var cantidadCarrito = await _context.TECO_P_CarritoCompras
             .Where(c => c.TN_UsuarioId == usuarioId)
@@ -113,7 +118,192 @@ public class VentasController : Controller
             success = true, 
             message = "Producto agregado al carrito de compras.",
             cartItemCount = cantidadCarrito,
-            cartTotal = totalCarrito
+            cartTotal = totalCarrito.ToString("N2"), // Formatear el total a dos decimales
+            cartItems = productosEnCarrito.Select(item => new
+            {
+                productId = item.TN_ProductoId,
+                productName = item.Producto.TC_Nombre,
+                productPrice = item.TN_PrecioUnitario.ToString("N2"), // Formatear el precio a dos decimales
+                quantity = item.TN_Cantidad,
+                totalPrice = (item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2"), // Calcular el precio total del producto
+                deleteImage = Url.Content("~/img/ICO_Delete.svg") // Or if each product has its own image, use item.Producto.TC_Imagen
+            })
+        });
+    }
+
+    public async Task<IActionResult> GetCartItems()
+    {
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para ver los productos del carrito."));
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+        
+        try
+        {
+            // Obtener los productos en el carrito de compras del usuario autenticado
+            // Ensure Producto is included and handled if it might be null for some reason
+            var productosEnCarrito = await _context.TECO_P_CarritoCompras
+                .Include(c => c.Producto) // Incluir el objeto Producto relacionado
+                .Where(c => c.TN_UsuarioId == usuarioId)
+                .ToListAsync();
+
+            // Initialize defaults in case the cart is empty
+            int cantidadCarrito = 0;
+            decimal totalCarrito = 0m;
+            var cartItemsData = new List<object>();
+
+            if (productosEnCarrito.Count != 0)
+            {
+                cantidadCarrito = productosEnCarrito.Count;
+
+                totalCarrito = productosEnCarrito.Sum(c => c.TN_Cantidad * (c.Producto?.TN_Precio ?? 0m));
+
+                cartItemsData = productosEnCarrito.Select(item => new
+                {
+                    productId = item.TN_ProductoId,
+                    productName = item.Producto?.TC_Nombre ?? "Producto Desconocido",
+                    productPrice = item.TN_PrecioUnitario,
+                    quantity = item.TN_Cantidad,
+                    totalPrice = (item.TN_Cantidad * (item.Producto?.TN_Precio ?? 0m)),
+                    deleteImage = Url.Content("~/img/ICO_Delete.svg")
+                }).ToList<object>(); 
+            }
+        
+            _logger.LogCritical("Cantidad de productos en el carrito: {CantidadCarrito}", cantidadCarrito);
+            _logger.LogCritical("Precio total de los productos en el carrito: {TotalCarrito}", totalCarrito);
+
+            return Json(new
+            {
+                success = true,
+                cartItemCount = cantidadCarrito,
+                cartTotal = totalCarrito, // Send as decimal, let JS format for display
+                cartItems = cartItemsData // Always send a list, even if empty
+            });
+        }
+        catch (Exception ex)
+        {
+            // Log the full exception details on the server
+            _logger.LogError(ex, "Error getting cart items for user {UserId}", usuarioId);
+            // Return a consistent error JSON structure to the client
+            return StatusCode(500, new { success = false, message = "Error interno del servidor al obtener el carrito." });
+        }
+    }
+
+    public async Task<IActionResult> DeleteCartItem([FromBody] DeleteProductCartViewModel model)
+    {
+        _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", model.productId);
+        
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para eliminar productos del carrito."));
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+        
+        // Verificar si el carrito de compras del usuario autenticado tiene productos
+        var carritoCompras = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+        
+        //_logger.LogCritical("Productos en el carrito antes de eliminar: {CarritoCompras}", carritoCompras);
+        
+        if (carritoCompras.Count == 0)
+        {
+            _logger.LogCritical("El carrito de compras está vacío.");
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
+            return Json(new { success = false, message = "El carrito de compras está vacío." });
+        }
+        
+        // Eliminar el producto del carrito de compras del usuario autenticado
+        var productoAEliminar = await _context.TECO_P_CarritoCompras
+            .FirstOrDefaultAsync(c => c.TN_UsuarioId == usuarioId && c.TN_ProductoId == model.productId);
+        //_logger.LogCritical("Producto a eliminar del carrito: {ProductoAEliminar}", productoAEliminar);
+        
+        if (productoAEliminar != null)
+        {
+            _context.TECO_P_CarritoCompras.Remove(productoAEliminar);
+            await _context.SaveChangesAsync();
+            _logger.LogCritical("Producto eliminado del carrito de compras exitosamente.");
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Producto eliminado del carrito de compras correctamente."));
+
+            return Json(new
+            {
+                success = true,
+                message = "Producto eliminado del carrito de compras correctamente.",
+            });
+        }
+        else
+        {
+            _logger.LogCritical("El producto no se encontró en el carrito de compras.");
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El producto no se encontró en el carrito de compras."));
+            return Json(new
+            {
+                success = false,
+                message = "No se encontró el producto.",
+            });
+        }
+    }
+
+    public async Task<IActionResult> EmptyCart()
+    {
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
+        
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para vaciar el carrito."));
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+        
+        // Eliminar todos los productos del carrito de compras del usuario autenticado
+        var carritoCompras = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+        _logger.LogCritical("Productos en el carrito antes de vaciar: {CarritoCompras}", carritoCompras);
+        
+        if (carritoCompras.Count > 0)
+        {
+            _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
+            await _context.SaveChangesAsync();
+            _logger.LogCritical("Carrito de compras vaciado exitosamente.");
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Carrito de compras vaciado correctamente."));
+        }
+        else
+        {
+            _logger.LogCritical("El carrito de compras ya estaba vacío.");
+            TempData["info"] = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras ya estaba vacío."));
+        }
+        
+        // Retornar la cantidad de productos en el carrito de compras (Cuenta solo productos únicos, si hay duplicados no los cuenta)
+        var cantidadCarrito = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .CountAsync();
+        _logger.LogCritical("Cantidad de productos en el carrito después de vaciar: {CantidadCarrito}", cantidadCarrito);
+        
+        //Retornar el precio total de los productos en el carrito de compras
+        var totalCarrito = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .SumAsync(c => c.TN_Cantidad * c.Producto.TN_Precio);
+        _logger.LogCritical("Precio total de los productos en el carrito después de vaciar: {TotalCarrito}", totalCarrito);
+        
+        return Json(new
+        {
+            success = true,
+            message = "Carrito de compras vaciado correctamente.",
         });
     }
 

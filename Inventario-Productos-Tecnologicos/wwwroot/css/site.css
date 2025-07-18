@@ -1866,7 +1866,7 @@ section {
         min-width: fit-content;
         overflow-y: auto;
         width: 100%;
-
+        max-height: 13rem;
 
         & .tableRow {
             display: grid;
@@ -1936,9 +1936,7 @@ section {
                 gap: 10px; /* Espacio entre los botones */
             }
 
-            .DetailsBtn,
-            .EditBtn,
-            .showModal {
+            .DeleteBtn {
                 display: inline-flex; /* Permite que el contenido interno (imagen, texto) se alinee */
                 gap: 5px; /* Espacio entre la imagen y el texto */
                 padding: 8px 12px;
@@ -1984,7 +1982,7 @@ section {
     /*----Tablas con 5 columnas----*/
 
     & .tbl-header.tCart, .tableRow.tCart {
-        grid-template-columns: minmax(300px, 3fr) minmax(80px, 1fr) minmax(150px, 1fr) minmax(150px, 1fr) minmax(60px, 1fr);
+        grid-template-columns: minmax(280px, 3fr) minmax(150px, 1fr) minmax(100px, 1fr) minmax(150px, 1fr) minmax(60px, 1fr);
     }
 }
 
@@ -2037,7 +2035,7 @@ section {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 1050;
+    z-index: 99999;
     max-width: 350px;
 }
 

@@ -8,7 +8,7 @@
     </header>
     <input id="product" value="@Model.TN_Id" hidden/>
     <a class="btnVerMas" asp-action="Details" asp-controller="Productos" asp-route-id="@Model.TN_Id">Ver más</a>
-    <button class="btnAddToCart" data-productid="@Model.TN_Id" data-quantity="1" onclick="addToCart(this)">
+    <button class="btnAddToCart" data-productid="@Model.TN_Id" data-quantity="1">
         <img src="~/img/ICO_BolsaCompra.svg" alt="">
         Agregar al carrito
     </button>
