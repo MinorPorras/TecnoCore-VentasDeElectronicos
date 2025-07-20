@@ -1,8 +1,130 @@
-@model List<TECO_A_Producto>
+@model List<Inventario_Productos_Tecnologicos.Models.TECO_P_CarritoCompras>
 
 @{
     ViewBag.Title = "Carrito de compras";
     Layout = "_Layout";
 }
 
-<h1>Carrito de compras</h1>
+<div class="pageContainer">
+    <div class="cart-details-page-container">
+        <h1 class="pageTitle">Carrito de compras</h1>
+        <div class="Cart-header">
+            <p>Productos en el carrito: <span id="cart-item-count-details">@(Model?.Count ?? 0)</span></p>
+            <button class="btnClearCart">Vaciar carrito</button>
+        </div>
+        <div class="tableContainer">
+            <div class="tbl-header TCartDetails sticky-top">
+                <span class="headerText">Nombre</span>
+                <span class="headerText">Precio unitario</span>
+                <span class="headerText">Cantidad</span>
+                <span class="headerText">Subtotal</span>
+                <span class="headerText">Opciones</span>
+            </div>
+            <div id="cart-item-list-container-details" class="tbl-content">
+                @if (!Model.Any())
+                {
+                    <div class="tableRow">
+                        <span class="NoElements">No hay @ViewBag.Title</span>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="tableRow TCartDetails">
+                            <span class="tableCell">@(item.Producto?.TC_Nombre ?? "Nombre no encontrado")</span>
+                            <span class="tableCell">₡ @item.TN_PrecioUnitario.ToString("N2")</span>
+                            <div class="tableCell columnCant">
+                                <button class="btnMinus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Minus.svg")" alt="-">
+                                </button>
+                                <input type="number"
+                                       class="inputBase cantInput cart-item-quantity"
+                                       value="@item.TN_Cantidad"
+                                       min="1"
+                                       max="@item.Producto.TN_Stock"
+                                       data-productid="@item.TN_ProductoId"/>
+                                <button class="btnPlus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Add.svg")" alt="+">
+                                </button>
+                            </div>
+                            <span class="tableCell">₡ @((item.TN_PrecioUnitario * item.TN_Cantidad).ToString("N2"))</span>
+                            <div class="tableButtonsColumn">
+                                <button type="button"
+                                        class="DeleteBtn remove-from-cart-btn tooltipContainer btnSwicthActive redHighlight"
+                                        data-productId="@(item.TN_ProductoId)">
+                                    <img src="~/img/ICO_Delete.svg" alt="Eliminar" class="iconDeactivate"/>
+                                    <span class="TooltipText transM50">Eliminar </span>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <p><strong>Total de productos:</strong> <span id="total-Cart-details" data-product-total="@Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario)">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
+            <div class="couponContainer">
+                <p>Cupones:</p>
+                <input type="text" id="discountCode" class="inputBase" placeholder="Ingrese el código del cupón"/>
+                <button id="btnAplicarCupon" class="btnAplicarCupon">Aplicar</button>
+                <button id="btnLimpiarCupon" class="btnLimpiarCupon">Limpiar</button>
+            </div>
+        </div>
+        <div class="cart-details-footer-Terminar">
+            <p><strong>Total:</strong> <span id="total-Cart-details-Final">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
+            <p><strong>Descuento:</strong><span id="total-cart-descuento" data-discountValue="0">₡ 0.00</span></p>
+            <div class="btnContainer">
+                <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
+                <a class="btnEndCompra" id="showCheckout">Terminar compra</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<dialog id="CheckoutModal">
+    <div class="checkoutModalContent">
+        <h1>Datos de la tarjeta</h1>
+        <form asp-action="TerminarCompra" asp-controller="Ventas" method="post">
+            @Html.AntiForgeryToken()
+            <div class="formGroup">
+                <label>Número de tarjeta</label>
+                <input type="text" class="inputBase" name="cardNumber" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required/>
+            </div>
+            <div class="formGroup">
+                <label>Fecha de expiración</label>
+                <input type="text" class="inputBase" name="expirationDate" id="expirationDate" placeholder="MM/AA"/>
+            </div>
+            <div class="formGroup">
+                <label>Código de seguridad</label>
+                <input type="text" class="inputBase" name="securityCode" id="securityCode" placeholder="123" required maxlength="3" minlength="3"/>
+            </div>
+            <div class="formGroup">
+                <label>Nombre del titular</label>
+                <input type="text" class="inputBase" name="cardHolderName" id="cardHolderName" placeholder="Nombre del titular" required/>
+            </div>
+            <div class="btnSeccion">
+                <button type="submit" class="btnSubmit">Pagar</button>
+                <button type="button" class="btnCancel" id="closeCheckout">Cancelar</button>
+            </div>
+        </form>
+        <p>Recuerde actualizar los datos de su localización para el envío <a asp-action="EditInformation" asp-controller="Account">¡Actualizar la información ahora!</a></p>
+    </div>
+</dialog>
+
+@section Scripts {
+    <script>
+        // Cuando esta vista se carga, asegúrate de que se cargue el carrito inicial
+        $(document).ready(function() {
+            getCartItems(); // Llama a la función global para cargar los ítems en ambos lugares
+        });
+
+        const checkoutModal = document.getElementById('CheckoutModal');
+        const checkoutModalContent = checkoutModal.querySelector('.checkoutModalContent');
+        const showCheckoutBtn = document.getElementById('showCheckout');
+        const closeCheckoutBtn = document.getElementById('closeCheckout');
+
+        initCheckoutModal();
+
+    </script>
+}

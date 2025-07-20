@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Text.Json;
 using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Models;
@@ -29,13 +30,8 @@ public class VentasController : Controller
     {
         return View();
     }
-
-    public IActionResult Carro_Compras(List<TECO_A_Producto> listaCompras)
-    {
-        return View();
-    }
     
-    public async Task<IActionResult> AddToCart([FromBody] addToCartRequestViewModel model)
+    public async Task<JsonResult> AddToCart([FromBody] addToCartRequestViewModel model)
     {
         // Validar el modelo recibido
         if (!ModelState.IsValid || model.productId == null || model.quantity <= 0)
@@ -53,7 +49,7 @@ public class VentasController : Controller
         if (producto == null)
         {
             // Manejar el caso en que el producto no existe
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.ErrorAlert("Debe iniciar sesión primero"));
             return Json(new { success = false, message = "El producto no existe." });
         }
@@ -63,7 +59,7 @@ public class VentasController : Controller
         if (string.IsNullOrEmpty(usuarioId))
         {
             // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.ErrorAlert("Debe iniciar sesión para agregar productos al carrito."));
             return Json(new { success = false, message = "Usuario no autenticado." });
         }
@@ -111,8 +107,6 @@ public class VentasController : Controller
             .Where(c => c.TN_UsuarioId == usuarioId)
             .SumAsync(c => c.TN_Cantidad * c.Producto.TN_Precio);
         
-        TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Producto agregado correctamente."));
-        
         return Json(new
         {
             success = true, 
@@ -139,13 +133,11 @@ public class VentasController : Controller
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
         // Verificar si el usuario está autenticado
         if (string.IsNullOrEmpty(usuarioId))
         {
             // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Debe iniciar sesión para ver los productos del carrito."));
+            _logger.LogWarning("Intento de acceder al carrito sin autenticación.");
             return Json(new { success = false, message = "Usuario no autenticado." });
         }
         
@@ -159,39 +151,83 @@ public class VentasController : Controller
                 .ToListAsync();
 
             // Initialize defaults in case the cart is empty
-            int cantidadCarrito = 0;
-            decimal totalCarrito = 0m;
+            int cantidadItemsDistintos = productosEnCarrito.Count; // Cantidad de tipos de productos distintos
+            int cantidadTotalProductos = productosEnCarrito.Sum(c => c?.TN_Cantidad ?? 0); // Suma de todas las cantidades
+            
+            decimal subtotalCarrito = 0m;
             var cartItemsData = new List<object>();
 
-            if (productosEnCarrito.Count != 0)
+            if (productosEnCarrito.Any())
             {
-                cantidadCarrito = productosEnCarrito.Count;
+                cantidadItemsDistintos = productosEnCarrito.Count;
 
-                totalCarrito = productosEnCarrito.Sum(c => c.TN_Cantidad * (c.Producto?.TN_Precio ?? 0m));
+                // Calcular el subtotal del carrito antes de aplicar cualquier descuento
+                subtotalCarrito = productosEnCarrito.Sum(c => c.Producto.TN_Precio  * c.TN_Cantidad);
 
                 cartItemsData = productosEnCarrito.Select(item => new
                 {
                     productId = item.TN_ProductoId,
                     productName = item.Producto?.TC_Nombre ?? "Producto Desconocido",
-                    productPrice = item.TN_PrecioUnitario,
+                    productPrice = item.Producto?.TN_Precio ?? 0m, // Usar PrecioVenta del producto
                     quantity = item.TN_Cantidad,
-                    totalPrice = (item.TN_Cantidad * (item.Producto?.TN_Precio ?? 0m)),
+                    // Subtotal por item: (Cantidad * PrecioVenta del producto)
+                    itemSubtotal = (item.TN_Cantidad) * (item.Producto?.TN_Precio ?? 0m),
                     deleteImage = Url.Content("~/img/ICO_Delete.svg"),
                     productMaxStock = item.Producto?.TN_Stock ?? 0,
-                    plusImage = Url.Content("~/img/ICO_Add.svg"), 
+                    plusImage = Url.Content("~/img/ICO_Add.svg"),
                     minusImage = Url.Content("~/img/ICO_Minus.svg")
                 }).ToList<object>(); 
             }
+            
+            //Sección de revisión de descuentos
+            var descuentoAplicado = 0m;
+            var totalCarritoFinal = subtotalCarrito;
+            var codigoCupon = string.Empty;
+            
+            // Verificar si hay un cupón aplicado
+            int? idCuponAplicado = HttpContext.Session.GetInt32("AppliedCouponId");
+            if (idCuponAplicado.HasValue)
+            {
+                var cupon = await _context.TECO_M_Cupon.FirstOrDefaultAsync(c => c.TN_Id == idCuponAplicado.Value && c.TB_Activo);
+                if (cupon != null)
+                {
+                    //TODO añadir validaciones de fecha, usos, etc
+                    if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+                    {
+                        descuentoAplicado = subtotalCarrito * (cupon.TN_Valor / 100m);
+                    }
+                    else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor > 0)
+                    {
+                        descuentoAplicado = cupon.TN_Valor;
+                    }
+                    
+                    // Asegurarse de que el descuento no haga que el total sea negativo
+                    if (descuentoAplicado > subtotalCarrito)
+                    {
+                        descuentoAplicado = subtotalCarrito; //El descuento máximo es el total del carrito
+                    }
+                    totalCarritoFinal = subtotalCarrito - descuentoAplicado;
+                    codigoCupon = cupon.TC_Codigo; // Guardar el código del cupón para mostrarlo
+                }
+                else
+                {
+                    HttpContext.Session.Remove("AppliedCouponId"); // Eliminar el cupón si no es válido
+                }
+            }
+            
         
-            _logger.LogCritical("Cantidad de productos en el carrito: {CantidadCarrito}", cantidadCarrito);
-            _logger.LogCritical("Precio total de los productos en el carrito: {TotalCarrito}", totalCarrito);
+            _logger.LogInformation("Carrito para usuario {UserId}: Cantidad de productos: {CantidadProductos}, Subtotal: {Subtotal}, Descuento Aplicado: {Descuento}, Total Final: {TotalFinal}",
+                usuarioId, cantidadTotalProductos, subtotalCarrito, descuentoAplicado, totalCarritoFinal);
 
             return Json(new
             {
                 success = true,
-                cartItemCount = cantidadCarrito,
-                cartTotal = totalCarrito, // Send as decimal, let JS format for display
-                cartItems = cartItemsData // Always send a list, even if empty
+                cartItemCount = cantidadTotalProductos, // Cantidad total de productos (sumando cantidades)
+                cartTotal = totalCarritoFinal, // Este es el total FINAL (subtotal - descuento)
+                subtotalCart = subtotalCarrito, // Enviamos el subtotal original también
+                descuentoAplicado,
+                appliedCouponCode = codigoCupon, // Código del cupón aplicado
+                cartItems = cartItemsData
             });
         }
         catch (Exception ex)
@@ -203,7 +239,7 @@ public class VentasController : Controller
         }
     }
 
-    public async Task<IActionResult> DeleteCartItem([FromBody] DeleteProductCartViewModel model)
+    public async Task<JsonResult> DeleteCartItem([FromBody] DeleteProductCartViewModel model)
     {
         _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", model.productId);
         
@@ -213,7 +249,7 @@ public class VentasController : Controller
         if (string.IsNullOrEmpty(usuarioId))
         {
             // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.ErrorAlert("Debe iniciar sesión para eliminar productos del carrito."));
             return Json(new { success = false, message = "Usuario no autenticado." });
         }
@@ -228,7 +264,7 @@ public class VentasController : Controller
         if (carritoCompras.Count == 0)
         {
             _logger.LogCritical("El carrito de compras está vacío.");
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
+            ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
             return Json(new { success = false, message = "El carrito de compras está vacío." });
         }
         
@@ -242,7 +278,6 @@ public class VentasController : Controller
             _context.TECO_P_CarritoCompras.Remove(productoAEliminar);
             await _context.SaveChangesAsync();
             _logger.LogCritical("Producto eliminado del carrito de compras exitosamente.");
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Producto eliminado del carrito de compras correctamente."));
 
             return Json(new
             {
@@ -253,7 +288,7 @@ public class VentasController : Controller
         else
         {
             _logger.LogCritical("El producto no se encontró en el carrito de compras.");
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El producto no se encontró en el carrito de compras."));
+            ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El producto no se encontró en el carrito de compras."));
             return Json(new
             {
                 success = false,
@@ -263,63 +298,63 @@ public class VentasController : Controller
     }
     
     
-public async Task<IActionResult> DecreaseCartItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
-{
-    if (!ModelState.IsValid || model.quantity <= 0)
+    public async Task<JsonResult> DecreaseCartItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
     {
-        return Json(new { success = false, message = "Datos inválidos para disminuir." });
+        if (!ModelState.IsValid || model.quantity <= 0)
+        {
+            return Json(new { success = false, message = "Datos inválidos para disminuir." });
+        }
+
+        var productId = model.productId;
+        var cantidadRestar = model.quantity ?? 1; // Default to decreasing by 1
+
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+
+        var carritoExistente = await _context.TECO_P_CarritoCompras
+            .FirstOrDefaultAsync(c => c.TN_ProductoId == productId && c.TN_UsuarioId == usuarioId);
+
+        if (carritoExistente == null)
+        {
+            return Json(new { success = false, message = "Producto no encontrado en el carrito." });
+        }
+        if (carritoExistente.TN_Cantidad < cantidadRestar)
+        {
+            return Json(new { success = false, message = "No se puede restar más de la cantidad actual." });
+        }
+        carritoExistente.TN_Cantidad -= cantidadRestar;
+
+        if (carritoExistente.TN_Cantidad <= 0)
+        {
+            // If quantity drops to 0 or below, remove the item entirely
+            _context.TECO_P_CarritoCompras.Remove(carritoExistente);
+        }
+        
+        await _context.SaveChangesAsync();
+        
+        // After modification, get updated cart data to send back
+        // (You can reuse the logic from GetCartItems, or even call it directly if it's refactored)
+        var updatedCartItems = await _context.TECO_P_CarritoCompras
+            .Include(c => c.Producto)
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+
+        int newCartItemCount = updatedCartItems.Count; // This counts unique items
+        decimal newCartTotal = updatedCartItems.Sum(c => c.TN_Cantidad * (c.Producto?.TN_Precio ?? 0m)); // Defensive sum
+
+        return Json(new
+        {
+            success = true,
+            message = carritoExistente.TN_Cantidad <= 0 ? "Producto eliminado del carrito." : "Cantidad actualizada.",
+            cartItemCount = newCartItemCount,
+            cartTotal = newCartTotal,
+        });
     }
 
-    var productId = model.productId;
-    var cantidadRestar = model.quantity ?? 1; // Default to decreasing by 1
-
-    var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    if (string.IsNullOrEmpty(usuarioId))
-    {
-        return Json(new { success = false, message = "Usuario no autenticado." });
-    }
-
-    var carritoExistente = await _context.TECO_P_CarritoCompras
-        .FirstOrDefaultAsync(c => c.TN_ProductoId == productId && c.TN_UsuarioId == usuarioId);
-
-    if (carritoExistente == null)
-    {
-        return Json(new { success = false, message = "Producto no encontrado en el carrito." });
-    }
-    if (carritoExistente.TN_Cantidad < cantidadRestar)
-    {
-        return Json(new { success = false, message = "No se puede restar más de la cantidad actual." });
-    }
-    carritoExistente.TN_Cantidad -= cantidadRestar;
-
-    if (carritoExistente.TN_Cantidad <= 0)
-    {
-        // If quantity drops to 0 or below, remove the item entirely
-        _context.TECO_P_CarritoCompras.Remove(carritoExistente);
-    }
-    
-    await _context.SaveChangesAsync();
-    
-    // After modification, get updated cart data to send back
-    // (You can reuse the logic from GetCartItems, or even call it directly if it's refactored)
-    var updatedCartItems = await _context.TECO_P_CarritoCompras
-        .Include(c => c.Producto)
-        .Where(c => c.TN_UsuarioId == usuarioId)
-        .ToListAsync();
-
-    int newCartItemCount = updatedCartItems.Count; // This counts unique items
-    decimal newCartTotal = updatedCartItems.Sum(c => c.TN_Cantidad * (c.Producto?.TN_Precio ?? 0m)); // Defensive sum
-
-    return Json(new
-    {
-        success = true,
-        message = carritoExistente.TN_Cantidad <= 0 ? "Producto eliminado del carrito." : "Cantidad actualizada.",
-        cartItemCount = newCartItemCount,
-        cartTotal = newCartTotal,
-    });
-}
-
-    public async Task<IActionResult> EmptyCart()
+    public async Task<JsonResult> EmptyCart()
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
@@ -328,7 +363,7 @@ public async Task<IActionResult> DecreaseCartItem([FromBody] addToCartRequestVie
         if (string.IsNullOrEmpty(usuarioId))
         {
             // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = System.Text.Json.JsonSerializer.Serialize(
+            ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.ErrorAlert("Debe iniciar sesión para vaciar el carrito."));
             return Json(new { success = false, message = "Usuario no autenticado." });
         }
@@ -344,12 +379,11 @@ public async Task<IActionResult> DecreaseCartItem([FromBody] addToCartRequestVie
             _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
             await _context.SaveChangesAsync();
             _logger.LogCritical("Carrito de compras vaciado exitosamente.");
-            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Carrito de compras vaciado correctamente."));
         }
         else
         {
             _logger.LogCritical("El carrito de compras ya estaba vacío.");
-            TempData["info"] = System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras ya estaba vacío."));
+            TempData["info"] = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras ya estaba vacío."));
         }
         
         // Retornar la cantidad de productos en el carrito de compras (Cuenta solo productos únicos, si hay duplicados no los cuenta)
@@ -370,14 +404,364 @@ public async Task<IActionResult> DecreaseCartItem([FromBody] addToCartRequestVie
             message = "Carrito de compras vaciado correctamente.",
         });
     }
-
-
-    public IActionResult ConfirmarCompra(List<TECO_A_Producto> listaCompras)
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<JsonResult> DropCartElement(int id)
     {
-        // Aquí se puede implementar la lógica para confirmar la compra
-        // Por ejemplo, guardar la compra en una base de datos o procesar el pago
+        _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", id);
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para eliminar productos del carrito."));
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+        
+        // Verificar si el carrito de compras del usuario autenticado tiene productos
+        var carritoCompras = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+        _logger.LogCritical("Productos en el carrito antes de eliminar: {CarritoCompras}", carritoCompras);
+        if (carritoCompras.Count == 0)
+        {
+            _logger.LogCritical("El carrito de compras está vacío.");
+            ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
+            return Json(new { success = false, message = "El carrito de compras está vacío." });
+        }
+        try
+        {
+            // Eliminar el producto del carrito de compras del usuario autenticado
+            var productoAEliminar = await _context.TECO_P_CarritoCompras
+                .FirstOrDefaultAsync(c => c.TN_UsuarioId == usuarioId && c.TN_ProductoId == id);
+            _logger.LogCritical("Producto a eliminar del carrito: {ProductoAEliminar}", productoAEliminar);
+            if (productoAEliminar != null)
+            {
+                _context.TECO_P_CarritoCompras.Remove(productoAEliminar);
+                await _context.SaveChangesAsync();
+                _logger.LogCritical("Producto eliminado del carrito de compras exitosamente.");
+                TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert("Producto eliminado del carrito de compras correctamente."));
 
-        // Redirigir a una vista de confirmación o al índice de ventas
-        return RedirectToAction("Index");
+                return Json(new
+                {
+                    success = true,
+                    message = "Producto eliminado del carrito de compras correctamente.",
+                });
+            }
+            else
+            {
+                _logger.LogCritical("El producto no se encontró en el carrito de compras.");
+                ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El producto no se encontró en el carrito de compras."));
+                return Json(new
+                {
+                    success = false,
+                    message = "No se encontró el producto.",
+                });
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al cambiar el estado del producto {ProductoId}", id);
+            return Json(new
+            {
+                success = false,
+                message = "Error al cambiar el estado del producto",
+            });
+        }
+    }
+    
+    public IActionResult Carro_Compras(List<TECO_A_Producto> listaCompras)
+    {
+        var carritoCompras = _context.TECO_P_CarritoCompras
+            .Include(c => c.Producto)
+            .Where(c => c.TN_UsuarioId == User.FindFirstValue(ClaimTypes.NameIdentifier))
+            .ToList();
+        if (carritoCompras.Count == 0)
+        {
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.InfoAlert("El carrito de compras está vacío."));
+            return RedirectToAction("Index");
+        }
+        return View(carritoCompras);
+    }
+    
+    public async Task<JsonResult> ApplyDiscount([FromBody] ApplyDiscountRequestViewModel model)
+    {
+        // Validar el modelo recibido
+        if (string.IsNullOrEmpty(model.codigoCupon) || model.totalCarrito <= 0)
+        {
+            return Json(new { success = false, message = "Datos de cupón inválidos." });
+        }
+        
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            return Json(new { success = false, message = "Debe iniciar sesión para aplicar cupones." });
+        }
+
+        var cupon = _context.TECO_M_Cupon
+            .FirstOrDefault(c => c.TC_Codigo == model.codigoCupon && c.TB_Activo);
+        
+        // TODO: Añadir validaciones de fecha, usos, etc
+        
+        
+        if (cupon == null)
+        {
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("Cupón no válido o no activo."));
+            return Json(new { success = false, message = "Cuón no existente" });
+        }
+        
+        
+        var cartItems = await _context.TECO_P_CarritoCompras
+            .Where(cc => cc.TN_UsuarioId == usuarioId)
+            .Include(cc => cc.Producto)
+            .ToListAsync();
+        
+        decimal subtotalCarrito = cartItems.Sum(item => (item.Producto?.TN_Precio ?? 0) * (item?.TN_Cantidad ?? 0));
+        decimal descuentoAplicado = 0;
+
+        if (!cartItems.Any())
+        {
+            return Json(new { success = false, message = "No hay productos en el carrito para aplicar el cupón." });
+        }
+        
+        if (subtotalCarrito == 0)
+        {
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("El carrito está vacío no se puede aplicar un cupón."));
+            return Json(new { success = false, message = "El carrito está vacío." });
+        }
+        
+        decimal descuento = 0;
+        decimal precioFinalConDescuento = model.totalCarrito;
+
+        // Calcular el descuento
+        if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+        {
+            descuentoAplicado = subtotalCarrito * (cupon.TN_Valor / 100m);
+        }
+        else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor> 0)
+        {
+            descuentoAplicado = cupon.TN_Valor;
+        }
+
+        // Asegurarse de que el descuento no haga que el total sea negativo
+        if (descuentoAplicado > subtotalCarrito)
+        {
+            descuentoAplicado = subtotalCarrito;
+        }
+
+        decimal totalCarritoConDescuento = subtotalCarrito - descuentoAplicado;
+
+        // *** CAMBIO CLAVE AQUÍ: PERSISTIR EL CUPÓN EN LA SESIÓN ***
+        // Guarda el ID del cupón en la sesión para que se use en futuras cargas del carrito
+        HttpContext.Session.SetInt32("AppliedCouponId", cupon.TN_Id);
+
+        return Json(new
+        {
+            success = true,
+            message = "Cupón aplicado correctamente.",
+            descuentoAplicado,
+            totalCarritoConDescuento,
+            cartItemCount = cartItems.Sum(item => item?.TN_Cantidad ?? 0) // O el count de items distintos
+        });
+    }
+    
+    public JsonResult RemoveDiscount()
+    {
+        _logger.LogCritical("Eliminando cupón aplicado de la sesión: " + HttpContext.Session.GetString("AppliedCouponId"));
+        // Eliminar el cupón aplicado de la sesión
+        HttpContext.Session.Remove("AppliedCouponId");
+        
+        _logger.LogCritical("Cupón eliminado: " + HttpContext.Session.GetString("AppliedCouponId"));
+
+        // Retornar una respuesta indicando que el cupón fue eliminado
+        return Json(new { success = true, message = "Cupón eliminado correctamente." });
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> TerminarCompra(string cardNumber, string expirationDate, int securityCode,
+        string cardHolderName)
+    {
+        if (!ModelState.IsValid)
+        {
+            _logger.LogCritical("Modelo recibido es nulo o inválido.");
+            return RedirectToAction("Carro_Compras");
+        }
+        
+        var fechaExpiracion = DateTime.ParseExact(
+            expirationDate, "MM/yy",     
+            System.Globalization.CultureInfo.InvariantCulture, // Usar cultura invariante para evitar problemas de formato regional
+            System.Globalization.DateTimeStyles.None);
+
+        if (fechaExpiracion < DateTime.Now)
+        {
+            _logger.LogCritical("La fecha de expiración de la tarjeta es inválida: {FechaExpiracion}", fechaExpiracion);
+            ViewBag.Alert = JsonSerializer.Serialize(Alert.ErrorAlert("La fecha de expiración de la tarjeta es inválida."));
+            return RedirectToAction("Carro_Compras");
+        }
+        
+        cardNumber = cardNumber.Replace(" ", "");
+
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para realizar la compra."));
+            return RedirectToAction("Carro_Compras");
+        }
+        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
+        
+        // Verificar si el carrito de compras del usuario autenticado tiene productos
+        var carritoCompras = _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .Include(c => c.Producto) // Incluir el objeto Producto relacionado
+            .ToList();
+        
+        if (carritoCompras.Count == 0)
+        {
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.InfoAlert("El carrito de compras está vacío."));
+            return RedirectToAction("Carro_Compras");
+        }
+        _logger.LogCritical("Cantidad de productos en el carrito: {CantidadCarrito}", carritoCompras.Count);
+
+        try
+        {
+
+            var totalCarrito = carritoCompras.Sum(c => c.TN_Cantidad * c.Producto.TN_Precio);
+            _logger.LogCritical("Total del carrito antes de aplicar cupones: {TotalCarrito}", totalCarrito);
+            var cuponId = HttpContext.Session.GetInt32("AppliedCouponId");
+            _logger.LogCritical("ID del cupón aplicado: {CuponId}", cuponId);
+            var cupon = new TECO_M_Cupon();
+            if (cuponId != null)
+            {
+                cupon = await _context.TECO_M_Cupon.FirstOrDefaultAsync(c => c.TN_Id == cuponId && c.TB_Activo 
+                    && c.TF_FechaFin >= DateTime.Now && c.TF_FechaInicio <= DateTime.Now);
+                if (cupon == null)
+                {
+                    cupon = new TECO_M_Cupon
+                    {
+                        TN_Id = 0,
+                        TN_Valor = 0,
+                        TC_TipoDescuento = "M", // No hay descuento aplicado
+                        TF_FechaInicio = DateTime.Now,
+                        TF_FechaFin = DateTime.Now.AddYears(1), // Cupón sin descuento, válido por un año
+                        TN_UsosMaximos = 1,
+                        TN_UsosActuales = 0
+                    };
+                }
+                else
+                {
+                    //Si el cupón es válido, verificar si se ha alcanzado el máximo de usos
+                    if (cupon.TN_UsosActuales >= cupon.TN_UsosMaximos)
+                    {
+                        _logger.LogCritical("El cupón ha alcanzado el máximo de usos permitidos.");
+                        TempData["error"] = JsonSerializer.Serialize(Alert.ErrorAlert("El cupón ha alcanzado el máximo de usos permitidos."));
+                        return RedirectToAction("Carro_Compras");
+                    }
+                    
+                    // Incrementar el contador de usos del cupón
+                    cupon.TN_UsosActuales++;
+                }
+            }
+            else
+            {
+                cupon = new TECO_M_Cupon
+                {
+                    TN_Id = 0,
+                    TN_Valor = 0,
+                    TC_TipoDescuento = "M", // No hay descuento aplicado
+                    TF_FechaInicio = DateTime.Now,
+                    TF_FechaFin = DateTime.Now.AddYears(1), // Cupón sin descuento, válido por un año
+                    TN_UsosMaximos = 1,
+                    TN_UsosActuales = 0
+                };
+            }
+
+            decimal descuento;
+
+            if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+            {
+                _logger.LogCritical("Aplicando descuento porcentual del cupón: {CuponValor}", cupon.TN_Valor);
+                descuento = totalCarrito * (cupon.TN_Valor / 100m);
+            }
+            else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor > 0)
+            {
+                _logger.LogCritical("Aplicando descuento monetario del cupón: {CuponValor}", cupon.TN_Valor);
+                descuento = cupon.TN_Valor;
+            }
+            else
+            {
+                _logger.LogCritical("No se aplica descuento, cupón no válido o sin descuento.");
+                descuento = 0; // No hay descuento aplicado
+            }
+            
+            // Asegurarse de que el descuento no haga que el total sea negativo
+            if (descuento > totalCarrito)
+            {
+                _logger.LogCritical("El descuento es mayor que el total del carrito, ajustando descuento.");
+                descuento = totalCarrito; // El descuento máximo es el total del carrito
+            }
+            
+            var totalFinal = totalCarrito - descuento;
+            _logger.LogCritical("Descuento aplicado: {Descuento}", descuento);
+            var transaccionId = Guid.NewGuid(); // Generar UUID única para la transacción
+
+            var pedido = new TECO_P_Pedido
+            {
+                TN_UsuarioId = usuarioId,
+                TN_MetodoPagoId = 1, // Asignar un método de pago por defecto en este caso 1 es para tarjeta, 0 para efectivo y 3 para depósito bancario
+                TN_EstadoPedidoId = 1,
+                TN_TransaccionId = transaccionId.ToString(),
+                TF_Fecha = DateTime.Now,
+                TN_CuponId = cupon?.TN_Id,
+                TN_Subtotal = carritoCompras.Sum(c => c.TN_Cantidad * c.Producto.TN_Precio),
+                TN_Impuesto = 0, // Asignar impuesto si es necesario
+                TN_Descuento = descuento, // Asignar el descuento calculado
+                TN_Total = totalFinal, // Asignar el total del carrito
+                TB_Activo = true,
+                TC_NumTarjeta = cardNumber,
+            };
+            _context.TECO_P_Pedido.Add(pedido);
+            await _context.SaveChangesAsync();
+
+            var productosPedido = 
+                await _context.TECO_P_CarritoCompras.Include(c => c.Producto)
+                .Where(c => c.TN_UsuarioId == usuarioId)
+                .ToListAsync();
+
+            foreach (var productoPedido in productosPedido.Select(producto => new TECO_P_DetallePedido
+                     {
+                         TN_PedidoId = pedido.TN_Id,
+                         TN_ProductoId = producto.TN_ProductoId,
+                         TN_Cantidad = producto.TN_Cantidad,
+                         TN_PrecioUnitario = producto.Producto?.TN_Precio ?? 0,
+                         TB_Activo = true
+                     }))
+            {
+                _logger.LogCritical("Agregando producto al detalle del pedido: {ProductoPedido}", JsonSerializer.Serialize(productoPedido));
+                _context.TECO_P_DetallePedido.Add(productoPedido);
+            }
+            // Eliminar el carrito de compras del usuario después de crear el pedido
+            _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
+            await _context.SaveChangesAsync();
+            TempData.Clear();
+            TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert("Pedido creado correctamente."));
+            HttpContext.Session.Remove("AppliedCouponId"); // Limpiar el cupón aplicado de la sesión
+            return RedirectToAction("Index", "Home");
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical("Error al crear el pedido: {Message}", e.Message);
+            return RedirectToAction("Carro_Compras");
+        }
     }
 }
