@@ -4,6 +4,7 @@ using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -23,6 +24,7 @@ public class ProductosController : Controller
     }
 
     // GET: Productos
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         var productos = await _context.TECO_A_Producto

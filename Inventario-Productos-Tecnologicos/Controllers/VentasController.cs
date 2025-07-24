@@ -478,13 +478,10 @@ public class VentasController : Controller
             .Include(c => c.Producto)
             .Where(c => c.TN_UsuarioId == User.FindFirstValue(ClaimTypes.NameIdentifier))
             .ToList();
-        if (carritoCompras.Count == 0)
-        {
-            ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.InfoAlert("El carrito de compras está vacío."));
-            return RedirectToAction("Index");
-        }
-        return View(carritoCompras);
+        if (carritoCompras.Count != 0) return View(carritoCompras);
+        ViewBag.Alert = JsonSerializer.Serialize(
+            Alert.InfoAlert("El carrito de compras está vacío."));
+        return RedirectToAction("Index");
     }
     
     public async Task<JsonResult> ApplyDiscount([FromBody] ApplyDiscountRequestViewModel model)
@@ -522,10 +519,10 @@ public class VentasController : Controller
             .Include(cc => cc.Producto)
             .ToListAsync();
         
-        decimal subtotalCarrito = cartItems.Sum(item => (item.Producto?.TN_Precio ?? 0) * (item?.TN_Cantidad ?? 0));
+        var subtotalCarrito = cartItems.Sum(item => (item.Producto?.TN_Precio ?? 0) * (item?.TN_Cantidad ?? 0));
         decimal descuentoAplicado = 0;
 
-        if (!cartItems.Any())
+        if (cartItems.Count == 0)
         {
             return Json(new { success = false, message = "No hay productos en el carrito para aplicar el cupón." });
         }
@@ -538,17 +535,15 @@ public class VentasController : Controller
         }
         
         decimal descuento = 0;
-        decimal precioFinalConDescuento = model.totalCarrito;
+        var precioFinalConDescuento = model.totalCarrito;
 
-        // Calcular el descuento
-        if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+        descuentoAplicado = cupon.TC_TipoDescuento switch
         {
-            descuentoAplicado = subtotalCarrito * (cupon.TN_Valor / 100m);
-        }
-        else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor> 0)
-        {
-            descuentoAplicado = cupon.TN_Valor;
-        }
+            // Calcular el descuento
+            "P" when cupon.TN_Valor > 0 => subtotalCarrito * (cupon.TN_Valor / 100m),
+            "M" when cupon.TN_Valor > 0 => cupon.TN_Valor,
+            _ => descuentoAplicado
+        };
 
         // Asegurarse de que el descuento no haga que el total sea negativo
         if (descuentoAplicado > subtotalCarrito)
@@ -556,7 +551,7 @@ public class VentasController : Controller
             descuentoAplicado = subtotalCarrito;
         }
 
-        decimal totalCarritoConDescuento = subtotalCarrito - descuentoAplicado;
+        var totalCarritoConDescuento = subtotalCarrito - descuentoAplicado;
 
         // *** CAMBIO CLAVE AQUÍ: PERSISTIR EL CUPÓN EN LA SESIÓN ***
         // Guarda el ID del cupón en la sesión para que se use en futuras cargas del carrito
@@ -568,7 +563,7 @@ public class VentasController : Controller
             message = "Cupón aplicado correctamente.",
             descuentoAplicado,
             totalCarritoConDescuento,
-            cartItemCount = cartItems.Sum(item => item?.TN_Cantidad ?? 0) // O el count de items distintos
+            cartItemCount = cartItems.Sum(item => item.TN_Cantidad) // O el count de items distintos
         });
     }
     
@@ -688,20 +683,20 @@ public class VentasController : Controller
 
             decimal descuento;
 
-            if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+            switch (cupon.TC_TipoDescuento)
             {
-                _logger.LogCritical("Aplicando descuento porcentual del cupón: {CuponValor}", cupon.TN_Valor);
-                descuento = totalCarrito * (cupon.TN_Valor / 100m);
-            }
-            else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor > 0)
-            {
-                _logger.LogCritical("Aplicando descuento monetario del cupón: {CuponValor}", cupon.TN_Valor);
-                descuento = cupon.TN_Valor;
-            }
-            else
-            {
-                _logger.LogCritical("No se aplica descuento, cupón no válido o sin descuento.");
-                descuento = 0; // No hay descuento aplicado
+                case "P" when cupon.TN_Valor > 0:
+                    _logger.LogCritical("Aplicando descuento porcentual del cupón: {CuponValor}", cupon.TN_Valor);
+                    descuento = totalCarrito * (cupon.TN_Valor / 100m);
+                    break;
+                case "M" when cupon.TN_Valor > 0:
+                    _logger.LogCritical("Aplicando descuento monetario del cupón: {CuponValor}", cupon.TN_Valor);
+                    descuento = cupon.TN_Valor;
+                    break;
+                default:
+                    _logger.LogCritical("No se aplica descuento, cupón no válido o sin descuento.");
+                    descuento = 0; // No hay descuento aplicado
+                    break;
             }
             
             // Asegurarse de que el descuento no haga que el total sea negativo
@@ -722,8 +717,8 @@ public class VentasController : Controller
                 TN_EstadoPedidoId = 1,
                 TN_TransaccionId = transaccionId.ToString(),
                 TF_Fecha = DateTime.Now,
-                TN_CuponId = cupon?.TN_Id,
-                TN_Subtotal = carritoCompras.Sum(c => c.TN_Cantidad * c.Producto.TN_Precio),
+                TN_CuponId = cupon.TN_Id,
+                TN_Subtotal = carritoCompras.Sum(c => c.TN_Cantidad * c.Producto?.TN_Precio),
                 TN_Impuesto = 0, // Asignar impuesto si es necesario
                 TN_Descuento = descuento, // Asignar el descuento calculado
                 TN_Total = totalFinal, // Asignar el total del carrito
