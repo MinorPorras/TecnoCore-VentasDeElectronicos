@@ -81,7 +81,7 @@ public partial class TECO_P_Pedido
     /// <summary>
     /// Referencia al cupón de descuento aplicado al pedido.
     /// </summary>
-    [ForeignKey("CuponId")]
+    [ForeignKey("TN_CuponId")]
     [InverseProperty("Pedido")]
     public virtual TECO_M_Cupon? Cupon { get; set; }
 
