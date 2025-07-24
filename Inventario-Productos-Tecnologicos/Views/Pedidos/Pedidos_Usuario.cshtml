@@ -9,7 +9,7 @@
 
 @foreach(var pedido in Model)
 {
-    <div class="pedido">
+    <form class="pedido">
         <p>Codigo de pedido: @pedido.TN_TransaccionId</p>
         <p>Fecha: @pedido.TF_Fecha</p>
         <p>Método de pago: @pedido.MetodoPago?.TB_NombreMetodo</p>
@@ -32,5 +32,5 @@
         <p>Descuento: @pedido.TN_Descuento</p>
         <p>Total: @pedido.TN_Total</p>
 
-    </div>
+    </form>
 }
