@@ -5,4 +5,28 @@
     Layout = "_LayoutAdmin";
 }
 
-<h1>DashBoard</h1>
+
+<div class="dashboard">
+    @*Grid: 8 filas y 3 columnas*@
+
+    <h1>DashBoard</h1>
+    <div class="MasComprados">
+        @*Aquí se agregan los clientes, categorías y marcas más vendidas*@
+        @await Component.InvokeAsync("ClientesMasCompras")
+        @await Component.InvokeAsync("CategoriaMasVendida")
+        @await Component.InvokeAsync("MarcasMasVendidas")
+
+    </div>
+    <div class="InfoPedidos">
+        @*Aquí se agrega la información y clasificación de los pedidos en relación a la cantidad de cada tipo*@
+    </div>
+    <div class="ProductosMasVendidos">
+        @*Aquí se agregan los productos más vendidos*@
+    </div>
+    <div class="ProductosBajoStock">
+        @*Aquí se agregan los productos con bajo stock*@
+    </div>
+    <div class="InfoVentas">
+        @*Aquí se agrega la información de las ventas, el total, emjor años, mes y día de ventas*@
+    </div>
+</div>
