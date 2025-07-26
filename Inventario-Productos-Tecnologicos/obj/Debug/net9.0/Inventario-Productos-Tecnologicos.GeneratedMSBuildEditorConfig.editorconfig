@@ -198,6 +198,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRGVsZXRlRGlhbG9nXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/EstadisticasVentas/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcRXN0YWRpc3RpY2FzVmVudGFzXERlZmF1bHQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/InfoPedidos/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcSW5mb1BlZGlkb3NcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/MarcasMasVendidas/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcTWFyY2FzTWFzVmVuZGlkYXNcRGVmYXVsdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
@@ -208,6 +216,14 @@ build_metadata.AdditionalFiles.CssScope =
 
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/ProductCard/Default.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvZHVjdENhcmRcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/productosMasVendidos/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNccHJvZHVjdG9zTWFzVmVuZGlkb3NcRGVmYXVsdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Components/ProductosStockBajo/Default.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXENvbXBvbmVudHNcUHJvZHVjdG9zU3RvY2tCYWpvXERlZmF1bHQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/minor/RiderProjects/TecnoCore-VentasDeElectronicos1/Inventario-Productos-Tecnologicos/Views/Shared/Error.cshtml]
