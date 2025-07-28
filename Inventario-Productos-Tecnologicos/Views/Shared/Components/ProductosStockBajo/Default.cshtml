@@ -1,0 +1,47 @@
+@model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.TECO_A_Producto>
+
+
+<div class="ProductosStockBajo">
+    <h4>Productos con stock bajo</h4>
+    <div class="stats-table">
+        <div class="stats-table-header">
+            <h5>Producto</h5>
+            <h5>Stock</h5>
+        </div>
+        
+        @if (Model.Count == 0)
+        {
+            <div class="stats-item">
+                <h6>No hay productos</h6>
+            </div>
+            if (Model.Count < 5)
+            {
+                for (var i = Model.Count; i < 4; i++)
+                {
+                    <div class="stats-item">
+                        <h6>---------------------------</h6>
+                    </div>
+                }
+            }
+        }
+        else
+        {
+            foreach (var prod in Model)
+            {
+                <div class="stats-item">
+                    <h6>@prod.TC_Nombre</h6>
+                    <p>@prod.TN_Stock</p>
+                </div>
+            }
+            if (Model.Count < 5)
+            {
+                for (var i = Model.Count; i < 5; i++)
+                {
+                    <div class="stats-item">
+                        <h6>---------------------------</h6>
+                    </div>
+                }
+            }
+        }
+    </div>
+</div>
