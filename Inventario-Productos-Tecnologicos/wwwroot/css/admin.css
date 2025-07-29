@@ -1361,3 +1361,20 @@ input[type="number"] {
         scale: 0.9;
     }
 }
+
+.modal-fade-out {
+    animation: modalFadeOut 0.3s forwards;
+}
+
+@keyframes modalFadeOut {
+    from {
+        top: 6.3rem;
+        opacity: 1;
+        transform: scale(1);
+    }
+    to {
+        top: -300px;
+        opacity: 0;
+        transform: scale(.95);
+    }
+}
