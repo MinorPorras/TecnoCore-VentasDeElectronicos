@@ -1,28 +1,42 @@
 using System.Security.Claims;
 using System.Text.Json;
-using Inventario_Productos_Tecnologicos.Data;
+using Microsoft.AspNetCore.Identity; // Necesario para UserManager y SignInManager
 using Microsoft.AspNetCore.Mvc;
-using Inventario_Productos_Tecnologicos.Models;
-using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Inventario_Productos_Tecnologicos.Models; // Tu modelo Usuarios, Provincia, Canton, Direccion
+using Inventario_Productos_Tecnologicos.Models.ViewModels; // Tu RegisterViewModel
+using Inventario_Productos_Tecnologicos.Data;
+using Microsoft.AspNetCore.Authorization; // Tu DbContext
+using Microsoft.AspNetCore.Mvc.Rendering; // Para SelectListItem
 using Microsoft.EntityFrameworkCore;
-
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
-/// <summary>
-/// Controlador que maneja las operaciones relacionadas con las ventas del sistema.
-/// </summary>
-public class VentasController : Controller
+public class CajaController : Controller
 {
     private readonly TecnoCoreDbContext _context;
-    private readonly ILogger<VentasController> _logger;
+    private readonly ILogger<CajaController> _logger;
+    private readonly UserManager<TECO_A_Usuario> _userManager;
 
-    public VentasController(TecnoCoreDbContext context, ILogger<VentasController> logger)
+    public CajaController(TecnoCoreDbContext context, ILogger<CajaController> logger, UserManager<TECO_A_Usuario> userManager)
     {
         _context = context;
         _logger = logger;
+        _userManager = userManager;
+    }
+
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> Index()
+    {
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        var itemsCaja = await _context.TECO_P_CarritoCompras
+            .Include(i => i.Producto)
+            .Where(i => i.TN_UsuarioId == usuarioId)
+            .Where(i => i.Producto != null)
+            .ToListAsync();
+        return View(itemsCaja);
     }
     
-    public async Task<JsonResult> AddToCart([FromBody] addToCartRequestViewModel model)
+    [Authorize(Roles = "Administrador")]
+    public async Task<JsonResult> AddProductToCaja([FromBody] addToCartRequestViewModel model)
     {
         // Validar el modelo recibido
         if (!ModelState.IsValid || model.quantity <= 0)
@@ -103,8 +117,8 @@ public class VentasController : Controller
             success = true, 
             message = "Producto agregado al carrito de compras.",
             cartItemCount = cantidadCarrito,
-            cartTotal = totalCarrito,
-            cartItems = productosEnCarrito.Select(item => new
+            cajaTotal = totalCarrito,
+            cajaItems = productosEnCarrito.Select(item => new
             {
                 productId = item.TN_ProductoId,
                 productName = item.Producto.TC_Nombre,
@@ -119,8 +133,9 @@ public class VentasController : Controller
             })
         });
     }
-
-    public async Task<IActionResult> GetCartItems()
+    
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> GetCajaItems()
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
@@ -139,13 +154,14 @@ public class VentasController : Controller
             var productosEnCarrito = await _context.TECO_P_CarritoCompras
                 .Include(c => c.Producto) // Incluir el objeto Producto relacionado
                 .Where(c => c.TN_UsuarioId == usuarioId)
+                .Where(c => c.Producto != null)
                 .ToListAsync();
 
             // Initialize defaults in case the cart is empty
-            int cantidadItemsDistintos = productosEnCarrito.Count; // Cantidad de tipos de productos distintos
-            int cantidadTotalProductos = productosEnCarrito.Sum(c => c?.TN_Cantidad ?? 0); // Suma de todas las cantidades
+            var cantidadItemsDistintos = productosEnCarrito.Count; // Cantidad de tipos de productos distintos
+            var cantidadTotalProductos = productosEnCarrito.Sum(c => c?.TN_Cantidad ?? 0); // Suma de todas las cantidades
             
-            decimal subtotalCarrito = 0m;
+            var subtotalCarrito = 0m;
             var cartItemsData = new List<object>();
 
             if (productosEnCarrito.Any())
@@ -153,8 +169,7 @@ public class VentasController : Controller
                 cantidadItemsDistintos = productosEnCarrito.Count;
 
                 // Calcular el subtotal del carrito antes de aplicar cualquier descuento
-                subtotalCarrito = productosEnCarrito.Sum(c => c.Producto.TN_Precio  * c.TN_Cantidad);
-
+                subtotalCarrito = productosEnCarrito.Sum(c => c.Producto.TN_Precio * c.TN_Cantidad);
                 cartItemsData = productosEnCarrito.Select(item => new
                 {
                     productId = item.TN_ProductoId,
@@ -182,16 +197,14 @@ public class VentasController : Controller
                 var cupon = await _context.TECO_M_Cupon.FirstOrDefaultAsync(c => c.TN_Id == idCuponAplicado.Value && c.TB_Activo);
                 if (cupon != null)
                 {
-                    //TODO añadir validaciones de fecha, usos, etc
-                    if (cupon.TC_TipoDescuento == "P" && cupon.TN_Valor > 0)
+                    descuentoAplicado = cupon.TC_TipoDescuento switch
                     {
-                        descuentoAplicado = subtotalCarrito * (cupon.TN_Valor / 100m);
-                    }
-                    else if (cupon.TC_TipoDescuento == "M" && cupon.TN_Valor > 0)
-                    {
-                        descuentoAplicado = cupon.TN_Valor;
-                    }
-                    
+                        //TODO añadir validaciones de fecha, usos, etc
+                        "P" when cupon.TN_Valor > 0 => subtotalCarrito * (cupon.TN_Valor / 100m),
+                        "M" when cupon.TN_Valor > 0 => cupon.TN_Valor,
+                        _ => descuentoAplicado
+                    };
+
                     // Asegurarse de que el descuento no haga que el total sea negativo
                     if (descuentoAplicado > subtotalCarrito)
                     {
@@ -213,12 +226,12 @@ public class VentasController : Controller
             return Json(new
             {
                 success = true,
-                cartItemCount = cantidadTotalProductos, // Cantidad total de productos (sumando cantidades)
-                cartTotal = totalCarritoFinal, // Este es el total FINAL (subtotal - descuento)
-                subtotalCart = subtotalCarrito, // Enviamos el subtotal original también
+                cajaItemCount = cantidadTotalProductos, // Cantidad total de productos (sumando cantidades)
+                cajaTotal = totalCarritoFinal, // Este es el total FINAL (subtotal - descuento)
+                subtotalCaja = subtotalCarrito, // Enviamos el subtotal original también
                 descuentoAplicado,
                 appliedCouponCode = codigoCupon, // Código del cupón aplicado
-                cartItems = cartItemsData
+                cajaItems = cartItemsData
             });
         }
         catch (Exception ex)
@@ -229,8 +242,60 @@ public class VentasController : Controller
             return StatusCode(500, new { success = false, message = "Error interno del servidor al obtener el carrito." });
         }
     }
-
-    public async Task<JsonResult> DeleteCartItem([FromBody] DeleteProductCartViewModel model)
+    
+        public async Task<JsonResult> EmptyCart()
+    {
+        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
+        
+        // Verificar si el usuario está autenticado
+        if (string.IsNullOrEmpty(usuarioId))
+        {
+            // Manejar el caso en que el usuario no está autenticado
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("Debe iniciar sesión para vaciar el carrito."));
+            return Json(new { success = false, message = "Usuario no autenticado." });
+        }
+        
+        // Eliminar todos los productos del carrito de compras del usuario autenticado
+        var carritoCompras = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .ToListAsync();
+        _logger.LogCritical("Productos en el carrito antes de vaciar: {CarritoCompras}", carritoCompras);
+        
+        if (carritoCompras.Count > 0)
+        {
+            _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
+            await _context.SaveChangesAsync();
+            _logger.LogCritical("Carrito de compras vaciado exitosamente.");
+        }
+        else
+        {
+            _logger.LogCritical("El carrito de compras ya estaba vacío.");
+            TempData["info"] = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras ya estaba vacío."));
+        }
+        
+        // Retornar la cantidad de productos en el carrito de compras (Cuenta solo productos únicos, si hay duplicados no los cuenta)
+        var cantidadCarrito = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .CountAsync();
+        _logger.LogCritical("Cantidad de productos en el carrito después de vaciar: {CantidadCarrito}", cantidadCarrito);
+        
+        //Retornar el precio total de los productos en el carrito de compras
+        var totalCarrito = await _context.TECO_P_CarritoCompras
+            .Where(c => c.TN_UsuarioId == usuarioId)
+            .SumAsync(c => c.TN_Cantidad * c.Producto.TN_Precio);
+        _logger.LogCritical("Precio total de los productos en el carrito después de vaciar: {TotalCarrito}", totalCarrito);
+        
+        return Json(new
+        {
+            success = true,
+            message = "Carrito de compras vaciado correctamente.",
+        });
+    }
+        
+    [Authorize(Roles = "Administrador")]
+    public async Task<JsonResult> DeleteCajaItem([FromBody] DeleteProductCartViewModel model)
     {
         _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", model.productId);
         
@@ -288,8 +353,8 @@ public class VentasController : Controller
         }
     }
     
-    
-    public async Task<JsonResult> DecreaseCartItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
+    [Authorize(Roles = "Administrador")]
+    public async Task<JsonResult> DecreaseCajaItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
     {
         if (!ModelState.IsValid || model.quantity <= 0)
         {
@@ -297,7 +362,7 @@ public class VentasController : Controller
         }
 
         var productId = model.productId;
-        var cantidadRestar = model.quantity ?? 1; // Default to decreasing by 1
+        var cantidadRestar = model.quantity ?? 1; // Default a disminuir por 1
 
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(usuarioId))
@@ -344,137 +409,8 @@ public class VentasController : Controller
             cartTotal = newCartTotal,
         });
     }
-
-    public async Task<JsonResult> EmptyCart()
-    {
-        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
-        
-        // Verificar si el usuario está autenticado
-        if (string.IsNullOrEmpty(usuarioId))
-        {
-            // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.ErrorAlert("Debe iniciar sesión para vaciar el carrito."));
-            return Json(new { success = false, message = "Usuario no autenticado." });
-        }
-        
-        // Eliminar todos los productos del carrito de compras del usuario autenticado
-        var carritoCompras = await _context.TECO_P_CarritoCompras
-            .Where(c => c.TN_UsuarioId == usuarioId)
-            .ToListAsync();
-        _logger.LogCritical("Productos en el carrito antes de vaciar: {CarritoCompras}", carritoCompras);
-        
-        if (carritoCompras.Count > 0)
-        {
-            _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
-            await _context.SaveChangesAsync();
-            _logger.LogCritical("Carrito de compras vaciado exitosamente.");
-        }
-        else
-        {
-            _logger.LogCritical("El carrito de compras ya estaba vacío.");
-            TempData["info"] = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras ya estaba vacío."));
-        }
-        
-        // Retornar la cantidad de productos en el carrito de compras (Cuenta solo productos únicos, si hay duplicados no los cuenta)
-        var cantidadCarrito = await _context.TECO_P_CarritoCompras
-            .Where(c => c.TN_UsuarioId == usuarioId)
-            .CountAsync();
-        _logger.LogCritical("Cantidad de productos en el carrito después de vaciar: {CantidadCarrito}", cantidadCarrito);
-        
-        //Retornar el precio total de los productos en el carrito de compras
-        var totalCarrito = await _context.TECO_P_CarritoCompras
-            .Where(c => c.TN_UsuarioId == usuarioId)
-            .SumAsync(c => c.TN_Cantidad * c.Producto.TN_Precio);
-        _logger.LogCritical("Precio total de los productos en el carrito después de vaciar: {TotalCarrito}", totalCarrito);
-        
-        return Json(new
-        {
-            success = true,
-            message = "Carrito de compras vaciado correctamente.",
-        });
-    }
     
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<JsonResult> DropCartElement(int id)
-    {
-        _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", id);
-        var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        // Verificar si el usuario está autenticado
-        if (string.IsNullOrEmpty(usuarioId))
-        {
-            // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.ErrorAlert("Debe iniciar sesión para eliminar productos del carrito."));
-            return Json(new { success = false, message = "Usuario no autenticado." });
-        }
-        
-        // Verificar si el carrito de compras del usuario autenticado tiene productos
-        var carritoCompras = await _context.TECO_P_CarritoCompras
-            .Where(c => c.TN_UsuarioId == usuarioId)
-            .ToListAsync();
-        _logger.LogCritical("Productos en el carrito antes de eliminar: {CarritoCompras}", carritoCompras);
-        if (carritoCompras.Count == 0)
-        {
-            _logger.LogCritical("El carrito de compras está vacío.");
-            ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
-            return Json(new { success = false, message = "El carrito de compras está vacío." });
-        }
-        try
-        {
-            // Eliminar el producto del carrito de compras del usuario autenticado
-            var productoAEliminar = await _context.TECO_P_CarritoCompras
-                .FirstOrDefaultAsync(c => c.TN_UsuarioId == usuarioId && c.TN_ProductoId == id);
-            _logger.LogCritical("Producto a eliminar del carrito: {ProductoAEliminar}", productoAEliminar);
-            if (productoAEliminar != null)
-            {
-                _context.TECO_P_CarritoCompras.Remove(productoAEliminar);
-                await _context.SaveChangesAsync();
-                _logger.LogCritical("Producto eliminado del carrito de compras exitosamente.");
-                TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert("Producto eliminado del carrito de compras correctamente."));
-
-                return Json(new
-                {
-                    success = true,
-                    message = "Producto eliminado del carrito de compras correctamente.",
-                });
-            }
-            else
-            {
-                _logger.LogCritical("El producto no se encontró en el carrito de compras.");
-                ViewBag.Alert = JsonSerializer.Serialize(Alert.InfoAlert("El producto no se encontró en el carrito de compras."));
-                return Json(new
-                {
-                    success = false,
-                    message = "No se encontró el producto.",
-                });
-            }
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error al cambiar el estado del producto {ProductoId}", id);
-            return Json(new
-            {
-                success = false,
-                message = "Error al cambiar el estado del producto",
-            });
-        }
-    }
-    
-    public IActionResult Carro_Compras(List<TECO_A_Producto> listaCompras)
-    {
-        var carritoCompras = _context.TECO_P_CarritoCompras
-            .Include(c => c.Producto)
-            .Where(c => c.TN_UsuarioId == User.FindFirstValue(ClaimTypes.NameIdentifier))
-            .ToList();
-        if (carritoCompras.Count != 0) return View(carritoCompras);
-        ViewBag.Alert = JsonSerializer.Serialize(
-            Alert.InfoAlert("El carrito de compras está vacío."));
-        return RedirectToAction("Index");
-    }
-    
+    [Authorize(Roles = "Administrador")]
     public async Task<JsonResult> ApplyDiscount([FromBody] ApplyDiscountRequestViewModel model)
     {
         // Validar el modelo recibido
@@ -505,15 +441,15 @@ public class VentasController : Controller
         }
         
         
-        var cartItems = await _context.TECO_P_CarritoCompras
+        var cajaItems = await _context.TECO_P_CarritoCompras
             .Where(cc => cc.TN_UsuarioId == usuarioId)
             .Include(cc => cc.Producto)
             .ToListAsync();
         
-        var subtotalCarrito = cartItems.Sum(item => (item.Producto?.TN_Precio ?? 0) * (item?.TN_Cantidad ?? 0));
+        var subtotalCarrito = cajaItems.Sum(item => (item.Producto?.TN_Precio ?? 0) * (item?.TN_Cantidad ?? 0));
         decimal descuentoAplicado = 0;
 
-        if (cartItems.Count == 0)
+        if (cajaItems.Count == 0)
         {
             return Json(new { success = false, message = "No hay productos en el carrito para aplicar el cupón." });
         }
@@ -525,8 +461,7 @@ public class VentasController : Controller
             return Json(new { success = false, message = "El carrito está vacío." });
         }
         
-        decimal descuento = 0;
-        var precioFinalConDescuento = model.totalCarrito;
+        _logger.LogCritical("Tipo de descuento: " +  cupon.TC_TipoDescuento);
 
         descuentoAplicado = cupon.TC_TipoDescuento switch
         {
@@ -535,16 +470,18 @@ public class VentasController : Controller
             "M" when cupon.TN_Valor > 0 => cupon.TN_Valor,
             _ => descuentoAplicado
         };
+        
+        _logger.LogCritical("Descuento aplicado: " + descuentoAplicado);
 
         // Asegurarse de que el descuento no haga que el total sea negativo
         if (descuentoAplicado > subtotalCarrito)
         {
             descuentoAplicado = subtotalCarrito;
         }
+        
+        var totalCajaConDescuento = subtotalCarrito - descuentoAplicado;
 
-        var totalCarritoConDescuento = subtotalCarrito - descuentoAplicado;
-
-        // *** CAMBIO CLAVE AQUÍ: PERSISTIR EL CUPÓN EN LA SESIÓN ***
+        _logger.LogCritical("Monto total: " + subtotalCarrito + "Total con descuento: " + totalCajaConDescuento);
         // Guarda el ID del cupón en la sesión para que se use en futuras cargas del carrito
         HttpContext.Session.SetInt32("AppliedCouponId", cupon.TN_Id);
 
@@ -553,11 +490,12 @@ public class VentasController : Controller
             success = true,
             message = "Cupón aplicado correctamente.",
             descuentoAplicado,
-            totalCarritoConDescuento,
-            cartItemCount = cartItems.Sum(item => item.TN_Cantidad) // O el count de items distintos
+            totalCajaConDescuento,
+            cajaItemCount = cajaItems.Sum(item => item.TN_Cantidad) // O el count de items distintos
         });
     }
     
+    [Authorize(Roles = "Administrador")]
     public JsonResult RemoveDiscount()
     {
         _logger.LogCritical("Eliminando cupón aplicado de la sesión: " + HttpContext.Session.GetString("AppliedCouponId"));
@@ -569,31 +507,46 @@ public class VentasController : Controller
         // Retornar una respuesta indicando que el cupón fue eliminado
         return Json(new { success = true, message = "Cupón eliminado correctamente." });
     }
+    
+    [HttpGet]
+    [Authorize(Roles = "Administrador")]
+    public IActionResult GetProductToSearch(string searchTerm = "") //Valor vacío por defecto
+    {
+        IQueryable<TECO_A_Producto> query = _context.TECO_A_Producto;
+
+        if (!string.IsNullOrWhiteSpace(searchTerm))
+        {
+            if (int.TryParse(searchTerm, out var searchId))
+            {
+                query = query.Where(p => p.TN_Id == searchId);
+            }
+            else
+            {
+                query = query.Where(p => p.TC_Nombre.ToLower().Contains(searchTerm.ToLower()));
+            }
+        }
+        
+        //Se crea una lista de productos con los datos que se necesitan
+        var products = query.Select(p => new
+        {
+            tn_Id = p.TN_Id,
+            tc_Nombre = p.TC_Nombre,
+            tn_Stock = p.TN_Stock
+        }).ToList();
+        return Ok(products); 
+    }
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> TerminarCompra(string cardNumber, string expirationDate, int securityCode,
-        string cardHolderName)
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> TerminarCompra(string dineroEntregaCliente, string vueltoCaja)
     {
         if (!ModelState.IsValid)
         {
             _logger.LogCritical("Modelo recibido es nulo o inválido.");
-            return RedirectToAction("Carro_Compras");
+            return RedirectToAction("Index");
         }
         
-        var fechaExpiracion = DateTime.ParseExact(
-            expirationDate, "MM/yy",     
-            System.Globalization.CultureInfo.InvariantCulture, // Usar cultura invariante para evitar problemas de formato regional
-            System.Globalization.DateTimeStyles.None);
-
-        if (fechaExpiracion < DateTime.Now)
-        {
-            _logger.LogCritical("La fecha de expiración de la tarjeta es inválida: {FechaExpiracion}", fechaExpiracion);
-            ViewBag.Alert = JsonSerializer.Serialize(Alert.ErrorAlert("La fecha de expiración de la tarjeta es inválida."));
-            return RedirectToAction("Carro_Compras");
-        }
-        
-        cardNumber = cardNumber.Replace(" ", "");
 
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         if (string.IsNullOrEmpty(usuarioId))
@@ -601,7 +554,7 @@ public class VentasController : Controller
             // Manejar el caso en que el usuario no está autenticado
             ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.ErrorAlert("Debe iniciar sesión para realizar la compra."));
-            return RedirectToAction("Carro_Compras");
+            return RedirectToAction("Index");
         }
         _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
         
@@ -615,7 +568,7 @@ public class VentasController : Controller
         {
             ViewBag.Alert = JsonSerializer.Serialize(
                 Alert.InfoAlert("El carrito de compras está vacío."));
-            return RedirectToAction("Carro_Compras");
+            return RedirectToAction("Index");
         }
         _logger.LogCritical("Cantidad de productos en el carrito: {CantidadCarrito}", carritoCompras.Count);
 
@@ -651,7 +604,7 @@ public class VentasController : Controller
                     {
                         _logger.LogCritical("El cupón ha alcanzado el máximo de usos permitidos.");
                         TempData["error"] = JsonSerializer.Serialize(Alert.ErrorAlert("El cupón ha alcanzado el máximo de usos permitidos."));
-                        return RedirectToAction("Carro_Compras");
+                        return RedirectToAction("Index");
                     }
                     
                     // Incrementar el contador de usos del cupón
@@ -705,7 +658,7 @@ public class VentasController : Controller
             {
                 TN_UsuarioId = usuarioId,
                 TN_MetodoPagoId = 1, // Asignar un método de pago por defecto en este caso 1 es para tarjeta, 0 para efectivo y 3 para depósito bancario
-                TN_EstadoPedidoId = 1,
+                TN_EstadoPedidoId = 5, // Se asigna el estado como completado ya que este tipo de venta se hace de forma presencial
                 TN_TransaccionId = transaccionId.ToString(),
                 TF_Fecha = DateTime.Now,
                 TN_CuponId = cupon.TN_Id,
@@ -714,7 +667,7 @@ public class VentasController : Controller
                 TN_Descuento = descuento, // Asignar el descuento calculado
                 TN_Total = totalFinal, // Asignar el total del carrito
                 TB_Activo = true,
-                TC_NumTarjeta = cardNumber,
+                TC_NumTarjeta = "00000000",
             };
             _context.TECO_P_Pedido.Add(pedido);
             await _context.SaveChangesAsync();
@@ -742,12 +695,12 @@ public class VentasController : Controller
             TempData.Clear();
             TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert("Pedido creado correctamente."));
             HttpContext.Session.Remove("AppliedCouponId"); // Limpiar el cupón aplicado de la sesión
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index");
         }
         catch (Exception e)
         {
             _logger.LogCritical("Error al crear el pedido: {Message}", e.Message);
-            return RedirectToAction("Carro_Compras");
+            return RedirectToAction("Index");
         }
     }
 }

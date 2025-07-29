@@ -1,0 +1,156 @@
+@model List<Inventario_Productos_Tecnologicos.Models.TECO_P_CarritoCompras>
+
+@{
+    ViewBag.Title = "Carrito de compras";
+    Layout = "_layoutAdmin";
+}
+
+<div class="pageContainer">
+    <div class="caja-details-page-container">
+        <h1 class="pageTitle">Caja</h1>
+        <div class="Caja-header">
+            <div class="addProduct-container">
+                <label for="">Producto</label>
+                <input type="text" class="inputBase" id="productId" name="productId" placeholder="Doble click para buscar">
+                <button type="button" class="btnAddToCaja">Agregar</button>
+            </div>
+            <button class="btnClearCaja">Vaciar carrito</button>
+        </div>
+        <div class="tableContainer">
+            <div class="tbl-header TCajaDetails sticky-top">
+                <span class="headerText">Nombre</span>
+                <span class="headerText">Precio unitario</span>
+                <span class="headerText">Cantidad</span>
+                <span class="headerText">Subtotal</span>
+                <span class="headerText">Opciones</span>
+            </div>
+            <div id="caja-item-list-container-details" class="tbl-content">
+                @if (!Model.Any() || Model.Count <= 0)
+                {
+                    <div class="tableRow">
+                        <span class="NoElements">No hay productos</span>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <div class="tableRow TCajaDetails">
+                            <span class="tableCell">@(item.Producto?.TC_Nombre ?? "Nombre no encontrado")</span>
+                            <span class="tableCell">₡ @item.TN_PrecioUnitario.ToString("N2")</span>
+                            <div class="tableCell columnCant caja">
+                                <button class="btnMinus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Minus.svg")" alt="-">
+                                </button>
+                                <input type="number"
+                                       class="inputBase cantInput caja-item-quantity"
+                                       value="@item.TN_Cantidad"
+                                       min="1"
+                                       max="@item.Producto?.TN_Stock"
+                                       data-productid="@item.TN_ProductoId"/>
+                                <button class="btnPlus" data-productid="@item.TN_ProductoId">
+                                    <img src="@Url.Content("~/img/ICO_Add.svg")" alt="+">
+                                </button>
+                            </div>
+                            <span class="tableCell">₡ @((item.TN_PrecioUnitario * item.TN_Cantidad).ToString("N2"))</span>
+                            <div class="tableButtonsColumn">
+                                <button type="button"
+                                        class="DeleteBtn remove-from-caja-btn tooltipContainer btnSwicthActive redHighlight"
+                                        data-productId="@(item.TN_ProductoId)">
+                                    <img src="~/img/ICO_Delete.svg" alt="Eliminar" class="iconDeactivate"/>
+                                    <span class="TooltipText transM50">Eliminar </span>
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div>
+            <p><strong>Total de productos:</strong> 
+                <span id="total-Caja-details" data-product-total="@Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario)">
+                    ₡ @(Model?.Where(i => i.Producto != null)
+                          .Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")
+                </span></p>
+            <div class="couponContainer-caja">
+                <p>Cupones:</p>
+                <input type="text" id="discountCode" class="inputBase" placeholder="Ingrese el código del cupón"/>
+                <button id="btnAplicarCupon" class="btnAplicarCupon">Aplicar</button>
+                <button id="btnLimpiarCupon" class="btnLimpiarCupon">Limpiar</button>
+            </div>
+            <p>
+                <strong>
+                    Descuento:
+                </strong>
+                <span id="total-Caja-descuento" data-discountValue="0">₡ 0.00</span>
+            </p>
+        </div>
+        <div class="Caja-details-footer-Terminar">
+            <p><strong>Total:</strong>
+                <span id="total-Caja-details-Final">
+                    ₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")
+                </span>
+            </p>
+            <div class="btnContainer">
+                <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
+                <a class="btnEndCompra" id="showCheckout">Terminar compra</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<dialog id="EndCompraModal">
+    <div class="EndCompraModalContent">
+        <h1>Datos de la tarjeta</h1>
+        <form asp-action="TerminarCompra" asp-controller="Caja" method="post">
+            @Html.AntiForgeryToken()
+            <div class="EndCompraSeccion">
+                <label for="total-Caja-checkout">Total de venta</label>
+                <input type="text" id="total-Caja-checkout" name="total-Caja-checkout" class="inputBase" 
+                       data-total="@(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario))"
+                       value="₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")"
+                       readonly>
+            </div>
+            <div class="EndCompraSeccion">
+                <label for="dineroEntregaCliente">Dinero que entrega el cliente</label>
+                <input type="number" id="dineroEntregaCliente" name="dineroEntregaCliente" class="inputBase" value="0">
+                <button type="button" id="putTotalBtn">Total</button>
+            </div>
+            <div class="EndCompraSeccion">
+                <label for="vueltoCaja">Vuelto</label>
+                <input type="text" id="vueltoCaja" name="vueltoCaja" class="inputBase" 
+                       data-total="@(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario))" readonly>
+            </div>
+            <div class="btnSeccion">
+                <button type="submit" class="btnSubmit">Pagar</button>
+                <button type="button" class="btnCancel" id="closeCheckout">Cancelar</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+
+<dialog class="searchProductDialog" id="searchProductDialog">
+    <div class="searchProductDialogContent">
+        <h1>Productos</h1>
+        <div class="search-input-container">
+            <input type="text" id="searchProductInput" class="inputBase" placeholder="Buscar por código o nombre...">
+            <button type="button" id="btnSearchProduct">Buscar</button>
+        </div>
+        <button class="btnExit" id="btnExitModalSearch" type="button">Salir</button>
+        <div class="tableContainer">
+            <div class="tbl-header TCat">
+                <span class="headerText">ID</span>
+                <span class="headerText">Nombre</span>
+                <span class="headerText">Stock</span>
+                <span class="headerText">Opciones</span>
+            </div>
+            <div class="tbl-content">
+                @* El contenido de la tabla se carga por medio de JS *@
+            </div>
+        </div>
+    </div>
+</dialog>
+
+@section Scripts {
+    <script src="~/js/caja.js" asp-append-version="true"></script>
+}

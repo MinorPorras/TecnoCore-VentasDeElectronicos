@@ -861,6 +861,10 @@ section {
     background: var(--dBlueEnphasis1);
 }
 
+.modal-fade-out {
+    animation: modalFadeOut 0.3s forwards;
+}
+
 @keyframes modalFadeOut {
     from {
         top: 6.3rem;

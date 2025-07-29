@@ -258,6 +258,8 @@ function updateCartCount(newCount, newTotal) {
     totalCartDetails.text(`₡ ${formatter.format(newTotal)}`).data('productTotal', newTotal);
     // Actualizar el total final del carrito en la vista de detalles
     const totalCartDetailsFinal = $('#total-Cart-details-Final');
+    totalCartDetailsFinal.text(`₡ ${formatter.format(newTotal)}`);
+
 }
 
 //Renderizar o rerenderizar la lista del productos del carrito
@@ -397,7 +399,7 @@ function getCartItems(){
         .catch((error) => {
             console.error('Error al obtener los productos del carrito:', error);
             showAlert('Error al cargar los productos del carrito.', 'error');
-        });
+        }); 
 }
 
 function removeFromCart(productId) {
@@ -460,8 +462,6 @@ function addToCart(productId, quantity = 1){
 }
 
 function decreaseCartItemQuantity(productId, quantityToDecrease = 1) {
-    // You'll need a new API endpoint in your VentasController for this
-    // e.g., POST /Ventas/DecreaseCartItem
     fetch("/Ventas/DecreaseCartItem", {
         method: 'POST',
         headers: {

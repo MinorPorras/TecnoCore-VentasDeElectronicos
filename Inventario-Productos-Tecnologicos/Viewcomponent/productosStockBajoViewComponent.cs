@@ -18,7 +18,7 @@ public class ProductosStockBajoViewComponent : ViewComponent
         _logger = logger;
     }
 
-    public async Task<ViewViewComponentResult> InvokeAsync()
+    public async Task<IViewComponentResult> InvokeAsync()
     {
         var productosStockBajo = await _context.TECO_A_Producto
             .OrderBy(p => p.TN_Stock)
