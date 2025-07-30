@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
@@ -31,16 +32,8 @@ public class HomeController : Controller
     /// Muestra la vista de mantenimiento.
     /// </summary>
     /// <returns>La vista Mantenimiento.</returns>
+    [Authorize(Roles = "Administrador")]
     public ViewResult Mantenimiento()
-    {
-        return View();
-    }
-
-    /// <summary>
-    /// Muestra la vista de política de privacidad.
-    /// </summary>
-    /// <returns>La vista Privacy.</returns>
-    public IActionResult Privacy()
     {
         return View();
     }

@@ -4,6 +4,7 @@ using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -19,6 +20,7 @@ public class KardexController : Controller
     }
 
     // GET: Kardex
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         try
@@ -44,6 +46,7 @@ public class KardexController : Controller
     }
 
     // GET: Kardex/Details/5
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Details(int id)
     {
         try
@@ -71,6 +74,7 @@ public class KardexController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateEntry()
     {
         try
@@ -104,6 +108,7 @@ public class KardexController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateEntry(KardexViewModel viewModel)
     {
         try
@@ -164,6 +169,7 @@ public class KardexController : Controller
         return View(viewModel);
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateExit()
     {
         try
@@ -196,6 +202,7 @@ public class KardexController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateExit(KardexViewModel viewModel)
     {
         try
@@ -264,6 +271,7 @@ public class KardexController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> GetProductoStock(int id)
     {
         var stock = await _context.TECO_A_Producto
@@ -276,6 +284,7 @@ public class KardexController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> GetTipoMovimiento(int id)
     {
         var tipoMovimiento = await _context.TECO_M_TipoMovimientoKardex
@@ -290,6 +299,7 @@ public class KardexController : Controller
     // POST: Kardex/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(int id)
     {
         var kardex = await _context.TECO_P_Kardex.FindAsync(id);
@@ -303,6 +313,7 @@ public class KardexController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string searchDate, string activeFilter = "all",
         string tipoMovimiento = "all")
     {

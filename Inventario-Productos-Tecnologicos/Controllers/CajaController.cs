@@ -243,7 +243,8 @@ public class CajaController : Controller
         }
     }
     
-        public async Task<JsonResult> EmptyCart()
+    [Authorize(Roles = "Administrador")]
+    public async Task<JsonResult> EmptyCart()
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);

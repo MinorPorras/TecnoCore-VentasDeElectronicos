@@ -4,6 +4,7 @@ using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Models;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
@@ -22,6 +23,7 @@ public class VentasController : Controller
         _logger = logger;
     }
     
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> AddToCart([FromBody] addToCartRequestViewModel model)
     {
         // Validar el modelo recibido
@@ -120,6 +122,7 @@ public class VentasController : Controller
         });
     }
 
+    [Authorize(Roles = "Cliente")]
     public async Task<IActionResult> GetCartItems()
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -230,6 +233,7 @@ public class VentasController : Controller
         }
     }
 
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> DeleteCartItem([FromBody] DeleteProductCartViewModel model)
     {
         _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", model.productId);
@@ -288,7 +292,7 @@ public class VentasController : Controller
         }
     }
     
-    
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> DecreaseCartItem([FromBody] addToCartRequestViewModel model) // Reuse the same ViewModel
     {
         if (!ModelState.IsValid || model.quantity <= 0)
@@ -345,6 +349,7 @@ public class VentasController : Controller
         });
     }
 
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> EmptyCart()
     {
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -398,6 +403,7 @@ public class VentasController : Controller
     
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> DropCartElement(int id)
     {
         _logger.LogCritical("Intentando eliminar producto del carrito de compras. ProductoId: {ProductoId}", id);
@@ -463,6 +469,7 @@ public class VentasController : Controller
         }
     }
     
+    [Authorize(Roles = "Cliente")]
     public IActionResult Carro_Compras(List<TECO_A_Producto> listaCompras)
     {
         var carritoCompras = _context.TECO_P_CarritoCompras
@@ -475,6 +482,7 @@ public class VentasController : Controller
         return RedirectToAction("Index");
     }
     
+    [Authorize(Roles = "Cliente")]
     public async Task<JsonResult> ApplyDiscount([FromBody] ApplyDiscountRequestViewModel model)
     {
         // Validar el modelo recibido
@@ -558,6 +566,7 @@ public class VentasController : Controller
         });
     }
     
+    [Authorize(Roles = "Cliente")]
     public JsonResult RemoveDiscount()
     {
         _logger.LogCritical("Eliminando cupón aplicado de la sesión: " + HttpContext.Session.GetString("AppliedCouponId"));
@@ -572,6 +581,7 @@ public class VentasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Cliente")]
     public async Task<IActionResult> TerminarCompra(string cardNumber, string expirationDate, int securityCode,
         string cardHolderName)
     {

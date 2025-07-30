@@ -7,241 +7,246 @@ const formatter = new Intl.NumberFormat('es-ES', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
 });
+const cerrarSesionBtn = document.querySelector('.btnLogOut');
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    $(document).ready(function () {
-        
-        //Obtener el antiforgery token si es necesario
-        const antiforgeryToken = $('input[name="__RequestVerificationToken"]').val();
-        // Inicializar el modal del carrito
-        // verificar si el botón para mostrar el carrito existe
-        if (showCartBtn) {
-            showCartBtn.addEventListener('click', function () {
-                // verificar si el modal existe
-                if (cartModal) {
-                    cartModal.showModal();
-                    //Se hace una petición para obtener los productos del carrito
-                    fetch('/Ventas/GetCartItems', {
-                        method: 'GET',
-                        headers: {'Accept': 'application/json'}
-                    })
-                        // Verificar si la respuesta es exitosa y la convertimos a JSON
-                        .then(response => response.json())
-                        .then(data => {
-                            // Verificar si la respuesta contiene los datos esperados
-                            if (data && data.success) {
-                                // Actualizar la información del carrito
-                                updateCartCount(data.cartItemCount, data.cartTotal);
-                                renderCartItems(data.cartItems);
-                            } else {
-                                console.error('Error al obtener los productos del carrito:', data.message);
-                                showAlert('Error al cargar los productos del carrito.', 'error');
-                            }
+    if (cerrarSesionBtn) {
+        $(document).ready(function () {
+
+            //Obtener el antiforgery token si es necesario
+            const antiforgeryToken = $('input[name="__RequestVerificationToken"]').val();
+            // Inicializar el modal del carrito
+            // verificar si el botón para mostrar el carrito existe
+            if (showCartBtn) {
+                showCartBtn.addEventListener('click', function () {
+                    // verificar si el modal existe
+                    if (cartModal) {
+                        cartModal.showModal();
+                        //Se hace una petición para obtener los productos del carrito
+                        fetch('/Ventas/GetCartItems', {
+                            method: 'GET',
+                            headers: {'Accept': 'application/json'}
                         })
-                        .catch((error) => {
-                            console.error('Error al obtener los productos del carrito:', error);
-                            showAlert('Error al cargar los productos del carrito.', 'error');
-                        })
+                            // Verificar si la respuesta es exitosa y la convertimos a JSON
+                            .then(response => response.json())
+                            .then(data => {
+                                // Verificar si la respuesta contiene los datos esperados
+                                if (data && data.success) {
+                                    // Actualizar la información del carrito
+                                    updateCartCount(data.cartItemCount, data.cartTotal);
+                                    renderCartItems(data.cartItems);
+                                } else {
+                                    console.error('Error al obtener los productos del carrito:', data.message);
+                                    showAlert('Error al cargar los productos del carrito.', 'error');
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error al obtener los productos del carrito:', error);
+                                if (!error === 'Usuario no autenticado.'){
+                                    showAlert('Error al cargar los productos del carrito.', 'error');
+                                }
+                            })
+                    }
+                });
+            }
+
+            //Cargar de forma inicial los productos del carrito
+            getCartItems()
+
+            //Se asigna el evento de agregar al carrito a todos los botones con la clase btnAddToCart
+            $('body').on('click', '.btnAddToCart', function () {
+                const clickedButton = $(this); // $(this) is the button that was clicked
+                const productId = clickedButton.data('productid');
+                const quantity = clickedButton.data('quantity'); // Assuming you want quantity
+
+                const numericProductId = parseInt(productId);
+                const numericQuantity = parseInt(quantity);
+
+                if (!isNaN(numericProductId) && !isNaN(numericQuantity)) {
+                    // Call your existing addToCart function
+                    addToCart(numericProductId, numericQuantity);
+
+                } else {
+                    console.error("Error: Invalid product ID or quantity for adding to cart.");
                 }
             });
-        }
 
-        //Cargar de forma inicial los productos del carrito
-        getCartItems()
+            //Se asigna el evento de eliminar del carrito a todos los botones con la clase remove-from-cart-btn
+            $('body').on('click', '.remove-from-cart-btn', function () {
+                const clickedButton = $(this).closest('.remove-from-cart-btn');
 
-        //Se asigna el evento de agregar al carrito a todos los botones con la clase btnAddToCart
-        $('body').on('click', '.btnAddToCart', function () {
-            const clickedButton = $(this); // $(this) is the button that was clicked
-            const productId = clickedButton.data('productid');
-            const quantity = clickedButton.data('quantity'); // Assuming you want quantity
+                // *** CAMBIO CLAVE AQUÍ: 'productid' en minúsculas ***
+                const productId = clickedButton.data('productid');
 
-            const numericProductId = parseInt(productId);
-            const numericQuantity = parseInt(quantity);
+                console.log("Producto ID obtenido del botón (corregido camelCase):", productId);
 
-            if (!isNaN(numericProductId) && !isNaN(numericQuantity)) {
-                // Call your existing addToCart function
-                addToCart(numericProductId, numericQuantity);
+                const numericProductId = parseInt(productId);
 
-            } else {
-                console.error("Error: Invalid product ID or quantity for adding to cart.");
-            }
-        });
+                if (isNaN(numericProductId)) {
+                    console.error("Error: productId no es un número válido. Valor:", productId);
+                    showAlert('Error: ID de producto no válido.', 'error');
+                    return;
+                }
 
-        //Se asigna el evento de eliminar del carrito a todos los botones con la clase remove-from-cart-btn
-        $('body').on('click', '.remove-from-cart-btn', function () {
-            const clickedButton = $(this).closest('.remove-from-cart-btn');
+                removeFromCart(numericProductId);
+            });
 
-            // *** CAMBIO CLAVE AQUÍ: 'productid' en minúsculas ***
-            const productId = clickedButton.data('productid');
+            //Se asigna el evento de vaciar el carrito a todos los botones con la clase btnClearCart
+            $('body').on('click', '.btnClearCart', function () {
+                emptyCart();
+            });
 
-            console.log("Producto ID obtenido del botón (corregido camelCase):", productId);
-
-            const numericProductId = parseInt(productId);
-
-            if (isNaN(numericProductId)) {
-                console.error("Error: productId no es un número válido. Valor:", productId);
-                showAlert('Error: ID de producto no válido.', 'error');
-                return;
-            }
-
-            removeFromCart(numericProductId);
-        });
-
-        //Se asigna el evento de vaciar el carrito a todos los botones con la clase btnClearCart
-        $('body').on('click', '.btnClearCart', function () {
-            emptyCart();
-        });
-
-        // Event listener for the "plus" button (increase quantity)
-        $('body').on('click', '.btnPlus', function () {
-            const productId = $(this).data('productid');
-            const numericProductId = parseInt(productId);
+            // Event listener for the "plus" button (increase quantity)
+            $('body').on('click', '.btnPlus', function () {
+                const productId = $(this).data('productid');
+                const numericProductId = parseInt(productId);
 
 
-            if (!isNaN(numericProductId)) {
-                // Call addToCart with quantity 1 to increment
-                addToCart(numericProductId, 1);
-            } else {
-                console.error("Error: Product ID is not a valid number for increasing quantity.");
-            }
-        });
+                if (!isNaN(numericProductId)) {
+                    // Call addToCart with quantity 1 to increment
+                    addToCart(numericProductId, 1);
+                } else {
+                    console.error("Error: Product ID is not a valid number for increasing quantity.");
+                }
+            });
 
-        // Event listener for the "minus" button (decrease quantity)
-        $('body').on('click', '.btnMinus', function () {
-            const productId = $(this).data('productid');
-            const numericProductId = parseInt(productId);
+            // Event listener for the "minus" button (decrease quantity)
+            $('body').on('click', '.btnMinus', function () {
+                const productId = $(this).data('productid');
+                const numericProductId = parseInt(productId);
 
-            if (!isNaN(numericProductId)) {
-                // You'll need a separate function for decreasing or modify removeFromCart
-                decreaseCartItemQuantity(numericProductId, 1);
-            } else {
-                console.error("Error: Product ID is not a valid number for decreasing quantity.");
-            }
-        });
+                if (!isNaN(numericProductId)) {
+                    // You'll need a separate function for decreasing or modify removeFromCart
+                    decreaseCartItemQuantity(numericProductId, 1);
+                } else {
+                    console.error("Error: Product ID is not a valid number for decreasing quantity.");
+                }
+            });
 
-        // Event listener para el botón de aplicar cupón
-        $('body').on('click', '#btnAplicarCupon', function () {
-            const couponCode = $('#discountCode').val(); // Obtiene el valor del input del cupón
+            // Event listener para el botón de aplicar cupón
+            $('body').on('click', '#btnAplicarCupon', function () {
+                const couponCode = $('#discountCode').val(); // Obtiene el valor del input del cupón
 
-            // Obtener el total actual del carrito desde el span de la vista de detalles
-            // Limpia el formato de moneda y convierte a número flotante
-            const currentCartTotalElement = $('#total-Cart-details');
-            const currentCartTotal = parseFloat(currentCartTotalElement.data('productTotal'));
+                // Obtener el total actual del carrito desde el span de la vista de detalles
+                // Limpia el formato de moneda y convierte a número flotante
+                const currentCartTotalElement = $('#total-Cart-details');
+                const currentCartTotal = parseFloat(currentCartTotalElement.data('productTotal'));
 
-            if (!couponCode) {
-                showAlert('Por favor, introduzca un código de cupón.', 'warning');
-                return;
-            }
-            if (isNaN(currentCartTotal) || currentCartTotal <= 0) {
-                showAlert('El carrito está vacío o el total no es válido para aplicar un cupón.', 'warning');
-                return;
-            }
+                if (!couponCode) {
+                    showAlert('Por favor, introduzca un código de cupón.', 'warning');
+                    return;
+                }
+                if (isNaN(currentCartTotal) || currentCartTotal <= 0) {
+                    showAlert('El carrito está vacío o el total no es válido para aplicar un cupón.', 'warning');
+                    return;
+                }
 
-            // Realizar la llamada AJAX al controlador
-            fetch('/Ventas/ApplyDiscount', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-                body: JSON.stringify({
-                    codigoCupon: couponCode,
-                    totalCarrito: currentCartTotal // Se envía el total, pero el servidor recalcula
+                // Realizar la llamada AJAX al controlador
+                fetch('/Ventas/ApplyDiscount', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        codigoCupon: couponCode,
+                        totalCarrito: currentCartTotal // Se envía el total, pero el servidor recalcula
+                    })
                 })
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        // Manejar errores HTTP (ej. 400, 500)
-                        return response.json().then(err => {
-                            throw new Error(err.message || `Error del servidor: ${response.status}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Actualizar el span del total final con el nuevo total con descuento
-                        $('#total-Cart-details-Final').text(`₡ ${formatter.format(data.totalCarritoConDescuento)}`).data('productTotal', data.totalCarritoConDescuento);
-                        // Actualizar el span del descuento aplicado
-                        $('#total-cart-descuento').text(`₡ ${formatter.format(data.descuentoAplicado)}`).data('discountValue', data.descuentoAplicado);
+                    .then(response => {
+                        if (!response.ok) {
+                            // Manejar errores HTTP (ej. 400, 500)
+                            return response.json().then(err => {
+                                throw new Error(err.message || `Error del servidor: ${response.status}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar el span del total final con el nuevo total con descuento
+                            $('#total-Cart-details-Final').text(`₡ ${formatter.format(data.totalCarritoConDescuento)}`).data('productTotal', data.totalCarritoConDescuento);
+                            // Actualizar el span del descuento aplicado
+                            $('#total-cart-descuento').text(`₡ ${formatter.format(data.descuentoAplicado)}`).data('discountValue', data.descuentoAplicado);
 
-                        // Se actualiza los contadores y totales de la cabecera/modal si están presentes
-                        updateCartCount(data.cartItemCount, data.totalCarritoConDescuento);
+                            // Se actualiza los contadores y totales de la cabecera/modal si están presentes
+                            updateCartCount(data.cartItemCount, data.totalCarritoConDescuento);
 
-                        // Opcional: limpiar el campo del cupón si el descuento fue exitoso
-                        $('#discountCode').val('');
+                            // Opcional: limpiar el campo del cupón si el descuento fue exitoso
+                            $('#discountCode').val('');
 
-                    } else {
-                        showAlert(data.message, 'error');
-                        // Limpiar el descuento si el cupón no es válido
+                        } else {
+                            showAlert(data.message, 'error');
+                            // Limpiar el descuento si el cupón no es válido
+                            $('#total-cart-descuento').text('₡ 0.00').data('discountValue', 0);
+
+                            // Si hay un error, el total final debería volver al total sin descuento (o al último total válido)
+                            // Para esto, se debe usar el valor original sin descuento del data-product-total
+                            const originalTotal = parseFloat($('#total-Cart-details').data('productTotal'));
+                            $('#total-Cart-details-Final').text(`₡ ${formatter.format(originalTotal)}`).data('productTotal', originalTotal);
+
+
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error al aplicar el cupón:', error);
+                        showAlert('Error de conexión al intentar aplicar el cupón. Por favor, inténtelo de nuevo.', 'error');
+                        // Limpiar el descuento y revertir el total si hay un error de conexión
                         $('#total-cart-descuento').text('₡ 0.00').data('discountValue', 0);
 
-                        // Si hay un error, el total final debería volver al total sin descuento (o al último total válido)
-                        // Para esto, se debe usar el valor original sin descuento del data-product-total
                         const originalTotal = parseFloat($('#total-Cart-details').data('productTotal'));
                         $('#total-Cart-details-Final').text(`₡ ${formatter.format(originalTotal)}`).data('productTotal', originalTotal);
+                    });
+            });
 
-
-                    }
-                })
-                .catch(error => {
-                    console.error('Error al aplicar el cupón:', error);
-                    showAlert('Error de conexión al intentar aplicar el cupón. Por favor, inténtelo de nuevo.', 'error');
-                    // Limpiar el descuento y revertir el total si hay un error de conexión
-                    $('#total-cart-descuento').text('₡ 0.00').data('discountValue', 0);
-
-                    const originalTotal = parseFloat($('#total-Cart-details').data('productTotal'));
-                    $('#total-Cart-details-Final').text(`₡ ${formatter.format(originalTotal)}`).data('productTotal', originalTotal);
-                });
-        });
-
-        // Event listener para el botón de limpiar cupón
-        $('body').on('click', '#btnLimpiarCupon', function() {
-            // Verificar que el token exista
-            // Asegúrate de que el token existe
-            if (!antiforgeryToken) {
-                console.error("Error: Anti-forgery token not found.");
-                showAlert('Error de seguridad. Recargue la página e inténtelo de nuevo.', 'error');
-                return;
-            }
-            
-            // fetch para limpiar el cupón
-            fetch(`/Ventas/RemoveDiscount`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                },
-            })
-                .then(response => {
-                    // Manejar respuestas que no sean 200 OK (ej. 400, 404, 500)
-                    if (!response.ok) {
-                        // Leer la respuesta como texto para evitar SyntaxError si no es JSON
-                        return response.text().then(text => {
-                            throw new Error(text || `Error del servidor: ${response.status} ${response.statusText}`);
-                        });
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                if (data.success) {
-                    // Actualizar el span del descuento a 0 y su data attribute
-                    $('#total-cart-descuento').text('₡ 0.00').data('discountValue', 0);
-
-                    // Volver a cargar los ítems del carrito para recalcular el total original
-                    getCartItems();
-
-                    showAlert('Cupón limpiado. El total ha sido recalculado.', 'info');
-                }else{
-                    showAlert(data.message || 'Error al limpiar el cupón.', 'error');
+            // Event listener para el botón de limpiar cupón
+            $('body').on('click', '#btnLimpiarCupon', function() {
+                // Verificar que el token exista
+                // Asegúrate de que el token existe
+                if (!antiforgeryToken) {
+                    console.error("Error: Anti-forgery token not found.");
+                    showAlert('Error de seguridad. Recargue la página e inténtelo de nuevo.', 'error');
+                    return;
                 }
-            }).catch(error => {
-                console.log(error);
-                showAlert('Error al limpiar el cupón. Por favor, inténtelo de nuevo.', 'error');
-            })
-        });
-    });
+
+                // fetch para limpiar el cupón
+                fetch(`/Ventas/RemoveDiscount`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                })
+                    .then(response => {
+                        // Manejar respuestas que no sean 200 OK (ej. 400, 404, 500)
+                        if (!response.ok) {
+                            // Leer la respuesta como texto para evitar SyntaxError si no es JSON
+                            return response.text().then(text => {
+                                throw new Error(text || `Error del servidor: ${response.status} ${response.statusText}`);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar el span del descuento a 0 y su data attribute
+                            $('#total-cart-descuento').text('₡ 0.00').data('discountValue', 0);
+
+                            // Volver a cargar los ítems del carrito para recalcular el total original
+                            getCartItems();
+
+                            showAlert('Cupón limpiado. El total ha sido recalculado.', 'info');
+                        }else{
+                            showAlert(data.message || 'Error al limpiar el cupón.', 'error');
+                        }
+                    }).catch(error => {
+                    console.log(error);
+                    showAlert('Error al limpiar el cupón. Por favor, inténtelo de nuevo.', 'error');
+                })
+            });
+        });   
+    }
 });
 
 //Función para actualizar el contador del carrito y el total

@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -15,6 +16,7 @@ public class MarcasController : Controller
         _context = context;
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         try
@@ -30,6 +32,7 @@ public class MarcasController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public ViewResult Create()
     {
         return View();
@@ -37,6 +40,7 @@ public class MarcasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public IActionResult Create([Bind("TC_Nombre", "TB_Activo")] TECO_M_Marca marca)
     {
         if (!ModelState.IsValid)
@@ -61,6 +65,7 @@ public class MarcasController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
         try
@@ -96,6 +101,7 @@ public class MarcasController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int id)
     {
         var marca = await _context.TECO_M_Marca.FindAsync(id);
@@ -111,6 +117,7 @@ public class MarcasController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit([FromBody] TECO_M_Marca marca)
     {
         try
@@ -147,6 +154,7 @@ public class MarcasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(int id)
     {
         try

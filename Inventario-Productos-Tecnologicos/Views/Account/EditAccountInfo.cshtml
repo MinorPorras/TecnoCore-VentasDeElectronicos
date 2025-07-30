@@ -1,13 +1,16 @@
-@model Inventario_Productos_Tecnologicos.Models.ViewModels.RegisterViewModel
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.EditUserViewModel
 
 @{
-    ViewData["Title"] = "Registro de usuario";
+    ViewData["Title"] = "Actualización de usuario";
     Layout = "_Layout";
 }
 <div class="pageContainer register">
-    <h2 class="pageTitle">Crea tu nueva cuenta</h2>
-    <form asp-action="Register" asp-controller="Account" method="post" class="accountForm">
+    <h2 class="pageTitle">Actualización cuenta</h2>
+    <form asp-action="EditAccountInfo" method="post" class="accountForm modifyElement">
         @Html.AntiForgeryToken()
+        <input type="hidden" name="controller" id="controller" value="Account">
+        <input type="hidden" name="action" id="action" value="EditAccountInfo">
+        <input type="hidden" id="Id" name="Id" value="@Model.Id">
         <div class="dataSeccion cuenta">
             <h4 class="RegisterSeccionTitle">Datos de la cuenta</h4>
             <div class="form-group">
@@ -20,18 +23,7 @@
                 <label asp-for="Email"></label>
                 <input asp-for="Email" type="email" placeholder="tu.correo@ejemplo.com">
                 <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Password"></label>
-                <input asp-for="Password" type="password" placeholder="Minimo 6 caracteres">
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="ConfirmPassword"></label>
-                <input asp-for="ConfirmPassword" type="password" placeholder="Confirma tu contraseña">
-                <span asp-validation-for="Password" class="text-danger"></span>
+                <input asp-for="Rol" type="text" placeholder="tu.correo@ejemplo.com" hidden value="0">
             </div>
         </div>
         <div class="dataSeccion personal">
@@ -78,16 +70,17 @@
             </div>
             <div class="form-group">
                 <label asp-for="CodigoPostal"></label>
-                <input asp-for="CodigoPostal" type="number" maxlength="5">
+                <input asp-for="CodigoPostal" type="number" maxlength="5" min="0" max="99999">
                 <span asp-validation-for="CodigoPostal" class="text-danger"></span>
             </div>
         </div>
         <div class="btnFormContainer">
             <button type="button" onclick="window.history.back()" class="formBtn back">Regresar</button>
-            <button type="submit" class="formBtn">Crear Usuario</button>
+            <button type="submit" id="updateBtn" class="formBtn">Actualizar Usuario</button>
         </div>
     </form>
 </div>
+
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>

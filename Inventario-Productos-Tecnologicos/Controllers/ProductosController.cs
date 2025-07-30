@@ -34,7 +34,7 @@ public class ProductosController : Controller
         await LoadDropdowns();
         return View(productos);
     }
-
+    
     public async Task LoadDropdowns()
     {
         ViewBag.marcas = new SelectList(await _context.TECO_M_Marca.Where(m => m.TB_Activo == true).ToListAsync(),
@@ -46,9 +46,9 @@ public class ProductosController : Controller
 
     public async Task loadViewData()
     {
-        ViewData["MarcaId"] = new SelectList(_context.TECO_M_Marca.Where(m => m.TB_Activo), "TN_Id", "TC_Nombre");
+        ViewData["MarcaId"] = new SelectList(await _context.TECO_M_Marca.Where(m => m.TB_Activo).ToListAsync(), "TN_Id", "TC_Nombre");
         ViewData["SubcategoriaId"] =
-            new SelectList(_context.TECO_M_Subcategoria.Where(s => s.TB_Activo), "TN_Id", "TC_Nombre");
+            new SelectList (await _context.TECO_M_Subcategoria.Where(s => s.TB_Activo).ToListAsync(), "TN_Id", "TC_Nombre");
     }
 
     // GET: Productos/Details/5
@@ -91,6 +91,7 @@ public class ProductosController : Controller
     }
 
     // GET: Productos/Create
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create()
     {
         await loadViewData();
@@ -100,6 +101,7 @@ public class ProductosController : Controller
     // POST: Productos/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create(
         [Bind("TC_Codigo, TC_Nombre,TC_Descripcion,TN_Precio,TN_Stock,TB_Novedad,TN_MarcaId,TN_SubcategoriaId")]
         TECO_A_Producto producto, IFormFile TC_Imagen)
@@ -145,6 +147,7 @@ public class ProductosController : Controller
     }
 
     // GET: Productos/Edit/5
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int? id)
     {
         if (id == null)
@@ -169,6 +172,7 @@ public class ProductosController : Controller
     // PUT: Productos/Edit/5
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int TN_Id,
         [Bind(
             "TN_Id,TC_Codigo,TC_Nombre,TC_Descripcion,TN_Precio,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
@@ -244,6 +248,7 @@ public class ProductosController : Controller
     // POST: Productos/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(int id)
     {
         try
@@ -340,6 +345,7 @@ public class ProductosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateKardexEntry(KardexViewModel viewModel)
     {
         if (ModelState.IsValid)
@@ -394,6 +400,7 @@ public class ProductosController : Controller
         return View(viewModel);
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateKardexExit(int id)
     {
         var viewModel = new KardexViewModel
@@ -417,6 +424,7 @@ public class ProductosController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> CreateKardexExit(KardexViewModel viewModel)
     {
         if (ModelState.IsValid)
@@ -484,6 +492,7 @@ public class ProductosController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> GetTipoMovimiento(int id)
     {
         var tipoMovimiento = await _context.TECO_M_TipoMovimientoKardex

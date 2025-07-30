@@ -31,6 +31,7 @@
         <_ContentIncludedByDefault Remove="Pages\Ventas\Index.cshtml"/>
         <_ContentIncludedByDefault Remove="Pages\Ventas\Metodos_de_Pago.cshtml"/>
         <_ContentIncludedByDefault Remove="Views\Shared\Components\ListArticles\Default.cshtml"/>
+        <_ContentIncludedByDefault Remove="Views\MetodosPago\Index.cshtml" />
     </ItemGroup>
 
     <ItemGroup>

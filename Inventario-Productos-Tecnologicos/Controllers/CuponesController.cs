@@ -4,6 +4,7 @@ using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -24,6 +25,7 @@ public class CuponesController : Controller
         _logger = logger;
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         try
@@ -46,6 +48,7 @@ public class CuponesController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public IActionResult Create()
     {
         ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value");
@@ -54,6 +57,7 @@ public class CuponesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create(
         [Bind(
             "TC_Codigo,TC_Descripcion,TC_TipoDescuento,TN_Valor,TF_FechaInicio,TF_FechaFin,TN_UsosActuales,TN_UsosMaximos,TB_Activo")]
@@ -80,6 +84,7 @@ public class CuponesController : Controller
         return View(cupon);
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int TN_Id)
     {
         Console.WriteLine($"Edit method called with id: {TN_Id}");
@@ -97,6 +102,7 @@ public class CuponesController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit([FromBody] TECO_M_Cupon cupon)
     {
         try
@@ -157,6 +163,7 @@ public class CuponesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(int id)
     {
         try
@@ -184,12 +191,13 @@ public class CuponesController : Controller
 
         return RedirectToAction(nameof(Index));
     }
-
+    
     private bool CuponExists(int id)
     {
         return _context.TECO_M_Cupon.Any(e => e.TN_Id == id);
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
         try

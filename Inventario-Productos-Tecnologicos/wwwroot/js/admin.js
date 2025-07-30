@@ -40,6 +40,7 @@ function mostrarImagen(input) {
 function showAlert(message, type = 'success') {
     const alertContainer = document.getElementById('alertContainer');
     const alert = document.createElement('div');
+    console.log(type)
     alert.className = `alert alert-${type} alert-dismissible fade show`;
     alert.role = 'alert';
     alert.innerHTML = `
@@ -108,6 +109,8 @@ function modifyElement() {
         const controller = document.getElementById('controller').value
         const action = document.getElementById('action').value
         const values = {};
+        
+        console.log("Iniciando evento de ");
 
         form.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
             console.log(`Nombre del elemento: ${el.name}`)

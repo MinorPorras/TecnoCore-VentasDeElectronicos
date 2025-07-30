@@ -76,7 +76,7 @@
             <p><strong>Descuento:</strong><span id="total-cart-descuento" data-discountValue="0">₡ 0.00</span></p>
             <div class="btnContainer">
                 <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
-                <a class="btnEndCompra" id="showCheckout">Terminar compra</a>
+                <a class="btnEndCompra" id="showCheckoutModalBtn">Terminar compra</a>
             </div>
         </div>
     </div>
@@ -87,7 +87,7 @@
         <h1>Datos de la tarjeta</h1>
         <form asp-action="TerminarCompra" asp-controller="Ventas" method="post">
             @Html.AntiForgeryToken()
-            <div class="formGroup">
+            <div class="formGroup cardNumber">
                 <label>Número de tarjeta</label>
                 <input type="text" class="inputBase" name="cardNumber" id="cardNumber" placeholder="XXXX XXXX XXXX XXXX" required/>
             </div>
@@ -99,13 +99,13 @@
                 <label>Código de seguridad</label>
                 <input type="text" class="inputBase" name="securityCode" id="securityCode" placeholder="123" required maxlength="3" minlength="3"/>
             </div>
-            <div class="formGroup">
+            <div class="formGroup cardHolderName">
                 <label>Nombre del titular</label>
                 <input type="text" class="inputBase" name="cardHolderName" id="cardHolderName" placeholder="Nombre del titular" required/>
             </div>
             <div class="btnSeccion">
+                <button type="button" class="btnCancel" id="closeCheckoutbtnModal">Cancelar</button>
                 <button type="submit" class="btnSubmit">Pagar</button>
-                <button type="button" class="btnCancel" id="closeCheckout">Cancelar</button>
             </div>
         </form>
         <p>Recuerde actualizar los datos de su localización para el envío <a asp-action="EditInformation" asp-controller="Account">¡Actualizar la información ahora!</a></p>
@@ -118,13 +118,5 @@
         $(document).ready(function() {
             getCartItems(); // Llama a la función global para cargar los ítems en ambos lugares
         });
-
-        const checkoutModal = document.getElementById('CheckoutModal');
-        const checkoutModalContent = checkoutModal.querySelector('.checkoutModalContent');
-        const showCheckoutBtn = document.getElementById('showCheckout');
-        const closeCheckoutBtn = document.getElementById('closeCheckout');
-
-        initCheckoutModal();
-
     </script>
 }

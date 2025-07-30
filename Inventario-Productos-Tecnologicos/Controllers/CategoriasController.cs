@@ -1,6 +1,7 @@
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ public class CategoriasController : Controller
     }
 
     // GET: Categorias
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         var categorias = await _context.TECO_M_Categoria.ToListAsync();
@@ -23,6 +25,7 @@ public class CategoriasController : Controller
     }
 
     // GET: Categorias/Create
+    [Authorize(Roles = "Administrador")]
     public IActionResult Create()
     {
         return View();
@@ -31,6 +34,7 @@ public class CategoriasController : Controller
     // POST: Categorias/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create([Bind("TC_Nombre,TB_Activo")] TECO_M_Categoria categoria)
     {
         if (ModelState.IsValid)
@@ -46,6 +50,7 @@ public class CategoriasController : Controller
         return View(categoria);
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
         ViewBag.SearchString = searchElement;
@@ -82,6 +87,7 @@ public class CategoriasController : Controller
     }
 
     // GET: Categorias/Edit/5
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int id)
     {
         var categoria = await _context.TECO_M_Categoria.FindAsync(id);
@@ -99,6 +105,7 @@ public class CategoriasController : Controller
     // POST: Categorias/Edit/5
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit([FromBody] [Bind("TN_Id,TC_Nombre,TB_Activo")] TECO_M_Categoria categoria)
     {
         var existingCategory = await _context.TECO_M_Categoria.FindAsync(categoria.TN_Id);
@@ -159,6 +166,7 @@ public class CategoriasController : Controller
     // POST: Categorias/Delete/5
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(int id)
     {
         var categoria = await _context.TECO_M_Categoria.FindAsync(id);
@@ -187,11 +195,13 @@ public class CategoriasController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Administrador")]
     private bool CategoriaExists(int id)
     {
         return _context.TECO_M_Categoria.Any(e => e.TN_Id == id);
     }
 
+    [Authorize(Roles = "Administrador")]
     public IActionResult CreateSubcategoria(int idCategoria)
     {
         if (idCategoria == 0)
@@ -207,6 +217,7 @@ public class CategoriasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public IActionResult CreateSubcategoria(
         [Bind("TC_Nombre", "TN_CategoriaId", "TB_Activo")]
         TECO_M_Subcategoria subcategoria)
@@ -231,6 +242,7 @@ public class CategoriasController : Controller
         return RedirectToAction("Edit", new { Id = subcategoria.TN_CategoriaId });
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> EditSubcategoria(int id)
     {
         var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);
@@ -246,6 +258,7 @@ public class CategoriasController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> EditSubcategoria([FromBody] TECO_M_Subcategoria sub)
     {
         try
@@ -290,6 +303,7 @@ public class CategoriasController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SubCatSwitchActive(int id)
     {
         var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);

@@ -1,17 +1,103 @@
-﻿
+﻿const closeCheckoutModalBtn = document.getElementById('closeCheckoutbtnModal');
+const showCheckoutModalBtn = document.getElementById('showCheckoutModalBtn');
+const checkOutModal = document.getElementById('CheckoutModal');
+const checkOutModalContent = document.querySelector('.checkoutModalContent');
+
+
 document.addEventListener('DOMContentLoaded', () => {
     if (document.querySelector('.register')) {
-        initDropdownProvinciaCanton()
+        initDropdownProvinciaCanton();
+    }
+    if (document.querySelector('#CheckoutModal')) {
+        console.log('Llega aquí')
+        initCheckoutModal();
     }
     $(document).ready(function () {
         // Inicializar Los modales globales
-        initCartModal()
+        initCartModal();
     });
+
+    if (document.querySelector('.modifyElement')) {
+        modifyElement();
+    }
 });
 
+
+function modifyElement() {
+    const updateBtn = document.getElementById('updateBtn')
+    updateBtn.addEventListener('click', async (e) => {
+        e.preventDefault()
+        const form = document.querySelector('.modifyElement');
+        const controller = document.getElementById('controller').value
+        const action = document.getElementById('action').value
+        const values = {};
+
+        console.log("Iniciando evento de ");
+
+        form.querySelectorAll('input[name], select[name], textarea[name]').forEach(el => {
+            console.log(`Nombre del elemento: ${el.name}`)
+            // Ignorar ciertos campos
+            if (el.name === 'controller' || el.name === '__RequestVerificationToken' || el.name === 'action') {
+                return;
+            }
+
+            // Manejar diferentes tipos de inputs
+            if (el.type === 'checkbox') {
+                values[el.name] = el.checked;
+            } else if (el.type === 'radio') {
+                if (el.checked) {
+                    values[el.name] = el.value === 'true';
+                }
+            } else {
+                // Manejar casos especiales
+                switch (el.name) {
+                    case 'TN_Id':
+                    case 'TN_CategoriaId':
+                    case 'TN_MarcaId':
+                        values[el.name] = parseInt(el.value);
+                        break;
+                    case 'TB_Activo':
+                        console.log('Activo:', el.value);
+                        values[el.name] = el.value === "true";
+                        break;
+                    default:
+                        values[el.name] = el.value;
+                }
+            }
+            console.log(`${el.name}: ${values[el.name]}`);
+        });
+
+        try {
+            console.log(values)
+            const bodyRequest = JSON.stringify(values);
+            const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            const response = await fetch(`/${controller}/${action}`, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': token
+                },
+                body: bodyRequest
+            })
+
+            // Check if the response status is 204 No Content
+            if (response.status === 204) {
+                return;
+            }
+
+            if (response.ok) {
+                console.log('Elemento modificado correctamente');
+                window.history.back();
+                window.location.reload();
+
+            }
+        } catch (e) {
+            console.error('Error:', e);
+        }
+    })
+}
+
 function initCartModal() {
-    // Asignar la animación de cierre al modal
-    closeModalAnimation(modalContent, cartModal);
 
     //Manejar el cerrar el modal del carrito al presionar clic fuera del contenido del modal
     cartModal.addEventListener('click', (e) => {
@@ -19,7 +105,7 @@ function initCartModal() {
         const isInDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
             rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
         if (!isInDialog) {
-            closeModalAnimation();
+            closeModalAnimation(modalContent, cartModal);
         }
     });
 
@@ -30,25 +116,26 @@ function initCartModal() {
 }
 
 function initCheckoutModal() {
-    closeModalAnimation(checkoutModalContent, checkoutModal);
+
+    showCheckoutModalBtn.addEventListener('click', () => {
+        console.log('Mostrando el modal');
+        showModal(checkOutModal, checkOutModalContent);
+    })
+
     //Manejar el cerrar el modal del carrito al presionar clic fuera del contenido del modal
-    checkoutModal.addEventListener('click', (e) => {
-        const rect = checkoutModalContent.getBoundingClientRect();
+    checkOutModal.addEventListener('click', (e) => {
+        const rect = checkOutModalContent.getBoundingClientRect();
         const isInDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
             rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
         if (!isInDialog) {
-            closeModalAnimation();
+            console.log('Cerrando el modal');
+            closeModalAnimation(checkOutModalContent, checkOutModal);
         }
     });
 
-    // Manejar el evento de clic en el botón de cerrar del carrito
-    closeCheckoutBtn.addEventListener('click', () => {
-        closeModalAnimation(checkoutModalContent, checkoutModal)
+    closeCheckoutModalBtn.addEventListener('click', () => {
+        closeModalAnimation(checkOutModalContent, checkOutModal)
     });
-    
-    showCheckoutBtn.addEventListener('click', () => {
-        showModal(checkoutModal)
-    })
 
     const cardNumberInput = document.getElementById('cardNumber');
 
@@ -97,10 +184,11 @@ function initCheckoutModal() {
             e.target.value = formattedInput;
         });
     }
-    
 }
 
 function closeModalAnimation(modalContent, Modal) {
+    console.log("Cerrando Modal")
+    console.log(Modal);
     if (!modalContent) {
         return;
     }
@@ -113,10 +201,10 @@ function closeModalAnimation(modalContent, Modal) {
     }
 }
 
-function showModal(modal) {
+function showModal(modal) { // Solo recibe el modal, no el contenido por separado
     if (modal && modal.showModal) {
         modal.showModal();
-        modal.classList.remove('modal-fade-out');
+        modal.classList.remove('modal-fade-out'); // Remueve la clase directamente del <dialog>
     } else {
         console.error('El modal no es válido o no tiene el método showModal.');
     }

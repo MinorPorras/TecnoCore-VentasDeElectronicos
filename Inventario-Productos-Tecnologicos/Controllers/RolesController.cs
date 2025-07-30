@@ -1,6 +1,7 @@
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,7 @@ public class RolesController : Controller
     }
 
     // GET
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         try
@@ -41,6 +43,7 @@ public class RolesController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {
         try
@@ -75,6 +78,7 @@ public class RolesController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public ViewResult Create()
     {
         return View();
@@ -82,6 +86,7 @@ public class RolesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create([Bind("Name", "TB_Activo")] TECO_A_Roles rol)
     {
         if (!ModelState.IsValid)
@@ -108,6 +113,7 @@ public class RolesController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(string id)
     {
         try
@@ -133,6 +139,7 @@ public class RolesController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit([FromBody] TECO_A_Roles rol)
     {
         try
@@ -167,6 +174,7 @@ public class RolesController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(string id)
     {
         try

@@ -5,6 +5,7 @@ using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 
 
@@ -31,6 +32,7 @@ public class UsuarioController : Controller
     }
 
     // GET
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
         try
@@ -78,6 +80,7 @@ public class UsuarioController : Controller
     }
 
     [HttpGet]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter, string rol)
     {
         try
@@ -137,6 +140,7 @@ public class UsuarioController : Controller
         }
     }
 
+    [Authorize(Roles = "Administrador")]
     public IActionResult Create()
     {
         try
@@ -165,6 +169,7 @@ public class UsuarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Create(
         [Bind(
             "UserName,Email,Password,ConfirmPassword,Rol,Nombre,Apellidos,PhoneNumber,SelectedProvinciaId,SelectedCantonId,DireccionExacta,CodigoPostal")]
@@ -268,6 +273,7 @@ public class UsuarioController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> SwitchActive(string id)
     {
         try
@@ -335,6 +341,7 @@ public class UsuarioController : Controller
         return RedirectToAction(nameof(Index));
     }
 
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(string id)
     {
         try
@@ -412,6 +419,7 @@ public class UsuarioController : Controller
 
     [HttpPut]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit([FromBody] EditUserViewModel model)
     {
         try
@@ -530,6 +538,7 @@ public class UsuarioController : Controller
         }
     }
 
+    
     private void reloadFormElements(EditUserViewModel model)
     {
         try
