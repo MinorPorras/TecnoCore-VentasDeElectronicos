@@ -1,7 +1,7 @@
 @model Inventario_Productos_Tecnologicos.Models.ViewModels.KardexViewModel
 
 @{
-    ViewBag.Title = "Crear entrada Kardex";
+    ViewBag.Title = "Crear salida Kardex";
     Layout = "_LayoutAdmin";
 }
 <div class="kardexForm">
@@ -11,8 +11,7 @@
         <div class="formGroup producto">
             <label asp-for="ProductoNombre">Producto</label>
             <input type="hidden" asp-for="ProductoId"  class="inputBase"/>
-            <input class="form-control" asp-for="ProductoNombre" readonly/>
-            <button type="button" class="btn btn-info mt-2" id="showModalBtn">Buscar Producto</button>
+            <input class="form-control" asp-for="ProductoNombre" readonly placeholder="Doble click para buscar"/>
         </div>
         <div class="formGroup">
             <label asp-for="Fecha">Fecha:</label>
@@ -34,7 +33,7 @@
         </div>
         <div class="formGroup">
             <label asp-for="Cantidad">Cantidad</label>
-            <input asp-for="Cantidad" class="inputBase" required id="Cantidad"  min="1" value="1"/>
+            <input asp-for="Cantidad" class="inputBase" required id="CantidadExit"  min="1" value="1"/>
             <span asp-validation-for="Cantidad" class="text-danger"></span>
         </div>
         <div class="formGroup">
@@ -48,52 +47,32 @@
             <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
         <div class="formGroup CreatebuttonGroup">
+            <a onclick="window.history.back()" class="btnExit">Cancelar</a>
             <button type="submit" class="btnCreate">Guardar</button>
-            <a onclick="Window.history.back()" class="btnExit">Cancelar</a>
         </div>
     </form>
 </div>
-<dialog class="SearchProductoDialog" id="searchProductoDialog">
-    <div class="dialog-content">
-        <button class="btn-close" onclick="document.getElementById('searchProductoDialog').close()" type="button"></button>
+<dialog class="searchProductDialog" id="searchProductDialog">
+    <div class="searchProductDialogContent">
+        <div class="searchProductDialog-header">        
+            <h1>Productos</h1>
+            <div class="search-input-container">
+                <input type="text" id="searchProductInput" class="inputBase" placeholder="Buscar por código o nombre...">
+                <button type="button" id="btnSearchProduct" class="btnSearchProduct">Buscar</button>
+            </div>
+        </div>
         <div class="tableContainer">
-            <div class="tbl-header TRoles">
-                <span class="headerText">Código</span>
+            <div class="tbl-header tSearchProduct">
+                <span class="headerText">ID</span>
                 <span class="headerText">Nombre</span>
-                <span class="headerText">Estado</span>
+                <span class="headerText centerTextCell">Stock</span>
                 <span class="headerText">Opciones</span>
             </div>
             <div class="tbl-content">
-                @if (Model.ProductosDisponibles?.Count == 0)
-                {
-                    <div class="tableRow">
-                        <span class="NoElements">No hay productos seleccionables</span>
-                    </div>
-                }
-                else
-                {
-                    @foreach (var prod in Model.ProductosDisponibles)
-                    {
-                        <div class="tableRow TRoles">
-                            <span class="tableCell">@prod.TC_Codigo</span>
-                            <span class="tableCell">@prod.TC_Nombre</span>
-                            <span class="tableCell">@prod.TN_Stock</span>
-                            <div class="tableButtonsColumn">
-                                <button type="button" class="btn btn-primary"
-                                        data-producto-id="@prod.TN_Id"
-                                        data-producto-nombre="@prod.TC_Nombre"
-                                        onclick="selectProductoKardex('@prod.TN_Id', '@prod.TC_Nombre', true)">
-                                    Seleccionar
-                                </button>
-                            </div>
-                        </div>
-                    }
-                    <div class="tableRow listEnd">
-                        <span>Fin de la Lista</span>
-                    </div>
-                }
+                @* El contenido de la tabla se carga por medio de JS *@
             </div>
         </div>
+        <button class="btnExit" id="btnExitModalSearch" type="button">Salir</button>
     </div>
 </dialog>
 

@@ -6,82 +6,106 @@
 }
 
 <h1>Pedidos</h1>
-
-<div>
-    <form asp-action="SearchPedidos" method="get">
-        <h2>Pedidos pendientes: @Model.Count</h2>
-        <div class="form-group">
+<div class="seePedidosContainer">
+    <h3>Pedidos pendientes: @Model.Count</h3>
+    <form asp-action="SearchPedidos" method="get" class="seePedidosSearchContainer">
+        <div class="form-group search-form-group">
             <label for="">Buscar:</label>
-            <input type="text" name="searchTerm" class="form-control" placeholder="Ingrese el código de pedido o nombre del cliente" value="@ViewBag.searchTerm"/>
-            <button type="submit" class="btn btn-primary mt-2">Buscar</button>
+            <input type="text" name="searchTerm" class="inputBase" placeholder="Ingrese el código de pedido o nombre del cliente" value="@ViewBag.searchTerm"/>
+            <button type="submit" class="btnBase">Buscar</button>
         </div>
-        <div>
+        <div class="form-group">
             <label for="estadoPedidoBusqueda">Estado del pedido</label>
-            <select name="estadoPedidoBusqueda" id="estadoPedidoBusqueda" class="form-control">
+            <select name="estadoPedidoBusqueda" id="estadoPedidoBusqueda" class="inputBase">
                 <option value="0">-- Seleccione un estado --</option> @* Opción por defecto para búsqueda *@
                 @foreach (var estado in ViewBag.estadosPedidos as SelectList) // Castear a SelectList para Intellisense
                 {
                     if (estado.Value == ViewBag.selectedEstadoBusqueda.ToString())
                     {
-                        <option value="@estado.Value" selected>@estado.Text</option> 
+                        <option value="@estado.Value" selected>@estado.Text</option>
                         continue; // Saltar al siguiente estado si ya se seleccionó
                     }
+
                     {
                         <option value="@estado.Value">@estado.Text</option>
                     }
                 }
             </select>
         </div>
-        <a asp-action="Pedidos_completados">Ver pedidos completados</a>
+        <a asp-action="Pedidos_completados" class="btnCreate">Ver pedidos completados</a>
     </form>
-</div>
-@if (Model.Count <= 0)
+    
+    @if (Model.Count <= 0)
 {
-    <p>No se encontraron pedidos.</p>
+    <p class="pedidoContainer">No se encontraron pedidos.</p>
 }
 else{
     @foreach(var pedido in Model)
     {
     
-        <form class="pedido" asp-action="ActualizarEstado" method="post">
+        <form class="pedidoContainer" asp-action="ActualizarEstado" method="post">
             @Html.AntiForgeryToken()
             <input type="hidden" name="pedidoId" value="@pedido.TN_Id"/>
-            <div class="Datos cliente">
-                <p>Cod.Cliente: @pedido.Usuario?.Id</p>
-                <p>Cliente: @pedido.Usuario?.TC_Nombre @pedido.Usuario?.TC_Apellidos</p>
-                <p>Email: @pedido.Usuario?.Email</p>
-                <p>Teléfono: @pedido.Usuario?.PhoneNumber</p>
+            <div class="datosCliente">
+                <p><strong>Cliente:</strong> @pedido.Usuario?.TC_Nombre @pedido.Usuario?.TC_Apellidos</p>
+                <p><strong>Email:</strong> @pedido.Usuario?.Email</p>
+                <p><strong>Teléfono:</strong> @pedido.Usuario?.PhoneNumber</p>
             </div>
-            <p>Código de pedido: @pedido.TN_TransaccionId</p>
-            <p>Fecha: @pedido.TF_Fecha</p>
-            <p>Método de pago: @pedido.MetodoPago?.TB_NombreMetodo</p>
-            <div>
-                <div>
-                    <label for="estadoPedido_@pedido.TN_Id">Estado del pedido</label> @* ID único para cada select *@
-                    <select name="estadoPedido" id="estadoPedido_@pedido.TN_Id" class="form-control"
+            <div class="infoPedido">
+                <p><strong>Código de pedido: </strong>@pedido.TN_TransaccionId</p>
+                <p><strong>Fecha:</strong> @pedido.TF_Fecha</p>
+                <div class="estadoPedidoSeccion">
+                    <label for="estadoPedido_@pedido.TN_Id"><strong>Estado del pedido</strong></label> @* ID único para cada select *@
+                    <select name="estadoPedido" id="estadoPedido_@pedido.TN_Id" class="inputBase"
                             asp-for="@pedido.TN_EstadoPedidoId"
                             asp-items="@ViewBag.estadosPedidos">
                     </select>
                 </div>
+                <p class="direcionExactaLabel"><strong>Dirección de Envío:</strong> @pedido.Usuario?.Direccion?.TC_Direccion</p>
+                <button type="submit" class="btnCreate">Actualizar Estado</button>
+
             </div>
-            <p>Dirección de Envío: @pedido.Usuario?.Direccion?.TC_Direccion</p>
-
-            <h3>Detalles del Pedido:</h3>
-            <ul>
-                @foreach (var detalle in pedido.DetallePedidos)
-                {
-                    <li>@detalle.Producto?.TC_Nombre - Cantidad: @detalle.TN_Cantidad - Precio: @detalle.TN_PrecioUnitario</li>
-                }
-            </ul>
-            <p>Subtotal: @pedido.TN_Subtotal</p>
-            @if (pedido is { TN_CuponId: > 0, Cupon: not null })
-            {
-                <p>Cupon Aplicado: @pedido.Cupon.TC_Codigo</p>
-            }
-            <p>Descuento: @pedido.TN_Descuento</p>
-            <p>Total: @pedido.TN_Total</p>
-
-            <button type="submit" class="btn btn-success">Actualizar Estado</button>
+            <div class="detallesPedido">
+                <h4>Detalles del Pedido:</h4>
+                <div class="tableContainer">
+                    <div class="tbl-header TPedido">
+                        <span class="headerText">Nombre</span>
+                        <span class="headerText">Cantidad</span>
+                        <span class="headerText">Precio</span>
+                        <span class="headerText">Total</span>
+                    </div>
+                    <div class="tbl-content">
+                        @foreach (var detalle in pedido.DetallePedidos)
+                        {
+                            <div class="tableRow TPedido">
+                                <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
+                                <span class="tableCell centerTextCell">@detalle.TN_Cantidad.ToString()</span>
+                                <span class="tableCell centerTextCell">
+                                </span>
+                                <span class="tableCell centerTextCell">
+                                    @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                                </span>                            
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="detallesPedidoFooter">
+                    @if (pedido is { TN_CuponId: > 0, Cupon: not null })
+                    {
+                        <p><strong>Cupon Aplicado:</strong> @pedido.Cupon.TC_Codigo</p>
+                    }
+                    <p><strong>Subtotal:</strong> 
+                        @((pedido.TN_Subtotal ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                    </p>
+                    <p><strong>Descuento:</strong> 
+                        @((pedido.TN_Descuento ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                    </p>
+                    <p><strong>Total:</strong> 
+                        @((pedido.TN_Total ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                    </p>
+                </div>
+            </div>
         </form>
     }   
 }
+</div>
