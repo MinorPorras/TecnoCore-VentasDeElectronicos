@@ -7,11 +7,7 @@ const formatter = new Intl.NumberFormat('es-ES', {
     maximumFractionDigits: 2
 });
 
-const searchProductDialog = $('#searchProductDialog');
-const searchProductDialogContent = searchProductDialog.find('.searchProductDialogContent');
-const searchProductTblContent = searchProductDialog.find('.tbl-content');
-const searchProductInput = $('#searchProductInput');
-const btnSearchProduct = $('#btnSearchProduct');
+//Variables usada en la caja ya ingresadas de forma global para admiistradores desde admin.js
 
 document.addEventListener('DOMContentLoaded', () => {
     $(document).ready(() => {
@@ -393,6 +389,8 @@ function initSearchProductModal(){
         }
     });
 }
+
+
 function loadProductsForSearchModal(searchTerm = '') { // Parámetro con valor por defecto
     searchProductTblContent.empty().append('<div class="tableRow"><span class="NoElements">Cargando productos...</span></div>');
 

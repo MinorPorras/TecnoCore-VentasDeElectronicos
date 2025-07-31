@@ -1,28 +1,44 @@
+const searchProductDialog = $('#searchProductDialog');
+const searchProductDialogContent = searchProductDialog.find('.searchProductDialogContent');
+const searchProductTblContent = searchProductDialog.find('.tbl-content');
+const searchProductInput = $('#searchProductInput');
+const btnSearchProduct = $('#btnSearchProduct');
+const inputProductId = $('#ProductoId');
+const inputProductName = $('#ProductoNombre');
+const inputProductStock = $('#StockAnterior');
+
 document.addEventListener("DOMContentLoaded", function () {
-    if (document.querySelector('.modifyElement')) {
-        if (document.querySelector('.EditProduct')) {
-            modifyProduct();
-        }else{
-            modifyElement();
+    $(document).ready(() => {
+        if (document.querySelector('.modifyElement')) {
+            if (document.querySelector('.EditProduct')) {
+                modifyProduct();
+            }else{
+                modifyElement();
+            }
+            if (document.querySelector('#imgSelector')) {
+                let imgForm = document.querySelector('#imgSelector');
+                imgForm.addEventListener('change', () => mostrarImagen(imgForm));
+            }
         }
-        if (document.querySelector('#imgSelector')) {
-            let imgForm = document.querySelector('#imgSelector');
-            imgForm.addEventListener('change', () => mostrarImagen(imgForm));
+        if (document.querySelector('.deleteDialog')) {
+            deleteElement();
         }
-    }
-    if (document.querySelector('.deleteDialog')) {
-        deleteElement();
-    }
-    if (document.querySelector('.kardexForm')) {
-        kardexHandlers();
-        openSearchModal();
-    }
-    if (document.querySelector('.cuponesForm')) {
-        handleCuponesForm(true);
-    }
-    if (document.querySelector('.cuponesFormEdit')) {
-        handleCuponesForm(false);
-    }
+        
+        if (document.querySelector('.kardexForm')) {
+            $('body').on('click', '#btnExitModalSearch', () => {
+                closeModalAnimation(searchProductDialogContent[0], searchProductDialog[0]);
+            });
+            
+            kardexHandlers();
+            initSearchProductModal();
+        }
+        if (document.querySelector('.cuponesForm')) {
+            handleCuponesForm(true);
+        }
+        if (document.querySelector('.cuponesFormEdit')) {
+            handleCuponesForm(false);
+        }
+    });
 });
 
 function mostrarImagen(input) {
@@ -253,41 +269,128 @@ function deleteElement() {
     });
 }
 
-function openSearchModal() {
-    document.getElementById('showModalBtn').addEventListener('click', function () {
-        document.getElementById('searchProductoDialog').showModal();
+function initSearchProductModal(){
+
+    // Se carga el evento del doble click sobre el input donde se ingresan los código de los productos
+    $('#ProductoNombre').on('dblclick', (e) => {
+        e.stopPropagation();
+        showModal(searchProductDialog[0]);
+        loadProductsForSearchModal('');
+    });
+
+    btnSearchProduct.on('click', () => {
+        const searchTerm = searchProductInput.val();
+        loadProductsForSearchModal(searchTerm);
+    });
+
+    searchProductInput.on('keypress', function(e) {
+        if (e.which === 13) { // 13 es el código para la tecla Enter
+            btnSearchProduct.click(); // Simula un clic en el botón de búsqueda
+        }
+    });
+
+    $('body').on('click', '.selectSearchProductBtn', function() {
+        const productId = $(this).data('productid'); // 'this' ahora se refiere al botón clicado
+        const productName = $(this).data('productname');
+        const productStock = $(this).data('productstock');
+
+        console.log("Producto ID seleccionado:", productId); // Para depuración
+        console.log("Nombre seleccionado:", productName); // Para depuración
+        console.log("Stock seleccionado:", productStock); // Para depuración
+
+        if (!isNaN(parseInt(productId))) {
+            
+            inputProductId.val(productId).text(productId);
+            inputProductName.val(productName).text(productName);
+            inputProductStock.val(productStock).text(productStock);
+            
+            closeModalAnimation(searchProductDialogContent[0], searchProductDialog[0]);
+        } else {
+            console.error("Error: Product ID no es válido o no se pudo obtener.");
+            showAlert('Error: No se pudo seleccionar el producto. Intente de nuevo.', 'error');
+        }
     });
 }
+function loadProductsForSearchModal(searchTerm = '') { // Parámetro con valor por defecto
+    searchProductTblContent.empty().append('<div class="tableRow"><span class="NoElements">Cargando productos...</span></div>');
 
-function selectProductoKardex(productoId, productoNombre, Entry) {
-    fetch(`/Kardex/GetProductoStock/${productoId}`)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('ProductoId').value = productoId;
-            document.getElementById('ProductoNombre').value = productoNombre;
-            document.getElementById('StockAnterior').value = data.stock;
+    // Construir la URL con el parámetro de búsqueda
+    const url = `/Caja/GetProductToSearch?searchTerm=${encodeURIComponent(searchTerm)}`;
 
-            document.getElementById('searchProductoDialog').close();
-            let cant;
-            if (Entry) {
-                cant = parseInt(document.getElementById('Cantidad').value) || 0; // Obtener Cantidad de Entrada
-            } else {
-                cant = parseInt(document.getElementById('CantidadExit').value) || 0; // Obtener Cantidad de Entrada
+    fetch(url, {
+        method: 'GET',
+        headers: { 'Accept': 'application/json' }
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
             }
-
-            if (isNaN(cant)) {
-                cant = 0;
-            }
-            document.getElementById('StockActual').value = cant + parseInt(data.stock); // Inicializar Stock Actual
+            return response.json();
         })
-        .catch(error => console.error('Error:', error));
+        .then(data => {
+            searchProductTblContent.empty(); // Limpiar el mensaje de carga
+
+            if (data && data.length > 0) {
+                data.forEach(prod => {
+                    const productRow = `
+                    <div class="tableRow tSearchProduct">
+                        <span class="tableCell">${prod.tn_Id}</span>
+                        <span class="tableCell">${prod.tc_Nombre}</span>
+                        <span class="tableCell centerTextCell">${prod.tn_Stock}</span>
+                        <div class="tableButtonsColumn">
+                            <button type="button" data-productId="${prod.tn_Id}" data-productName="${prod.tc_Nombre}"
+                             data-productStock="${prod.tn_Stock}" class="selectSearchProductBtn btnCreate tooltipContainer">
+                                <img src="/img/ICO_Add.svg" alt="Seleccionar"/>
+                                <span class="TooltipText">Seleccionar</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                    searchProductTblContent.append(productRow);
+                });
+                searchProductTblContent.append('<div class="tableRow listEnd"><span>Fin de la Lista</span></div>');
+            } else {
+                searchProductTblContent.append('<div class="tableRow"><span class="NoElements">No se encontraron productos.</span></div>');
+            }
+        })
+        .catch(error => {
+            console.error('Error al cargar productos para el modal de búsqueda:', error);
+            searchProductTblContent.empty().append('<div class="tableRow"><span class="NoElements">Error al cargar productos. Por favor, inténtelo de nuevo.</span></div>');
+            showAlert('Error al cargar los productos para la búsqueda.', 'error');
+        });
+}
+
+
+function closeModalAnimation(modalContent, Modal) {
+    console.log("Cerrando Modal")
+    console.log(Modal);
+    if (!modalContent) {
+        return;
+    }
+    if (!modalContent.classList.contains('modal-fade-out')) {
+        modalContent.classList.add('modal-fade-out');
+        modalContent.addEventListener('animationend', () => {
+            modalContent.classList.remove('modal-fade-out');
+            Modal.close();
+        }, {once: true});
+    }
+}
+
+function showModal(modal) {
+    if (modal && modal.showModal) {
+        modal.showModal();
+        modal.classList.remove('modal-fade-out');
+    } else {
+        console.error('El modal no es válido o no tiene el método showModal.');
+    }
 }
 
 function kardexHandlers() {
     // Verifica si estamos en la vista de entrada
     const cantidadEntry = document.getElementById('Cantidad');
     if (cantidadEntry) {
-        cantidadEntry.addEventListener('change', function () {
+        // Cambiar el evento 'change' por 'input'
+        cantidadEntry.addEventListener('input', function () {
             const stockAnterior = parseInt(document.getElementById('StockAnterior').value) || 0;
             const cantidad = parseInt(this.value) || 0;
             document.getElementById('StockActual').value = stockAnterior + cantidad;
@@ -297,12 +400,14 @@ function kardexHandlers() {
     // Verifica si estamos en la vista de salida
     const cantidadExit = document.getElementById('CantidadExit');
     if (cantidadExit) {
-        cantidadExit.addEventListener('change', function () {
+        cantidadExit.addEventListener('input', function () {
             const stockAnterior = parseInt(document.getElementById('StockAnterior').value) || 0;
             const cantidad = parseInt(this.value) || 0;
             if (cantidad > stockAnterior) {
                 alert("La cantidad a retirar no puede ser mayor al stock actual.");
                 this.value = stockAnterior;
+                // Se recalcula el stock actual
+                document.getElementById('StockActual').value = stockAnterior - parseInt(this.value) || 0;
                 return;
             }
             document.getElementById('StockActual').value = stockAnterior - cantidad;

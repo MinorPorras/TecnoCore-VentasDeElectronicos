@@ -1986,7 +1986,6 @@ section {
         background: var(--darkGradient);
         display: grid;
         grid-template-columns: 1fr;
-        grid-auto-rows: minmax(100px, 1fr);
         min-width: fit-content;
         overflow-y: auto;
         width: 100%;
@@ -2185,6 +2184,10 @@ section {
     /*----Tablas con 4 columnas----*/
     & .tbl-header.tSearchProduct, .tableRow.tSearchProduct {
         grid-template-columns: minmax(60px, .5fr) minmax(130px, 2fr) minmax(60px, .5fr) minmax(50px, .5fr);
+    }
+
+    & .tbl-header.TPedido, .tableRow.TPedido {
+        grid-template-columns: minmax(130px, 2fr) minmax(50px, .5fr) minmax(60px, .5fr) minmax(60px, .5fr);
     }
 }
 

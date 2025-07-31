@@ -1377,6 +1377,50 @@ input[type="number"] {
     }
 }
 
+.btnBase{
+    background: var(--darkGradient);
+    color: var(--Azure);
+    border-radius: 0.8rem;
+    padding: 0.5rem 1rem;
+    border: 5px solid var(--TiffBlue);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    width: 100%;
+    max-width: 175px;
+
+    -webkit-appearance: none; /* Elimina estilos nativos de Webkit (Chrome, Safari) */
+    -moz-appearance: none;    /* Elimina estilos nativos de Mozilla (Firefox) */
+    appearance: none;         /* Elimina estilos nativos (estándar) */
+
+    margin: 0;                /* Asegura que no haya márgenes por defecto */
+    font: inherit;            /* Hereda la fuente de su elemento padre, en lugar de la del navegador */
+    overflow: visible;        /* Asegura que el contenido no se recorte */
+    white-space: nowrap;      /* Evita saltos de línea inesperados dentro del botón */
+    box-sizing: border-box;   /* Asegura que padding y border se incluyan en el width/height */
+
+    /* Si el botón está deshabilitado, es bueno tener un estilo para ello */
+    &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    /* --- ESTILOS DE ESTADO --- */
+    &:hover {
+        background: var(--TiffBlue);
+        color: var(--darkBlue);
+        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+    }
+
+    &:active {
+        background: var(--indianRed);
+        color: var(--Azure);
+        filter: drop-shadow(0px 1px 5px var(--indianRed));
+        border-color: var(--indianRed);
+        scale: 0.9;
+    }
+}
+
 .caja-details-page-container{
     display: flex;
     flex-direction: column;
@@ -1664,7 +1708,7 @@ input[type="number"] {
         }
         
         & .tableContainer .tbl-content {
-            max-height: 20rem;
+            max-height: 18rem;
         }
 
         & .btnExit{
@@ -1871,5 +1915,90 @@ input[type="number"] {
         top: -300px; /* Se mueve hacia arriba */
         opacity: 0;
         transform: translate(-50%, -50%) scale(.95); /* Se escala y se mantiene centrado horizontalmente */
+    }
+}
+
+.seePedidosContainer{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+    & .seePedidosSearchContainer{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: 1rem;
+
+        & .search-form-group{
+            grid-column: 1/-1;
+        }
+        
+        & .form-group{
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+        }
+        
+        & .btnCreate{
+            max-width: 300px;
+            align-self: flex-end;
+        }
+    }
+}
+
+.pedidoContainer{
+    background-color: var(--darkBlue);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: 1rem;
+    
+    & .datosCliente{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: auto;
+        background: var(--dBlueEnphasis1);
+        padding: 1rem;
+        border-radius: 0.8rem;
+
+
+        & p{
+            font-size: clamp(1vw, 1.2rem, 1.5vw);
+            display: block;
+        }
+    }
+    
+    & .infoPedido{
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-auto-rows: auto;
+        background: var(--dBlueEnphasis1);
+        padding: 1rem;
+        border-radius: 0.8rem;
+        gap: .5rem;
+        
+        & .direcionExactaLabel{
+            grid-column: 1/ 3;
+        }
+        
+        & .estadoPedidoSeccion{
+            display: flex;
+            flex-direction: row;
+            gap: .5rem;
+        }
+        
+        & .btnCreate{
+            max-width: 100%;
+        }
+    }
+    
+    & .detallesPedido{
+        display: flex;
+        flex-direction: column;
+        
+        & .detallesPedidoFooter{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
     }
 }
