@@ -2046,6 +2046,10 @@ section {
                         width: 100%;
                     }
                 }
+                
+                &.centerTextCell{
+                    text-align: center;
+                }
             }
 
             & .tableCell.columnEstado {
@@ -2172,6 +2176,15 @@ section {
     
     & .tbl-header.TCartDetails, .tableRow.TCartDetails {
         grid-template-columns: minmax(200px, 1fr) minmax(60px, .5fr) minmax(150px, 1fr) minmax(60px, .5fr) minmax(50px, .5fr);
+    }
+
+    & .tbl-header.TCajaDetails, .tableRow.TCajaDetails {
+        grid-template-columns: minmax(200px, 1fr) minmax(60px, .5fr) minmax(130px, 1fr) minmax(60px, .5fr) minmax(50px, .5fr);
+    }
+
+    /*----Tablas con 4 columnas----*/
+    & .tbl-header.tSearchProduct, .tableRow.tSearchProduct {
+        grid-template-columns: minmax(60px, .5fr) minmax(130px, 2fr) minmax(60px, .5fr) minmax(50px, .5fr);
     }
 }
 

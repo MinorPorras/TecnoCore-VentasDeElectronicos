@@ -346,7 +346,7 @@ function initEndCompraModal() {
         const isInDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
             rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
         if (!isInDialog) {
-            closeModalAnimation();
+            closeModalAnimation(EndCompraModalContent, EndCompraModal);
         }
     });
 
@@ -361,17 +361,6 @@ function initEndCompraModal() {
 }
 
 function initSearchProductModal(){
-    //closeModalAnimation(searchProductDialogContent[0], searchProductDialog[0]);
-
-    // Manejar el cerrar el modal al presionar clic fuera del contenido
-    searchProductDialog.on('click', (e) => {
-        const rect = searchProductDialogContent[0].getBoundingClientRect();
-        const isInDialog = rect.top <= e.clientY && e.clientY <= rect.top + rect.height &&
-            rect.left <= e.clientX && e.clientX <= rect.left + rect.width;
-        if (!isInDialog) {
-            closeModalAnimation(searchProductDialogContent[0], searchProductDialog[0]);
-        }
-    });
 
     // Se carga el evento del doble click sobre el input donde se ingresan los código de los productos
     $('#productId').on('dblclick', (e) => {
@@ -426,10 +415,10 @@ function loadProductsForSearchModal(searchTerm = '') { // Parámetro con valor p
             if (data && data.length > 0) {
                 data.forEach(prod => {
                     const productRow = `
-                    <div class="tableRow TCat">
+                    <div class="tableRow tSearchProduct">
                         <span class="tableCell">${prod.tn_Id}</span>
                         <span class="tableCell">${prod.tc_Nombre}</span>
-                        <span class="tableCell">${prod.tn_Stock}</span>
+                        <span class="tableCell centerTextCell">${prod.tn_Stock}</span>
                         <div class="tableButtonsColumn">
                             <button type="button" data-productId="${prod.tn_Id}" class="selectSearchProductBtn btnCreate tooltipContainer">
                                 <img src="/img/ICO_Add.svg" alt="Seleccionar"/>
@@ -501,7 +490,7 @@ function renderCajaItems(cajaItems){
                 const rowDetails = `
                     <div class="tableRow TCajaDetails" data-product-id="${item.productId}">
                         <span class="tableCell">${item.productName}</span>
-                        <span class="tableCell">₡ ${formatter.format(item.productPrice)}</span>
+                        <span class="tableCell centerTextCell">₡ ${formatter.format(item.productPrice)}</span>
                         <div class="tableCell columnCant">
                             <button class="btnMinus" data-productid="${item.productId}">
                                 <img src="${item.minusImage}" alt="-">
@@ -516,7 +505,7 @@ function renderCajaItems(cajaItems){
                                 <img src="${item.plusImage}" alt="+">
                             </button>
                         </div>
-                        <span class="tableCell">₡ ${formatter.format(subtotal)}</span>
+                        <span class="tableCell centerTextCell">₡ ${formatter.format(subtotal)}</span>
                         <div class="tableButtonsColumn">
                             <button type="button"
                                     class="DeleteBtn remove-from-caja-btn tooltipContainer btnSwicthActive redHighlight"

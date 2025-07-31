@@ -1265,6 +1265,21 @@ h1 {
             }
         }
     }
+    
+    & .createMarcaForm{
+        display: grid;
+        grid-template-rows: repeat(3, 1fr);
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        
+        & .btngroup{
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+        }
+        
+    }
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -1283,7 +1298,7 @@ input[type="number"] {
     color: var(--Azure);
     border-radius: 0.8rem;
     padding: 0.5rem 1rem;
-    border: 5px solid var(--TiffBlue);
+    border: 5px solid var(--okGreen);
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
@@ -1292,9 +1307,9 @@ input[type="number"] {
     max-width: 175px;
 
     &:hover {
-        background: var(--TiffBlue);
+        background: var(--okGreen);
         color: var(--darkBlue);
-        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        filter: drop-shadow(0px 1px 5px var(--okGreen));
     }
 
     &:active {
@@ -1362,19 +1377,499 @@ input[type="number"] {
     }
 }
 
+.caja-details-page-container{
+    display: flex;
+    flex-direction: column;
+    padding: .5rem;
+    
+    .Caja-header{
+        display: grid;
+        grid-template-columns: 3fr 1fr;
+        gap: 1rem;
+        align-items: center;
+        margin-bottom: 1rem;
+        
+        .addProduct-container{
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            align-items: center;
+            
+            & label{
+                font-weight: bold;
+            }
+            
+            & .btnAddToCaja{
+                background: var(--darkGradient);
+                color: var(--Azure);
+                border-radius: 0.8rem;
+                padding: 0.5rem 1rem;
+                border: 5px solid var(--okGreen);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                text-align: center;
+                width: 100%;
+                max-width: 175px;
+
+                &:hover {
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
+                }
+
+                &:active {
+                    background: var(--indianRed);
+                    color: var(--Azure);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    border-color: var(--indianRed);
+                    scale: 0.9;
+                }
+            }
+        }
+        & .btnClearCaja{
+            background: var(--darkGradient);
+            color: var(--Azure);
+            border-radius: 0.8rem;
+            padding: 0.5rem 1rem;
+            border: 5px solid var(--indianRed);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+
+            &:hover {
+                background: var(--indianRed);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--indianRed));
+            }
+
+            &:active {
+                background: var(--yellowWarning);
+                color: var(--darkBlue);
+                filter: drop-shadow(0px 1px 5px var(--yellowWarning));
+                border-color: var(--yellowWarning);
+                scale: 0.9;
+            }
+        }
+    }
+    
+    & .cajafooter{
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        width: 100%;
+        align-items: center;
+        justify-content: space-between;
+        height: 100%;
+        gap: 1rem;
+        
+        & .divProductTotalAndCupons{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
+            gap: 1rem;
+
+            & .couponContainer-caja{
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+                align-items: center;
+
+                & .btnAplicarCupon, .btnLimpiarCupon{
+                    background: var(--darkGradient);
+                    color: var(--Azure);
+                    border-radius: 0.8rem;
+                    padding: 0.5rem 1rem;
+                    border: 5px solid var(--indianRed);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-decoration: none;
+                    text-align: center;
+                    width: 100%;
+                    max-width: 175px;
+
+                    &:hover {
+                        background: var(--indianRed);
+                        color: var(--darkBlue);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    }
+
+                    &:active {
+                        background: var(--yellowWarning);
+                        color: var(--darkBlue);
+                        filter: drop-shadow(0px 1px 5px var(--yellowWarning));
+                        border-color: var(--yellowWarning);
+                        scale: 0.9;
+                    }
+                }
+
+                & .btnAplicarCupon{
+                    background: var(--darkGradient);
+                    border: 5px solid var(--okGreen);
+                    
+                    &:hover {
+                        background: var(--okGreen);
+                        filter: drop-shadow(0px 1px 5px var(--okGreen));
+                    }
+
+                    &:active {
+                        background: var(--indianRed);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                        border-color: var(--indianRed);
+                    }
+                }
+            }
+            
+            & p{
+                font-size: clamp(1vw, 1.2rem, 1.5vw);
+            }
+        }
+        
+        & .Caja-details-footer-Terminar{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: end;
+            justify-content: space-between;
+            
+            & p{
+                font-size: clamp(1vw, 1.2rem, 1.5vw);
+            }
+            
+            & .btnContainer .btnEndCompra{
+                background: var(--darkGradient);
+                color: var(--Azure);
+                border-radius: 0.8rem;
+                padding: 0.5rem 1rem;
+                border: 5px solid var(--okGreen);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-decoration: none;
+                text-align: center;
+                width: 100%;
+                max-width: 175px;
+
+                &:hover {
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
+                }
+
+                &:active {
+                    background: var(--indianRed);
+                    color: var(--Azure);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    border-color: var(--indianRed);
+                    scale: 0.9;
+                }
+            }
+        }
+    }
+}
+
+#searchProductDialog {
+    background-color: var(--darkBlueOpacity);
+    color: var(--Azure);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    border: none;
+
+    & .searchProductDialogContent {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transition: top 0.3s ease-out, transform 0.3s ease-out, opacity 0.3s ease-out; /* <-- Agrega esto para transiciones */
+        transform: translate(-50%, -50%);
+        background-color: var(--dBlueEnphasis2);
+        padding: 1.5rem;
+        border: none;
+        border-radius: 0.8rem;
+        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        width: 60vw;
+        max-height: 95vh;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+        animation-fill-mode: forwards;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto auto auto;
+        align-items: center;
+        gap: .5rem;
+        font-weight: bold;
+        
+        & .searchProductDialog-header{
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+
+
+            & .search-input-container{
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+                
+                & .btnSearchProduct{
+                    background: var(--darkGradient);
+                    color: var(--Azure);
+                    border-radius: 0.8rem;
+                    padding: 0.5rem 1rem;
+                    border: 5px solid var(--TiffBlue);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-align: center;
+                    width: 100%;
+                    max-width: 175px;
+
+                    -webkit-appearance: none; /* Elimina estilos nativos de Webkit (Chrome, Safari) */
+                    -moz-appearance: none;    /* Elimina estilos nativos de Mozilla (Firefox) */
+                    appearance: none;         /* Elimina estilos nativos (estándar) */
+
+                    margin: 0;                /* Asegura que no haya márgenes por defecto */
+                    font: inherit;            /* Hereda la fuente de su elemento padre, en lugar de la del navegador */
+                    overflow: visible;        /* Asegura que el contenido no se recorte */
+                    white-space: nowrap;      /* Evita saltos de línea inesperados dentro del botón */
+                    box-sizing: border-box;   /* Asegura que padding y border se incluyan en el width/height */
+
+                    /* Si el botón está deshabilitado, es bueno tener un estilo para ello */
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+
+                    /* --- ESTILOS DE ESTADO --- */
+                    &:hover {
+                        background: var(--TiffBlue);
+                        color: var(--darkBlue);
+                        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                    }
+
+                    &:active {
+                        background: var(--indianRed);
+                        color: var(--Azure);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                        border-color: var(--indianRed);
+                        scale: 0.9;
+                    }
+                }
+            }
+        }
+        
+        & .tableContainer .tbl-content {
+            max-height: 20rem;
+        }
+
+        & .btnExit{
+            justify-self: flex-end;
+        }
+
+        &.modal-fade-out {
+            animation: modalFadeOut 0.3s forwards;
+        }
+    }
+}
+
+#EndCompraModal {
+    background-color: var(--darkBlueOpacity);
+    color: var(--Azure);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    border: none;
+
+    & .EndCompraModalContent {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transition: top 0.3s ease-out, transform 0.3s ease-out, opacity 0.3s ease-out; /* <-- Agrega esto para transiciones */
+        transform: translate(-50%, -50%);
+        background-color: var(--dBlueEnphasis2);
+        padding: 1.5rem;
+        border: none;
+        border-radius: 0.8rem;
+        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+        width: 45vw;
+        max-height: 95vh;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+        animation-fill-mode: forwards;
+        display: grid;
+        grid-template-rows: auto auto 1fr auto auto auto;
+        align-items: center;
+        gap: .5rem;
+        font-weight: bold;
+
+        &.modal-fade-out {
+            animation: modalFadeOut 0.3s forwards;
+        }
+        
+        & .EndCompraSeccion{
+            display: flex;
+            flex-direction: column;
+            gap: .5rem;
+            padding-bottom: .5rem;
+            justify-content: center;
+
+            & label{
+                align-self: center;
+                text-align: center;
+                font-size: clamp(1vw, 1.2rem, 1.5vw);
+            }
+            
+            & input{
+                align-self: center;
+                text-align: center;
+                font-size: clamp(1vw, 1.2rem, 1.5vw);
+            }
+            
+            & .inputSeccionEntregaCliente{
+                display: flex;
+                flex-direction: row;
+                gap: 1rem;
+
+                & .putTotalBtn{
+                    background: var(--darkGradient);
+                    color: var(--Azure);
+                    border-radius: 0.8rem;
+                    padding: 0.5rem 1rem;
+                    border: 5px solid var(--TiffBlue);
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                    text-align: center;
+                    width: 100%;
+                    max-width: 175px;
+
+                    -webkit-appearance: none; /* Elimina estilos nativos de Webkit (Chrome, Safari) */
+                    -moz-appearance: none;    /* Elimina estilos nativos de Mozilla (Firefox) */
+                    appearance: none;         /* Elimina estilos nativos (estándar) */
+
+                    margin: 0;                /* Asegura que no haya márgenes por defecto */
+                    font: inherit;            /* Hereda la fuente de su elemento padre, en lugar de la del navegador */
+                    overflow: visible;        /* Asegura que el contenido no se recorte */
+                    white-space: nowrap;      /* Evita saltos de línea inesperados dentro del botón */
+                    box-sizing: border-box;   /* Asegura que padding y border se incluyan en el width/height */
+
+                    /* Si el botón está deshabilitado, es bueno tener un estilo para ello */
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+
+                    /* --- ESTILOS DE ESTADO --- */
+                    &:hover {
+                        background: var(--TiffBlue);
+                        color: var(--darkBlue);
+                        filter: drop-shadow(0px 1px 5px var(--TiffBlue));
+                    }
+
+                    &:active {
+                        background: var(--indianRed);
+                        color: var(--Azure);
+                        filter: drop-shadow(0px 1px 5px var(--indianRed));
+                        border-color: var(--indianRed);
+                        scale: 0.9;
+                    }
+                }
+            }
+        }
+        
+        & .btnSeccion{
+            display: flex;
+            flex-direction: row;
+            gap: 1rem;
+            flex-grow: 1;
+            margin-top: 1rem;
+            
+            & .btnSubmit, .btnCancel{
+                background: var(--darkGradient);
+                color: var(--Azure);
+                border-radius: 0.8rem;
+                padding: 0.5rem 1rem;
+                border: 5px solid var(--okGreen);
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-align: center;
+                width: 100%;
+
+                -webkit-appearance: none; /* Elimina estilos nativos de Webkit (Chrome, Safari) */
+                -moz-appearance: none;    /* Elimina estilos nativos de Mozilla (Firefox) */
+                appearance: none;         /* Elimina estilos nativos (estándar) */
+
+                margin: 0;                /* Asegura que no haya márgenes por defecto */
+                font: inherit;            /* Hereda la fuente de su elemento padre, en lugar de la del navegador */
+                overflow: visible;        /* Asegura que el contenido no se recorte */
+                white-space: nowrap;      /* Evita saltos de línea inesperados dentro del botón */
+                box-sizing: border-box;   /* Asegura que padding y border se incluyan en el width/height */
+
+                /* Si el botón está deshabilitado, es bueno tener un estilo para ello */
+                &:disabled {
+                    opacity: 0.6;
+                    cursor: not-allowed;
+                }
+
+                /* --- ESTILOS DE ESTADO --- */
+                &:hover {
+                    background: var(--okGreen);
+                    color: var(--darkBlue);
+                    filter: drop-shadow(0px 1px 5px var(--okGreen));
+                }
+
+                &:active {
+                    background: var(--indianRed);
+                    color: var(--Azure);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                    border-color: var(--indianRed);
+                    scale: 0.9;
+                }
+            }
+            
+            & .btnCancel{
+                border: 5px solid var(--indianRed);
+
+                /* --- ESTILOS DE ESTADO --- */
+                &:hover {
+                    background: var(--indianRed);
+                    filter: drop-shadow(0px 1px 5px var(--indianRed));
+                }
+
+                &:active {
+                    background: var(--yellowWarning);
+                    filter: drop-shadow(0px 1px 5px var(--yellowWarning));
+                    border-color: var(--yellowWarning);
+                }
+            }
+        }
+    }
+}
+
 .modal-fade-out {
     animation: modalFadeOut 0.3s forwards;
 }
 
 @keyframes modalFadeOut {
     from {
-        top: 6.3rem;
+        top: 50%; /* Empezará desde la posición centrada */
         opacity: 1;
-        transform: scale(1);
+        transform: translate(-50%, -50%) scale(1); /* Mantenemos el centrado inicial */
     }
     to {
-        top: -300px;
+        top: -300px; /* Se mueve hacia arriba */
         opacity: 0;
-        transform: scale(.95);
+        transform: translate(-50%, -50%) scale(.95); /* Se escala y se mantiene centrado horizontalmente */
     }
 }
