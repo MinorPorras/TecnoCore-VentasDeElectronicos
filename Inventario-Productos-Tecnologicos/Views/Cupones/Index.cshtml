@@ -23,34 +23,34 @@
                 <input type="radio" name="activeFilter" id="Inactive" value="false"
                        @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
             </div>
+            <div class="selectGroup">
+                <label for="tipoDescuento">Tipo de descuento:</label>
+                <select name="tipoDescuento" id="tipoDescuento" class="searchSelect">
+                    @if (ViewBag.SelectedTipoDescuento == "all")
+                    {
+                        <option value="all" selected>Todos</option>
+                    }
+                    else
+                    {
+                        <option value="all">Todos</option>
+                    }
+                    @foreach (var tDesc in ViewBag.TipoDescuento)
+                    {
+                        if (ViewBag.SelectedTipoDescuento == tDesc.Key) // Comparas la CLAVE seleccionada con la CLAVE del diccionario
+                        {
+                            <option value="@tDesc.Key" selected>@tDesc.Value</option>
+                        }
+                        else
+                        {
+                            <option value="@tDesc.Key">@tDesc.Value</option>
+                        }
+                    }
+                </select>
+            </div>
 
             <div class=" btnCreateContainer">
                 <a asp-action="Create" class="btnCreate">Crear</a>
             </div>
-        </div>
-        <div class="selectGroup">
-            <label for="tipoDescuento">Tipo de descuento:</label>
-            <select name="tipoDescuento" id="tipoDescuento" class="searchSelect">
-                @if (ViewBag.SelectedTipoDescuento == "all")
-                {
-                    <option value="all" selected>Todos</option>
-                }
-                else
-                {
-                    <option value="all">Todos</option>
-                }
-                @foreach (var tDesc in ViewBag.TipoDescuento)
-                {
-                    if (ViewBag.SelectedTipoDescuento == tDesc.Key) // Comparas la CLAVE seleccionada con la CLAVE del diccionario
-                    {
-                        <option value="@tDesc.Key" selected>@tDesc.Value</option>
-                    }
-                    else
-                    {
-                        <option value="@tDesc.Key">@tDesc.Value</option>
-                    }
-                }
-            </select>
         </div>
     </form>
 

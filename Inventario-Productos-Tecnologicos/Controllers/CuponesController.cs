@@ -85,10 +85,10 @@ public class CuponesController : Controller
     }
 
     [Authorize(Roles = "Administrador")]
-    public async Task<IActionResult> Edit(int TN_Id)
+    public async Task<IActionResult> Edit(int id)
     {
-        Console.WriteLine($"Edit method called with id: {TN_Id}");
-        var cupon = await _context.TECO_M_Cupon.FindAsync(TN_Id);
+        Console.WriteLine($"Edit method called with id: {id}");
+        var cupon = await _context.TECO_M_Cupon.FindAsync(id);
         if (cupon == null)
         {
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(

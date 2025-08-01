@@ -7,56 +7,55 @@
 
 <div class="cuponesFormEdit">
     <h2>@ViewBag.Title</h2>
-    <form class="modifyElement">
+    <form class="modifyElement formCrudCupon">
         @Html.AntiForgeryToken()
         <input type="hidden" id="controller" name="controller" value="Cupones"/>
         <input type="hidden" id="action" name="action" value="Edit"/>
         <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id"/>
         <div class="form-group">
-            <label asp-for="TC_Codigo" class="control-label">Código</label>
-            <input class="form-control" asp-for="TC_Codigo" placeholder="Código que usaran los clientes" type="text"/>
+            <label asp-for="TC_Codigo" class="control-label">Código:</label>
+            <input class="inputBase" asp-for="TC_Codigo" placeholder="Código que usaran los clientes" type="text"/>
             <span asp-validation-for="TC_Codigo" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="TC_Descripcion">Descripción</label>
-            <textarea asp-for="TC_Descripcion" class="form-control" rows="3"></textarea>
-            <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
+            <label asp-for="TF_FechaInicio">Fecha de inicio:</label>
+            <input type="date" asp-for="TF_FechaInicio" class="inputBase" min="@DateTime.Today" required/>
+            <span asp-validation-for="TF_FechaInicio" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="TC_TipoDescuento">Tipo de Descuento</label>
-            <select asp-for="TC_TipoDescuento" class="form-control"
+            <label asp-for="TF_FechaFin">Fecha de finalización:</label>
+            <input type="date" asp-for="TF_FechaFin" class="inputBase" min="@DateTime.Today.AddDays(1)" required/>
+            <span asp-validation-for="TF_FechaFin" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="TC_TipoDescuento">Tipo de Descuento:</label>
+            <select asp-for="TC_TipoDescuento" class="inputBase"
                     asp-items="@ViewBag.TipoDescuento" required>
             </select>
             <span asp-validation-for="TC_TipoDescuento" class="text-danger"></span>
         </div>
-        <div class="form-group">
-            <label asp-for="TN_Valor" class="control-label">Valor</label>
-            <span id="symbolColon">₡</span>
-            <input class="form-control" asp-for="TN_Valor" type="number"/>
-            <span id="symbolPorc">%</span>
-        </div>
-        <div>
-            <label asp-for="TF_FechaInicio">Fecha de inicio:</label>
-            <input type="date" asp-for="TF_FechaInicio" class="form-control" min="@DateTime.Today" required/>
-            <span asp-validation-for="TF_FechaInicio" class="text-danger"></span>
-        </div>
-        <div>
-            <label asp-for="TF_FechaFin">Fecha de finalización:</label>
-            <input type="date" asp-for="TF_FechaFin" class="form-control" min="@DateTime.Today.AddDays(1)" required/>
-            <span asp-validation-for="TF_FechaFin" class="text-danger"></span>
+        <div class="form-group valueGroup">
+            <label asp-for="TN_Valor" class="control-label">Valor:</label>
+            <span id="symbolColon" class="symbolValue">₡</span>
+            <input class="inputBase" asp-for="TN_Valor" type="number"/>
+            <span id="symbolPorc" class="symbolValue">%</span>
         </div>
         <div class="form-group">
-            <label asp-for="TN_UsosMaximos">Usos máximos</label>
-            <input asp-for="TN_UsosMaximos" class="form-control"/>
+            <label asp-for="TN_UsosMaximos">Usos máximos:</label>
+            <input asp-for="TN_UsosMaximos" class="inputBase"/>
             <span asp-validation-for="TN_UsosMaximos" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="TN_UsosActuales">Usos Actuales</label>
-            <input asp-for="TN_UsosActuales" class="form-control"/>
+            <label asp-for="TN_UsosActuales">Usos Actuales:</label>
+            <input asp-for="TN_UsosActuales" class="inputBase"/>
             <span asp-validation-for="TN_UsosActuales" class="text-danger"></span>
-
         </div>
-        <div class="formgroup">
+        <div class="form-group descripcionGroup">
+            <label asp-for="TC_Descripcion">Descripción:</label>
+            <textarea asp-for="TC_Descripcion" class="inputBase" rows="3"></textarea>
+            <span asp-validation-for="TC_Descripcion" class="text-danger"></span>
+        </div>
+        <div class="radio-group">
             <label>Estado:</label>
             <div>
                 <input type="radio" asp-for="TB_Activo" id="active" value="true">
@@ -66,8 +65,10 @@
                 <label for="inactive">Inactivo</label>
             </div>
         </div>
-        <button type="button" id="updateBtn" class="btn btn-primary">Guardar</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+        <div class="btnContainer">
+            <a asp-action="Index" class="btnExit">Cancelar</a>
+            <button type="button" id="updateBtn" class="btnEdit">Actualizar</button>
+        </div>
     </form>
 </div>
 
