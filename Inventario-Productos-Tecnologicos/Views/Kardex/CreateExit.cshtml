@@ -5,18 +5,13 @@
     Layout = "_LayoutAdmin";
 }
 <div class="kardexForm">
-    <h2>Salida de inventario</h2>
-    <form asp-action="CreateEntry" method="Post" class="createKardexEntryForm">
+    <h2 class="pageTitle">Salida de inventario</h2>
+    <form asp-action="CreateExit" method="Post" class="createKardexEntryForm">
 
         <div class="formGroup producto">
             <label asp-for="ProductoNombre">Producto</label>
             <input type="hidden" asp-for="ProductoId"  class="inputBase"/>
             <input class="form-control" asp-for="ProductoNombre" readonly placeholder="Doble click para buscar"/>
-        </div>
-        <div class="formGroup">
-            <label asp-for="Fecha">Fecha:</label>
-            <input type="date" asp-for="Fecha" class="inputBase" required/>
-            <span asp-validation-for="Fecha" class="text-danger"></span>
         </div>
         <div class="formGroup">
             <label asp-for="TipoMovimientoId">Tipo de Movimiento</label>
@@ -40,6 +35,11 @@
             <label asp-for="StockActual">Stock Nuevo</label>
             <input asp-for="StockActual" class="inputBase" readonly/>
             <span asp-validation-for="StockActual" class="text-danger"></span>
+        </div>
+        <div class="formGroup">
+            <label asp-for="Fecha">Fecha:</label>
+            <input type="date" asp-for="Fecha" class="inputBase" required/>
+            <span asp-validation-for="Fecha" class="text-danger"></span>
         </div>
         <div class="formGroup descripcion">
             <label asp-for="Descripcion">Descripción</label>

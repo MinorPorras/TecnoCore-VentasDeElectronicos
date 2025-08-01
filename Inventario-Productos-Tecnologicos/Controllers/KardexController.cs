@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices.JavaScript;
+using System.Text.Json;
 using Inventario_Productos_Tecnologicos.Data;
 using Inventario_Productos_Tecnologicos.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -131,14 +132,11 @@ public class KardexController : Controller
                     if (producto != null)
                     {
                         kardex.TN_StockAnterior = producto.TN_Stock;
-                        var tipoMovimiento =
-                            await _context.TECO_M_TipoMovimientoKardex.FindAsync(kardex.TN_TipoMovimientoId);
-                        if (tipoMovimiento != null && tipoMovimiento.TB_Entrada)
-                        {
-                            producto.TN_Stock += kardex.TN_Cantidad ?? 0;
-                            kardex.TN_StockActual = producto.TN_Stock;
-                            _context.Update(producto);
-                        }
+                        producto.TN_Stock += kardex.TN_Cantidad ?? 0;
+                        kardex.TN_StockActual = producto.TN_Stock;
+                        _context.Update(producto);
+                        await _context.SaveChangesAsync();
+
                     }
                 }
 
@@ -207,6 +205,7 @@ public class KardexController : Controller
     {
         try
         {
+            _logger.LogCritical("Salida kardex: " + JsonSerializer.Serialize(viewModel));
             if (ModelState.IsValid)
             {
                 var kardex = new TECO_P_Kardex
@@ -224,6 +223,7 @@ public class KardexController : Controller
                     var producto = await _context.TECO_A_Producto.FindAsync(kardex.TN_ProductoId);
                     if (producto != null)
                     {
+                        _logger.LogCritical("Stock actual del producto: " + producto.TN_Stock);
                         if (producto.TN_Stock < (kardex.TN_Cantidad ?? 0))
                         {
                             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
@@ -232,15 +232,36 @@ public class KardexController : Controller
                         }
 
                         kardex.TN_StockAnterior = producto.TN_Stock;
-                        var tipoMovimiento =
-                            await _context.TECO_M_TipoMovimientoKardex.FindAsync(kardex.TN_TipoMovimientoId);
-                        if (tipoMovimiento is { TB_Entrada: false })
-                        {
-                            producto.TN_Stock -= kardex.TN_Cantidad ?? 0;
-                            kardex.TN_StockActual = producto.TN_Stock;
-                            _context.Update(producto);
-                        }
+                        producto.TN_Stock -= kardex.TN_Cantidad ?? 0;
+                        kardex.TN_StockActual = producto.TN_Stock;
+                        _logger.LogCritical("Stock actual: " + kardex.TN_StockActual);
+                        await _context.SaveChangesAsync();
+
                     }
+                    else
+                    {
+                        viewModel.ProductosDisponibles = await _context.TECO_A_Producto
+                            .Where(p => p.TB_Activo == true)
+                            .ToListAsync();
+
+                        ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                            await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
+                            "TN_Id", "TC_Tipo", viewModel.TipoMovimientoId);
+
+                        return View(viewModel);
+                    }
+                }
+                else
+                {
+                    viewModel.ProductosDisponibles = await _context.TECO_A_Producto
+                        .Where(p => p.TB_Activo == true)
+                        .ToListAsync();
+
+                    ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                        await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
+                        "TN_Id", "TC_Tipo", viewModel.TipoMovimientoId);
+
+                    return View(viewModel);
                 }
 
                 _context.Add(kardex);
@@ -251,23 +272,31 @@ public class KardexController : Controller
 
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.ErrorAlert("Por favor, revise los datos ingresados"));
+            viewModel.ProductosDisponibles = await _context.TECO_A_Producto
+                .Where(p => p.TB_Activo == true)
+                .ToListAsync();
+
+            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
+                "TN_Id", "TC_Tipo", viewModel.TipoMovimientoId);
+
+            return View(viewModel);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al crear salida de kardex");
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.ErrorAlert("Error al registrar la salida"));
+            viewModel.ProductosDisponibles = await _context.TECO_A_Producto
+                .Where(p => p.TB_Activo == true)
+                .ToListAsync();
+
+            ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
+                "TN_Id", "TC_Tipo", viewModel.TipoMovimientoId);
+
+            return View(viewModel);
         }
-
-        viewModel.ProductosDisponibles = await _context.TECO_A_Producto
-            .Where(p => p.TB_Activo == true)
-            .ToListAsync();
-
-        ViewData["TipoMovimientoId"] = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(
-            await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada).ToListAsync(),
-            "TN_Id", "TC_Tipo", viewModel.TipoMovimientoId);
-
-        return View(viewModel);
     }
 
     [HttpGet]
@@ -315,13 +344,13 @@ public class KardexController : Controller
 
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string searchDate, string activeFilter = "all",
-        string tipoMovimiento = "all")
+        string TipoMovimientoId = "all")
     {
         // Guardar los parámetros de búsqueda en ViewBag
         ViewBag.SearchString = searchElement;
         ViewBag.SearchDate = searchDate;
         ViewBag.ActiveFilter = activeFilter;
-        ViewBag.SelectedTipoMovimiento = tipoMovimiento;
+        ViewBag.SelectedTipoMovimiento = TipoMovimientoId;
 
         // Crear la consulta base
         var query = _context.TECO_P_Kardex
@@ -347,7 +376,7 @@ public class KardexController : Controller
         }
 
         // Filtrar por tipo de movimiento
-        if (tipoMovimiento != "all" && int.TryParse(tipoMovimiento, out var tipoMovimientoId))
+        if (TipoMovimientoId != "all" && int.TryParse(TipoMovimientoId, out var tipoMovimientoId))
             query = query.Where(k => k.TN_TipoMovimientoId == tipoMovimientoId);
 
         // Cargar los tipos de movimiento para el dropdown

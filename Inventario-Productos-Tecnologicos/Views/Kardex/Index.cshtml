@@ -11,50 +11,39 @@
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre de producto:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
-        <div class="radio-group-grid">
-            <div class="radio-group">
-                <label for="todos">Todos</label>
-                <input type="radio" name="activeFilter" id="todos" value="all"
-                       @(string.IsNullOrEmpty(ViewBag.ActiveFilter) || ViewBag.ActiveFilter == "all" ? "checked" : "")>
-                <label for="active">Activo</label>
-                <input type="radio" name="activeFilter" id="active" value="true"
-                       @(ViewBag.ActiveFilter == "true" ? "checked" : "")/>
-                <label for="Inactive">Inactivo</label>
-                <input type="radio" name="activeFilter" id="Inactive" value="false"
-                       @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
-            </div>
-            <div class="btnCreateContainer">
-                <a asp-action="CreateEntry" class="btnCreate entry">Nueva Entrada</a>
-                <a asp-action="CreateExit" class="btnCreate exit">Nueva Salida</a>
-            </div>
-        </div>
-
-        <div class="selectGroup">
-            <label>Fecha:</label>
-            <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
-                   value="@ViewBag.SearchDate" class="searchSelect"/>
-            <label for="TipoMovimientoId">Tipo de movimiento:</label>
-            <select name="TipoMovimientoId" id="TipoMovimientoId" class="searchSelect">
-                @if (ViewBag.SelectedTipoMovimiento == "all")
-                {
-                    <option value="all" selected>Todos</option>
-                }
-                else
-                {
-                    <option value="all">Todos</option>
-                }
-                @foreach (var tMovimiento in ViewBag.TiposMovimiento)
-                {
-                    if (ViewBag.SelectedTipoMovimiento == tMovimiento.TN_Id.ToString())
+        <div class="KardexFilters">
+            <div class="filter-group">
+                <label>Fecha:</label>
+                <input type="date" id="searchDate" name="searchDate" placeholder="Buscar por fecha:"
+                       value="@ViewBag.SearchDate" class="searchSelect"/>
+                <label for="TipoMovimientoId">Tipo de movimiento:</label>
+                <select name="TipoMovimientoId" id="TipoMovimientoId" class="searchSelect">
+                    @if (ViewBag.SelectedTipoMovimiento == "all")
                     {
-                        <option value="@tMovimiento.TN_Id" selected>@tMovimiento.TC_Tipo</option>
+                        <option value="all" selected>Todos</option>
                     }
                     else
                     {
-                        <option value="@tMovimiento.TN_Id">@tMovimiento.TC_Tipo</option>
+                        <option value="all">Todos</option>
                     }
-                }
-            </select>
+                    @foreach (var tMovimiento in ViewBag.TiposMovimiento)
+                    {
+                        // Verifica si el ID del movimiento actual coincide con el seleccionado
+                        if (ViewBag.SelectedTipoMovimiento == tMovimiento.TN_Id.ToString())
+                        {
+                            <option value="@tMovimiento.TN_Id" selected>@tMovimiento.TC_Tipo</option>
+                        }
+                        else
+                        {
+                            <option value="@tMovimiento.TN_Id">@tMovimiento.TC_Tipo</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="btnCreateContainer">
+                <a asp-action="CreateEntry" class="btnCreate">Nueva Entrada</a>
+                <a asp-action="CreateExit" class="btnExit">Nueva Salida</a>
+            </div>
         </div>
     </form>
 

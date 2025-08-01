@@ -367,14 +367,10 @@ public class ProductosController : Controller
                     if (producto != null)
                     {
                         kardex.TN_StockAnterior = producto.TN_Stock;
-                        var tipoMovimiento =
-                            await _context.TECO_M_TipoMovimientoKardex.FindAsync(kardex.TN_TipoMovimientoId);
-                        if (tipoMovimiento != null && tipoMovimiento.TB_Entrada)
-                        {
-                            producto.TN_Stock += kardex.TN_Cantidad ?? 0;
-                            kardex.TN_StockActual = producto.TN_Stock;
-                            _context.Update(producto);
-                        }
+                        producto.TN_Stock += kardex.TN_Cantidad ?? 0;
+                        kardex.TN_StockActual = producto.TN_Stock;
+                        _context.Update(producto);
+                        await _context.SaveChangesAsync();
                     }
                 }
 
@@ -413,7 +409,7 @@ public class ProductosController : Controller
 
         ViewData["TipoMovimientoId"] =
             new SelectList(
-                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada)
                     .ToListAsync(),
                 "TN_Id", "TC_Tipo");
 
@@ -446,14 +442,10 @@ public class ProductosController : Controller
                     if (producto != null)
                     {
                         kardex.TN_StockAnterior = producto.TN_Stock;
-                        var tipoMovimiento =
-                            await _context.TECO_M_TipoMovimientoKardex.FindAsync(kardex.TN_TipoMovimientoId);
-                        if (tipoMovimiento != null && !tipoMovimiento.TB_Entrada)
-                        {
-                            producto.TN_Stock += kardex.TN_Cantidad ?? 0;
-                            kardex.TN_StockActual = producto.TN_Stock;
-                            _context.Update(producto);
-                        }
+                        producto.TN_Stock -= kardex.TN_Cantidad ?? 0;
+                        kardex.TN_StockActual = producto.TN_Stock;
+                        _context.Update(producto);
+                        await _context.SaveChangesAsync();
                     }
                 }
 
@@ -472,7 +464,7 @@ public class ProductosController : Controller
 
         ViewData["TipoMovimientoId"] =
             new SelectList(
-                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && t.TB_Entrada)
+                await _context.TECO_M_TipoMovimientoKardex.Where(t => t.TB_Activo == true && !t.TB_Entrada)
                     .ToListAsync(),
                 "TN_Id", "TC_Tipo");
 

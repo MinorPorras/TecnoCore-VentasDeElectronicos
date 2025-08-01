@@ -6,7 +6,7 @@
 }
 
 <div class="kardexForm">
-    <h2>@ViewBag.Title</h2>
+    <h2 class="pageTitle">@ViewBag.Title</h2>
     <form asp-action="CreateKardexExit" method="Post" class="createKardexEntryForm">
         <button type="button" id="showModalBtn" hidden="">Buscar Producto</button>
         <div class="formGroup producto">
@@ -48,8 +48,8 @@
             <span asp-validation-for="Descripcion" class="text-danger"></span>
         </div>
         <div class="formGroup CreatebuttonGroup">
-            <button type="submit" class="btnCreate">Guardar</button>
             <a asp-action="Edit" asp-route-id="@ViewBag.Producto.TN_Id" class="btnExit">Cancelar</a>
+            <button type="submit" class="btnCreate">Guardar</button>
         </div>
     </form>
 </div>

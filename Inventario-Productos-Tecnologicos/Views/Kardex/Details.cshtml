@@ -5,35 +5,44 @@
     Layout = "_LayoutAdmin";
 }
 
-<h2>@ViewBag.Title</h2>
-
-<div class="card">
-    <div class="card-body">
-        <dl class="row">
-            <dt class="col-sm-3">Producto</dt>
-            <dd class="col-sm-9">@Model.Producto?.TC_Nombre</dd>
-
-            <dt class="col-sm-3">Fecha</dt>
-            <dd class="col-sm-9">@Model.TF_Fecha?.ToString("dd/MM/yyyy")</dd>
-
-            <dt class="col-sm-3">Movimiento</dt>
-            <dd class="col-sm-9">@Model.TipoMovimientoKardex?.TC_Tipo</dd>
-
-            <dt class="col-sm-3">Stock Anterior</dt>
-            <dd class="col-sm-9">@Model.TN_StockAnterior</dd>
-
-            <dt class="col-sm-3">Cantidad</dt>
-            <dd class="col-sm-9">@Model.TN_Cantidad</dd>
-
-            <dt class="col-sm-3">Stock Actual</dt>
-            <dd class="col-sm-9">@Model.TN_StockActual</dd>
-
-            <dt class="col-sm-3">Descripción</dt>
-            <dd class="col-sm-9">@Model.TC_Descripcion</dd>
-
-            <dt class="col-sm-3">Activo</dt>
-            <dd class="col-sm-9">@(Model.TB_Activo ? "Sí" : "No")</dd>
-        </dl>
-        <a asp-action="Index" class="btn btn-primary">Volver al listado</a>
+<div class="kardexMovementDetails">
+    <h2 class="pageTitle">@ViewBag.Title</h2>
+    <div class="kardexMovementDetailsCard">
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Producto:</h4>
+            <span>@Model.Producto?.TC_Nombre</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Fecha:</h4>
+            <span>@Model.TF_Fecha?.ToString("dd/MM/yyyy")</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Movimiento:</h4>
+            <span>@Model.TipoMovimientoKardex?.TC_Tipo</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Stock Anterior:</h4>
+            <span>@Model.TN_StockAnterior</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Cantidad:</h4>
+            <span>@Model.TN_Cantidad</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup">
+            <h4>Stock Nuevo:</h4>
+            <span>@(Model.TN_StockActual ?? 0)</span>
+        </div>
+        <div class="kardexMovementDetailsCardGroup descText">
+            <h4>Descripción:</h4>
+                @if (string.IsNullOrWhiteSpace(Model.TC_Descripcion))
+                {
+                    <span>"Sin descripción"</span>
+                }
+                else
+                {
+                    <span>@Model.TC_Descripcion</span>
+                }
+        </div>
     </div>
+    <a asp-action="Index" class="btnExit">Volver al listado</a>
 </div>
