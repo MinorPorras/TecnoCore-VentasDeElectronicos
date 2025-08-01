@@ -336,7 +336,7 @@ nav {
 }
 
 .footer {
-    position: fixed;
+    position: sticky;
     bottom: 0;
     width: 100%;
     background-color: var(--dBlueEnphasis1);

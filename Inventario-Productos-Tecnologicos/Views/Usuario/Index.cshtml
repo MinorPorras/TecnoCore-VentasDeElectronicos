@@ -23,37 +23,37 @@
                 <input type="radio" name="activeFilter" id="Inactive" value="false"
                        @(ViewBag.ActiveFilter == "false" ? "checked" : "")/>
             </div>
+            <div class="selectGroup">
+                <label for="rol">Roles:</label>
+                <select id="rol" name="rol" class="searchSelect" onchange="this.form.submit()">
+                    @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
+                    {
+                        <option value="all" selected>Todos</option>
+                    }
+                    else
+                    {
+                        <option value="all">Todos</option>
+                    }
+
+                    @if (ViewBag.Roles != null)
+                    {
+                        foreach (var rol in ViewBag.Roles)
+                        {
+                            if (ViewBag.Rol == rol.Name)
+                            {
+                                <option value="@rol.Name" selected>@rol.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@rol.Name">@rol.Name</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
             <div class=" btnCreateContainer">
                 <a asp-action="Create" class="btnCreate">Crear</a>
             </div>
-        </div>
-        <div class="selectGroup">
-            <label for="rol">Roles:</label>
-            <select id="rol" name="rol" class="searchSelect" onchange="this.form.submit()">
-                @if (ViewBag.Rol == "all" || ViewBag.Rol == null)
-                {
-                    <option value="all" selected>Todos</option>
-                }
-                else
-                {
-                    <option value="all">Todos</option>
-                }
-
-                @if (ViewBag.Roles != null)
-                {
-                    foreach (var rol in ViewBag.Roles)
-                    {
-                        if (ViewBag.Rol == rol.Name)
-                        {
-                            <option value="@rol.Name" selected>@rol.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@rol.Name">@rol.Name</option>
-                        }
-                    }
-                }
-            </select>
         </div>
     </form>
 
