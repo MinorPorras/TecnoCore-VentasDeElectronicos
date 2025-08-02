@@ -51,6 +51,23 @@ body {
     background-color: var(--darkBlue);
 }
 
+h1, h2, h3, h4, h5, h6, p, span {
+    color: var(--Azure);
+}
+
+h1 {
+    font-size: clamp(14px, 2vw, 4vw);
+    text-align: center;
+    font-weight: bold;
+}
+
+.pageTitle {
+    font-size: clamp(14px, 2vw, 4vw);
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
 .main_container {
     position: relative;
     margin: 0;
@@ -1971,6 +1988,7 @@ section {
             font-size: 1.1rem;
             font-weight: bold;
             text-align: center;
+            color: var(--dBlueEnphasis1);
         }
 
         & span:first-child {
@@ -2721,4 +2739,67 @@ section {
             }
         }
     }
+}
+
+
+.pedidoContainer{
+    background-color: var(--darkBlue);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    padding: 1rem;
+
+    & .datosCliente{
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        grid-auto-rows: auto;
+        background: var(--dBlueEnphasis1);
+        padding: 1rem;
+        border-radius: 0.8rem;
+
+
+        & p{
+            font-size: clamp(1vw, 1.2rem, 1.5vw);
+            display: block;
+        }
+    }
+
+    & .infoPedido{
+        display: grid;
+        grid-template-columns: 2fr 1fr 1fr;
+        grid-auto-rows: auto;
+        background: var(--dBlueEnphasis1);
+        padding: 1rem;
+        border-radius: 0.8rem;
+        gap: .5rem;
+
+        & .direcionExactaLabel{
+            grid-column: 1/ 3;
+        }
+
+        & .estadoPedidoSeccion{
+            display: flex;
+            flex-direction: row;
+            gap: .5rem;
+        }
+
+        & .btnCreate{
+            max-width: 100%;
+        }
+    }
+
+    & .detallesPedido{
+        display: flex;
+        flex-direction: column;
+
+        & .detallesPedidoFooter{
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+}
+
+.container-fluid{
+    width: 100vw;
 }
