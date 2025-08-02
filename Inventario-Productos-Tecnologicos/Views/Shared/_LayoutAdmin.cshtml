@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/adminNavBar.css" asp-append-version="true"/>
     <link rel="stylesheet" href="~/css/admin.css" asp-append-version="true"/>
+    @RenderSection("Styles", required: false) 
 </head>
 <body>
 <header>
@@ -59,12 +60,6 @@
         @RenderBody()
     </div>
 </div>
-
-<footer class="footer">
-    <div class="container">
-        &copy; 2025 - Tecno Core - Num: 8888-8888 Dirección: Calle 123, Ciudad ...
-    </div>
-</footer>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/admin.js" asp-append-version="true"></script>

@@ -5,11 +5,14 @@
     Layout = "_LayoutAdmin";
 }
 
+@section Styles{
+    <link rel="stylesheet" href="/css/dashboard.css">
+}
+
+<h1 class="pageTitle">DashBoard</h1>
 
 <div class="dashboard">
     @*Grid: 8 filas y 3 columnas*@
-
-    <h1>DashBoard</h1>
     <div class="MasComprados">
         @*Aquí se agregan los clientes, categorías y marcas más vendidas*@
         @await Component.InvokeAsync("ClientesMasCompras")
