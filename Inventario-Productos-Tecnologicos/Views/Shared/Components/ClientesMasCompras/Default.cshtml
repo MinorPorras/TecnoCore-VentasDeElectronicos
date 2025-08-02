@@ -1,46 +1,62 @@
 @model List<Inventario_Productos_Tecnologicos.Models.ViewModels.ClienteMasComprasViewModel>
 
+
 <div class="ClienteMasCompras">
     <h4>Clientes con más compras</h4>
     <div class="stats-table">
         <div class="stats-table-header">
+            <h5>Pos</h5>
             <h5>Cliente</h5>
             <h5>Total</h5>
         </div>
         @if (Model.Count == 0)
         {
-            <div class="stats-item">
-                <h6>No hay clientes registrados</h6>
-            </div>
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 4; i++)
+            <div class="stats-table-content">
+                <div class="stats-item">
+                    <h6>No hay clientes registrados</h6>
+                </div>
+                @if (Model.Count < 5)
                 {
-                    <div class="stats-item">
-                        <h6>---------------------------</h6>
-                    </div>
+                    @for (var i = Model.Count; i < 4; i++)
+                    {
+                        {
+                            <div class="stats-item">
+                                <h6>---------------------------</h6>
+                                <p>0,00.</p>
+                            </div>
+                        }
+                    }
                 }
-            }
+            </div>
         }
         else
         {
-            foreach (var cliente in Model)
-            {
-                <div class="stats-item">
-                    <h6>@cliente.Usuario.TC_Nombre @cliente.Usuario.TC_Apellidos</h6>
-                    <p>@cliente.TotalCompras.</p>
-                </div>
-            }
-
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 5; i++)
+            <div class="stats-table-content">
+                @{ var cont = 1; }  @* Declaración y inicialización correcta del contador *@
+                @foreach (var cliente in Model)
                 {
                     <div class="stats-item">
-                        <h6>---------------------------</h6>
+                        <p>@(cont + ". ")</p>
+                        <h6>@(cliente.Usuario.TC_Nombre + " " + cliente.Usuario.TC_Apellidos)</h6>
+                        <p>@cliente.TotalCompras.</p>
                     </div>
+                    cont++; @* Incrementa el contador en cada iteración *@
                 }
-            }
+
+                @{ var contExtra = Model.Count + 1; }  @* Declaración y inicialización correcta del contador *@
+                @if (Model.Count < 5)
+                {
+                    for (var i = Model.Count; i < 5; i++)
+                    {
+                        <div class="stats-item">
+                            <p>@(contExtra + ". ")</p>
+                            <h6>---------------------------</h6>
+                            <p>0,00.</p>
+                        </div>
+                        contExtra++; @* Incrementa el contador en cada iteración *@
+                    }
+                }
+            </div>
         }
     </div>
 </div>
