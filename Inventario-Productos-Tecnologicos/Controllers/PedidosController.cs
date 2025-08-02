@@ -92,8 +92,8 @@ public class PedidosController : Controller
                 .ThenInclude(dp => dp.Producto)
                 .Include(p => p.Usuario)
                 .ThenInclude(u => u.Direccion)
-                .ToListAsync();
-            _logger.LogInformation("Cantidad de pedidos encontrados: {Count}", pedidos.Count);
+                .OrderByDescending(u => u.TF_Fecha)
+                .ToListAsync();_logger.LogInformation("Cantidad de pedidos encontrados: {Count}", pedidos.Count);
             // Verificar si se encontraron pedidos, si se encontraron, se retorna la vista con los pedidos
             if (pedidos.Count != 0) return View(pedidos);
             _logger.LogInformation("No se encontraron pedidos para el usuario con ID: {UserId}", userId);

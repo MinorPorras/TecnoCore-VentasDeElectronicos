@@ -2,10 +2,10 @@
 
 @{
     ViewBag.Title = "Pedidos";
-    Layout = "_LayoutAdmin";
+    Layout = "_Layout";
 }
-
-<h1>Pedidos</h1>
+<div class="container-fluid">
+    <h1>Pedidos</h1>
 
     @foreach(var pedido in Model)
     {
@@ -40,8 +40,7 @@
                             <div class="tableRow TPedido">
                                 <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
                                 <span class="tableCell centerTextCell">@detalle.TN_Cantidad.ToString()</span>
-                                <span class="tableCell centerTextCell">
-                                </span>
+                                <span class="tableCell centerTextCell">@((detalle.Producto?.TN_Precio ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
                                 <span class="tableCell centerTextCell">
                                     @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
                                 </span>                            
@@ -68,3 +67,4 @@
         </div>
         <hr/>
     }   
+</div>
