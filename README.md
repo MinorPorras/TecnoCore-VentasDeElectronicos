@@ -11,3 +11,6 @@ Este es un proyecto en el que se desarrollará un sistema de manejo de inventari
 
 ## Errores conocidos
 - La busqued de productos no funciona por completo, kardex y cupones no les funcionan los select
+
+
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MinorPorras/TecnoCore-VentasDeElectronicos)
