@@ -2,46 +2,61 @@
 
 
 <div class="categoriasMasVendidas">
-    <h4>Categorías más vendidas</h4>
+    <h4 class="stats-title">Categorías más vendidas</h4>
     <div class="stats-table">
         <div class="stats-table-header">
-            <h5>Categorías</h5>
-            <h5>Total</h5>
+            <h5 class="stats-table-hearder-text">Pos</h5>
+            <h5 class="stats-table-hearder-text">Categorías</h5>
+            <h5 class="stats-table-hearder-text">Total</h5>
         </div>
         
         @if (Model.Count == 0)
         {
-            <div class="stats-item">
-                <h6>No hay categorías registrados</h6>
-            </div>
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 4; i++)
+            <div class="stats-table-content">
+                <div class="stats-item">
+                    <h6>No hay categorías registrados</h6>
+                </div>
+                @if (Model.Count < 3)
                 {
-                    <div class="stats-item">
-                        <h6>---------------------------</h6>
-                    </div>
+                    @for (var i = Model.Count; i < 2; i++)
+                    {
+                        {
+                            <div class="stats-item">
+                                <h6 class="stats-item-text">---------------------</h6>
+                                <span class="stats-item-text">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                            </div>
+                        }
+                    }
                 }
-            }
+            </div>
         }
         else
         {
-            foreach (var categoria in Model)
-            {
-                <div class="stats-item">
-                    <h6>@categoria.subCategoria.TC_Nombre</h6>
-                    <p>@categoria.TotalVentas.ToString()</p>
-                </div>
-            }
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 5; i++)
+            <div class="stats-table-content">
+                @{ var cont = 1; }  @* Declaración y inicialización correcta del contador *@
+                @foreach (var categoria in Model)
                 {
                     <div class="stats-item">
-                        <h6>---------------------------</h6>
+                        <span class="stats-item-text stats-cont">@(cont + ". ")</span>
+                        <h6 class="stats-item-text">@categoria.subCategoria.TC_Nombre</h6>
+                        <span class="stats-item-text stats-cont">@((categoria.TotalVentas ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
                     </div>
+                    cont++; @* Incrementa el contador en cada iteración *@
                 }
-            }
+                @{ var contExtra = Model.Count + 1; }  @* Declaración y inicialización correcta del contador *@
+                @if (Model.Count < 3)
+                {
+                    for (var i = Model.Count; i < 3; i++)
+                    {
+                        <div class="stats-item">
+                            <span class="stats-item-text stats-cont">@(contExtra + ". ")</span>
+                            <h6 class="stats-item-text">---------------------</h6>
+                            <span class="stats-item-text stats-cont">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                        </div>
+                        contExtra++; @* Incrementa el contador en cada iteración *@
+                    }
+                }
+            </div>
         }
     </div>
 </div>

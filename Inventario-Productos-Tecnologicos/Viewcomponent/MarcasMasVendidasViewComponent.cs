@@ -28,14 +28,9 @@ public class MarcasMasVendidasViewComponent : ViewComponent
                 TotalVentas = g.Sum(dp => dp.TN_Cantidad * dp.TN_PrecioUnitario)
             })
             .OrderByDescending(x => x.TotalVentas)
-            .Take(5)
+            .Take(3)
             .ToListAsync();
 
-        if (marcas.Count == 0)
-        {
-            return View(new List<MarcasMasVendidas>());
-        }
-        
-        return View(marcas);
+        return View(marcas.Count == 0 ? [] : marcas);
     }
 }

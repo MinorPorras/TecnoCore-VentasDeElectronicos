@@ -27,7 +27,7 @@ public class CategoriaMasVendidaViewComponent: ViewComponent
                 TotalVentas = g.Sum(dp => dp.TN_Cantidad * dp.TN_PrecioUnitario)
             })
             .OrderByDescending(x => x.TotalVentas)
-            .Take(5)
+            .Take(3)
             .ToListAsync();
         
         return View(categoriasMasVendidas);
