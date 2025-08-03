@@ -2,27 +2,28 @@
 
 
 <div class="ClienteMasCompras">
-    <h4>Clientes con más compras</h4>
+    <h4 class="stats-title">Clientes con más compras</h4>
     <div class="stats-table">
         <div class="stats-table-header">
-            <h5>Pos</h5>
-            <h5>Cliente</h5>
-            <h5>Total</h5>
+            <h5 class="stats-table-hearder-text">Pos</h5>
+            <h5 class="stats-table-hearder-text">Cliente</h5>
+            <h5 class="stats-table-hearder-text">Total</h5>
         </div>
+        
         @if (Model.Count == 0)
         {
             <div class="stats-table-content">
                 <div class="stats-item">
                     <h6>No hay clientes registrados</h6>
                 </div>
-                @if (Model.Count < 5)
+                @if (Model.Count < 3)
                 {
-                    @for (var i = Model.Count; i < 4; i++)
+                    @for (var i = Model.Count; i < 2; i++)
                     {
                         {
                             <div class="stats-item">
-                                <h6>---------------------------</h6>
-                                <p>0,00.</p>
+                                <h6 class="stats-item-text">---------------------</h6>
+                                <p class="stats-item-text">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
                             </div>
                         }
                     }
@@ -36,22 +37,22 @@
                 @foreach (var cliente in Model)
                 {
                     <div class="stats-item">
-                        <p>@(cont + ". ")</p>
-                        <h6>@(cliente.Usuario.TC_Nombre + " " + cliente.Usuario.TC_Apellidos)</h6>
-                        <p>@cliente.TotalCompras.</p>
+                        <span class="stats-item-text stats-cont">@(cont + ". ")</span>
+                        <h6 class="stats-item-text">@(cliente.Usuario.TC_Nombre + " " + cliente.Usuario.TC_Apellidos)</h6>
+                        <span class="stats-item-text stats-cont">@((cliente.TotalCompras ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR"))).</span>
                     </div>
                     cont++; @* Incrementa el contador en cada iteración *@
                 }
 
                 @{ var contExtra = Model.Count + 1; }  @* Declaración y inicialización correcta del contador *@
-                @if (Model.Count < 5)
+                @if (Model.Count < 3)
                 {
-                    for (var i = Model.Count; i < 5; i++)
+                    for (var i = Model.Count; i < 3; i++)
                     {
                         <div class="stats-item">
-                            <p>@(contExtra + ". ")</p>
-                            <h6>---------------------------</h6>
-                            <p>0,00.</p>
+                            <p class="stats-item-text stats-cont">@(contExtra + ". ")</p>
+                            <h6 class="stats-item-text">---------------------</h6>
+                            <p class="stats-item-text stats-cont">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
                         </div>
                         contExtra++; @* Incrementa el contador en cada iteración *@
                     }

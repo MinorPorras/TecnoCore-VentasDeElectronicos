@@ -103,7 +103,7 @@
                         <span class="tableCell">@prod.TC_Nombre</span>
                         <span class="columnEstado tableCell">@prod.Marca?.TC_Nombre</span>
                         <span class="tableCell">@prod.Subcategoria?.TC_Nombre</span>
-                        <span class="columnEstado tableCell">@(prod.TN_Precio.ToString("N2"))</span>
+                        <span class="columnEstado tableCell">@(prod.TN_Precio.ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
                         <span class="columnEstado tableCell">@(prod.TN_Stock)</span>
                         <div class="columnEstado tableCell">
                             @if (prod.TB_Novedad)

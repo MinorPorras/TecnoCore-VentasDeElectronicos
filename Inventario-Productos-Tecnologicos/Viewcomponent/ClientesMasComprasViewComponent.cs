@@ -41,7 +41,7 @@ public class ClientesMasComprasViewComponent : ViewComponent
                     .Sum(p => p.TN_Total)
             })
             .OrderByDescending(x => x.TotalCompras)
-            .Take(5)
+            .Take(3)
             .ToListAsync();
         
         return View(topClientesConTotal);
