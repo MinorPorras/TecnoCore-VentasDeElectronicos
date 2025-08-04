@@ -20,24 +20,25 @@
         @await Component.InvokeAsync("MarcasMasVendidas")
 
     </div>
-    <div class="InfoPedidos">
-        <h5>Estadísticas de pedidos</h5>
-        @await Component.InvokeAsync("InfoPedidos")
-        @*Aquí se agrega la información y clasificación de los pedidos en relación a la cantidad de cada tipo*@
-    </div>
-    <div class="btnReportesSection">
-        <a asp-action="index" asp-controller="reportes">Reportes</a>
-    </div>
-    <div class="ProductosMasVendidos">
+    <div class="seccionProductStats">
         @*Aquí se agregan los productos más vendidos*@
         @await Component.InvokeAsync("productosMasVendidos")
-    </div>
-    <div class="ProductosBajoStock">
+        
         @*Aquí se agregan los productos con bajo stock*@
         @await Component.InvokeAsync("ProductosStockBajo")
     </div>
-    <div class="InfoVentas">
-        @*Aquí se agrega la información de las ventas, el total, emjor años, mes y día de ventas*@
-        @await Component.InvokeAsync("EstadisticasVentas")
+    <div class="seccionReportesVentasStats">
+        <div class="btnReportesSection">
+            <a asp-action="ReporteVentas" asp-controller="reportes" class="btnBase">Reporte de ventas</a>
+        </div>
+        <div class="InfoPedidos">
+            <h5 class="stats-title">Estadísticas de pedidos</h5>
+            @await Component.InvokeAsync("InfoPedidos")
+            @*Aquí se agrega la información y clasificación de los pedidos en relación a la cantidad de cada tipo*@
+        </div>
+        <div class="InfoVentas">
+            @*Aquí se agrega la información de las ventas, el total, emjor años, mes y día de ventas*@
+            @await Component.InvokeAsync("EstadisticasVentas")
+        </div>
     </div>
 </div>

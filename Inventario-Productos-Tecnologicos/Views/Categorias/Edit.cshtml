@@ -5,30 +5,32 @@
     Layout = "_LayoutAdmin";
 }
 
-<div>
-    <h2>Editar Categoría</h2>
-    <form asp-action="Edit" method="post" class="modifyElement">
+<div class="createContainer">
+    <h2 class="pageTitle">Editar Categoría</h2>
+    <form asp-action="Edit" method="post" class="modifyElement editCategoriaForm">
         @Html.AntiForgeryToken()
         <input type="hidden" name="controller" id="controller" value="Categorias">
         <input type="hidden" name="action" id="action" value="Edit">
-
         <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id">
-        <div class="formgroup">
+        
+        <div class="formGroup">
             <label for="TC_Nombre">Nombre:</label>
-            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre">
+            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre" class="inputBase">
         </div>
-        <div class="formgroup">
+        <div class="formGroup">
             <label for="TB_Activo">Estado:</label>
-            <select name="TB_Activo" id="TB_Activo">
+            <select name="TB_Activo" id="TB_Activo" class="inputBase">
                 <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
                 <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
         <div class="pageIndexContainer">
-            <h3 class="pageTitle">Subcategorías</h3>
-            <a asp-action="CreateSubcategoria" asp-route-idCategoria="@Model.TN_Id" class="btnCreate">Crear</a>
+            <div class="headerSubCatTableEditCategoria">
+                <h3 class="pageTitle">Subcategorías</h3>
+                <a asp-action="CreateSubcategoria" asp-route-idCategoria="@Model.TN_Id" class="btnCreate">Crear</a>
+            </div>
             <div class="tableContainer">
-                <div class="tbl-header TMarca">
+                <div class="tbl-header TSubCat">
                     <span class="headerText">ID</span>
                     <span class="headerText">Nombre</span>
                     <span class="headerText">Estado</span>
@@ -45,7 +47,7 @@
                     {
                         @foreach (var sub in ViewBag.Subcategorias)
                         {
-                            <div class="tableRow TMarca">
+                            <div class="tableRow TSubCat">
                                 <span class="tableCell">@sub.TN_Id</span>
                                 <span class="tableCell">@sub.TC_Nombre</span>
                                 <span class="columnEstado tableCell">
@@ -59,7 +61,7 @@
                                     }
                                 </span>
                                 <div class="tableButtonsColumn">
-                                    <a asp-action="EditSubcategoria" asp-route-idCategoria="@sub.TN_Id"
+                                    <a asp-action="EditSubcategoria" asp-route-idSubCategoria="@sub.TN_Id"
                                        class="EditBtn tooltipContainer">
                                         <img src="~/img/ICO_Edit.svg" alt="Editar"/>
                                         <span class="TooltipText">Editar</span>
@@ -90,8 +92,8 @@
             </div>
         </div>
         <div class="btngroup">
-            <button type="submit" id="updateBtn">Actualizar</button>
-            <a asp-action="Index">Regresar</a>
+            <a asp-action="Index" class="btnExit">Regresar</a>
+            <button type="submit" id="updateBtn" class="btnEdit">Actualizar</button>
         </div>
         <p class="pageTitle" hidden>subcategoría</p>
     </form>

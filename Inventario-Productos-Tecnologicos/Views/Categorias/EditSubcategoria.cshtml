@@ -5,28 +5,28 @@
     Layout = "_LayoutAdmin";
 }
 
-<div>
-    <h2>Editar Subcategoría</h2>
-    <form asp-action="EditSubcategoria" method="post" class="modifyElement">
+<div class="createContainer">
+    <h2 class="pageTitle">Editar Subcategoría</h2>
+    <form asp-action="EditSubcategoria" method="post" class="modifyElement createMarcaForm">
         @Html.AntiForgeryToken()
         <input type="hidden" name="controller" id="controller" value="Categorias">
         <input type="hidden" name="action" id="action" value="EditSubcategoria">
         <input type="hidden" id="TN_Id" name="TN_Id" value="@Model.TN_Id">
         <div class="formgroup">
             <label for="TC_Nombre">Nombre:</label>
-            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre">
+            <input type="text" name="TC_Nombre" id="TC_Nombre" value="@Model.TC_Nombre" class="inputBase">
         </div>
         <input type="hidden" name="TN_CategoriaId" id="TN_CategoriaId" value="@Model.TN_CategoriaId">
         <div class="formgroup">
             <label for="TB_Activo">Estado:</label>
-            <select name="TB_Activo" id="TB_Activo">
+            <select name="TB_Activo" id="TB_Activo" class="inputBase">
                 <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
                 <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
-            <button type="submit" id="updateBtn">Actualizar</button>
-            <a type="button" asp-action="Edit" asp-route-id="@Model.TN_CategoriaId">Regresar</a>
+            <a type="button" asp-action="Edit" asp-route-id="@Model.TN_CategoriaId" class="btnExit">Regresar</a>
+            <button type="submit" id="updateBtn" class="btnEdit">Actualizar</button>
         </div>
     </form>
 </div>

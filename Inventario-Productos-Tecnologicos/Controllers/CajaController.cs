@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Claims;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity; // Necesario para UserManager y SignInManager
@@ -689,6 +690,17 @@ public class CajaController : Controller
             {
                 _logger.LogCritical("Agregando producto al detalle del pedido: {ProductoPedido}", JsonSerializer.Serialize(productoPedido));
                 _context.TECO_P_DetallePedido.Add(productoPedido);
+            
+                // Actualizar el stock del producto
+                var productoEnInventario = await _context.TECO_A_Producto
+                    .FirstOrDefaultAsync(p => p.TN_Id == productoPedido.TN_ProductoId);
+                
+                if (productoEnInventario != null)
+                {
+                    productoEnInventario.TN_Stock -= productoPedido.TN_Cantidad ?? 0;
+                    _logger.LogCritical("Stock del producto ID {ProductoId} actualizado. Nuevo stock: {NuevoStock}",
+                        productoPedido.TN_ProductoId, productoEnInventario.TN_Stock);
+                }
             }
             // Eliminar el carrito de compras del usuario después de crear el pedido
             _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);

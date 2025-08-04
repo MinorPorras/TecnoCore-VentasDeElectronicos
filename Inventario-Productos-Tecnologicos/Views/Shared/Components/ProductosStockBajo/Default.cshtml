@@ -1,47 +1,62 @@
 @model System.Collections.Generic.List<Inventario_Productos_Tecnologicos.Models.TECO_A_Producto>
 
 
-<div class="ProductosStockBajo">
-    <h4>Productos con stock bajo</h4>
+<div class="ProductosBajoStock">
+    <h4 class="stats-title">Productos con stock bajo</h4>
     <div class="stats-table">
         <div class="stats-table-header">
-            <h5>Producto</h5>
-            <h5>Stock</h5>
+            <h5 class="stats-table-hearder-text stats-cont">Pos</h5>
+            <h5 class="stats-table-hearder-text">Producto</h5>
+            <h5 class="stats-table-hearder-text stats-cont">Stock</h5>
         </div>
         
         @if (Model.Count == 0)
         {
-            <div class="stats-item">
-                <h6>No hay productos</h6>
-            </div>
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 4; i++)
+            <div class="stats-table-content">
+                <div class="stats-item">
+                    <h6>No hay productos registrados</h6>
+                </div>
+                @if (Model.Count < 3)
                 {
-                    <div class="stats-item">
-                        <h6>---------------------------</h6>
-                    </div>
+                    @for (var i = Model.Count; i < 2; i++)
+                    {
+                        {
+                            <div class="stats-item">
+                                <h6 class="stats-item-text">---------------------</h6>
+                                <span class="stats-item-text">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                            </div>
+                        }
+                    }
                 }
-            }
+            </div>
         }
         else
         {
-            foreach (var prod in Model)
-            {
-                <div class="stats-item">
-                    <h6>@prod.TC_Nombre</h6>
-                    <p>@prod.TN_Stock</p>
-                </div>
-            }
-            if (Model.Count < 5)
-            {
-                for (var i = Model.Count; i < 5; i++)
+            <div class="stats-table-content">
+                @{ var cont = 1; }  @* Declaración y inicialización correcta del contador *@
+                @foreach (var prod in Model)
                 {
                     <div class="stats-item">
-                        <h6>---------------------------</h6>
+                        <span class="stats-item-text stats-cont">@(cont + ". ")</span>
+                        <h6 class="stats-item-text">@prod.TC_Nombre</h6>
+                        <p class="stats-item-text stats-cont">@prod.TN_Stock</p>
                     </div>
+                    cont++; @* Incrementa el contador en cada iteración *@
                 }
-            }
+                @{ var contExtra = Model.Count + 1; }  @* Declaración y inicialización correcta del contador *@
+                @if (Model.Count < 3)
+                {
+                    for (var i = Model.Count; i < 3; i++)
+                    {
+                        <div class="stats-item">
+                            <span class="stats-item-text stats-cont">@(contExtra + ". ")</span>
+                            <h6 class="stats-item-text">---------------------</h6>
+                            <span class="stats-item-text stats-cont">@(0.ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                        </div>
+                        contExtra++; @* Incrementa el contador en cada iteración *@
+                    }
+                }
+            </div>
         }
     </div>
 </div>
