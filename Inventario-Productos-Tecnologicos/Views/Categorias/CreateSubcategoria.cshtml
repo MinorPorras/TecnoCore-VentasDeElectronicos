@@ -5,26 +5,26 @@
     Layout = "_LayoutAdmin";
 }
 
-<div>
-    <h2>Crear Subcategoría</h2>
+<div class="createContainer">
+    <h2 class="pageTitle">Crear Subcategoría</h2>
 
-    <form asp-action="CreateSubcategoria" method="post">
+    <form asp-action="CreateSubcategoria" method="post" class="createMarcaForm">
         @Html.AntiForgeryToken()
         <div class="formgroup">
             <label for="TC_Nombre">Nombre:</label>
-            <input type="text" name="TC_Nombre" id="TC_Nombre">
+            <input type="text" name="TC_Nombre" id="TC_Nombre" class="inputBase">
         </div>
         <input type="hidden" name="TN_CategoriaId" id="TN_CategoriaId" value="@ViewBag.CategoriaId">
         <div class="formgroup">
             <label for="TB_Activo">Estado:</label>
-            <select name="TB_Activo" id="TB_Activo">
+            <select name="TB_Activo" id="TB_Activo" class="inputBase">
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
-            <button type="submit">Guardar</button>
-            <a asp-action="Edit" asp-route-id="@ViewBag.CategoriaId">Regresar</a>
+            <a asp-action="Edit" asp-route-id="@ViewBag.CategoriaId" class="btnExit">Regresar</a>
+            <button type="submit" class="btnCreate">Guardar</button>
         </div>
     </form>
 </div>

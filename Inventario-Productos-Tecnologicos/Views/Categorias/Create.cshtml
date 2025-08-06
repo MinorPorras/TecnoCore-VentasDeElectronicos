@@ -4,29 +4,29 @@
     ViewBag.Title = "Crear Categoría";
     Layout = "_LayoutAdmin";
 }
-
-<h2>Crear Categoría</h2>
-
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
-    <div class="formgroup">
-        <label asp-for="TC_Nombre">Nombre:</label>
-        <input asp-for="TC_Nombre" class="form-control">
-        <span asp-validation-for="TC_Nombre" class="text-danger"></span>
-    </div>
-    <div class="formgroup">
-        <label asp-for="TB_Activo">Estado:</label>
-        <select asp-for="TB_Activo" class="form-control">
-            <option value="true">Activo</option>
-            <option value="false">Inactivo</option>
-        </select>
-        <span asp-validation-for="TB_Activo" class="text-danger"></span>
-    </div>
-    <div class="btngroup">
-        <button type="submit" class="btn btn-primary">Guardar</button>
-        <a asp-action="Index" class="btn btn-secondary">Regresar</a>
-    </div>
-</form>
+<div class="createContainer">
+    <h2 class="pageTitle">Crear Categoría</h2>
+    <form asp-action="Create" method="post" class="createCategoriaForm">
+        @Html.AntiForgeryToken()
+        <div class="formgroup">
+            <label asp-for="TC_Nombre">Nombre:</label>
+            <input asp-for="TC_Nombre" class="inputBase">
+            <span asp-validation-for="TC_Nombre" class="text-danger"></span>
+        </div>
+        <div class="formgroup">
+            <label asp-for="TB_Activo">Estado:</label>
+            <select asp-for="TB_Activo" class="inputBase">
+                <option value="true">Activo</option>
+                <option value="false">Inactivo</option>
+            </select>
+            <span asp-validation-for="TB_Activo" class="text-danger"></span>
+        </div>
+        <div class="btngroup">
+            <a asp-action="Index" class="btnExit">Regresar</a>
+            <button type="submit" class="btnCreate">Guardar</button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }

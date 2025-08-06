@@ -20,7 +20,7 @@ public class KardexController : Controller
         _logger = logger;
     }
 
-    // GET: Kardex
+// GET: Kardex
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
     {
@@ -29,6 +29,7 @@ public class KardexController : Controller
             var kardexes = await _context.TECO_P_Kardex
                 .Include(k => k.Producto)
                 .Include(k => k.TipoMovimientoKardex)
+                .OrderByDescending(k => k.TF_Fecha) // Agregamos esta línea para ordenar
                 .ToListAsync();
 
             ViewBag.TiposMovimiento = await _context.TECO_M_TipoMovimientoKardex

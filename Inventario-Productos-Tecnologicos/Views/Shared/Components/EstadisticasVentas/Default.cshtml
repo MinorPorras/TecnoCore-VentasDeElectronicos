@@ -1,22 +1,23 @@
 @model Inventario_Productos_Tecnologicos.Models.ViewModels.EstadisticasVentasViewModel
+<div class="seccion-estadisticas-ventas stats-ventas-totales">
+    <h5>Total de ventas</h5>
+    <p class="textVentasTotales">@((Model.TotalVentas ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
+</div>
 
-<h5>Total de ventas</h5>
-<p>@Model.TotalVentas</p>
-
-<div class="seccion-estadisticas-ventas">
+<div class="seccion-estadisticas-ventas stats-mejor-año">
     <h6>Mejor año</h6>
     <p>@Model.MejorAñoVentas</p>
-    <p>@Model.TotalMejorAñoVentas</p>
+    <p class="textVentasTotales">@((Model.TotalMejorAñoVentas?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
 </div>
 
-<div class="seccion-estadisticas-ventas">
+<div class="seccion-estadisticas-ventas stats-mejor-mes">
     <h6>Mejor mes</h6>
     <p>@Model.MejorMesVentas</p>
-    <p>@Model.TotalMejorMesVentas</p>
+    <p class="textVentasTotales">@((Model.TotalMejorMesVentas?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
 </div>
 
-<div class="seccion-estadisticas-ventas">
+<div class="seccion-estadisticas-ventas stats-mejor-dia">
     <h6>Mejor día</h6>
     <p>@Model.MejorDiaVentas</p>
-    <p>@Model.TotalMejorDiaVentas</p>
+    <p class="textVentasTotales">@((Model.TotalMejorDiaVentas?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</p>
 </div>

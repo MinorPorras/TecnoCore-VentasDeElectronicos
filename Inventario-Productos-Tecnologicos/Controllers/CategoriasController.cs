@@ -243,17 +243,13 @@ public class CategoriasController : Controller
     }
 
     [Authorize(Roles = "Administrador")]
-    public async Task<IActionResult> EditSubcategoria(int id)
+    public async Task<IActionResult> EditSubcategoria(int idSubCategoria)
     {
-        var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);
-        if (subcategoria == null)
-        {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.NotFoundAlert("la subcategoría"));
-            return RedirectToAction(nameof(Index));
-        }
-
-        return View(subcategoria);
+        var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(idSubCategoria);
+        if (subcategoria != null) return View(subcategoria);
+        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            Alert.NotFoundAlert("la subcategoría"));
+        return RedirectToAction(nameof(Index));
     }
 
     [HttpPut]

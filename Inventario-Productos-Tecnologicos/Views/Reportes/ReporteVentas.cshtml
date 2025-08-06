@@ -1,0 +1,77 @@
+@model Inventario_Productos_Tecnologicos.Models.ViewModels.ReporteVentasViewModel
+
+@{
+    ViewBag.Title = "Reporte de ventas";
+    Layout = "_LayoutAdmin";
+}
+<div class="reporteContainer">
+    <h2 class="pageTitle">Reporte de ventas</h2>
+
+    <form asp-action="ReporteVentas" method="post" class="formCreateReporte">
+        @Html.AntiForgeryToken()
+        <div class="formGroup">
+            <label asp-for="fechaInicio">Fecha de inicio:</label>
+            <input type="date" value="@Model.fechaInicio.ToString("yyyy-MM-dd")" asp-for="fechaInicio" class="inputBase">
+        </div>
+        <div class="formGroup">
+            <label asp-for="fechaFin">Fecha de finalización:</label>
+            <input type="date" value="@Model.fechaFin.ToString("yyyy-MM-dd")" asp-for="fechaFin" class="inputBase">
+        </div>
+        <button type="submit" class="btnCreate">Generar</button>
+    </form>
+    
+    <div class="seccionReporte">
+        <div class="seccionPrincipalInfo">
+            <div class="totalVentasSeccion">
+                <h5>Total de ventas</h5>
+                <input class="inputBase" value="@((Model.total).ToString("C", new System.Globalization.CultureInfo("es-CR")))" readonly/>
+            </div>
+            <div class="totalDescuentoSeccion">
+                <h5>Total de descuento</h5>
+                <input class="inputBase" value="@((Model.descuento).ToString("C", new System.Globalization.CultureInfo("es-CR")))" readonly/>
+            </div>
+            <div class="productoMejorVendido">
+                <h5>Producto mejor vendido</h5>
+                <input asp-for="productoMejorVendido" class="inputBase" readonly></input>
+            </div>
+            <div class="marcaMejorVendida">
+                <h5>Marca mejor vendida</h5>
+                <input asp-for="marcaMejorVendida" class="inputBase" readonly></input>
+            </div>
+            <div class="subcategoriaMejorVendida">
+                <h5>Subcategoría mejor vendida</h5>
+                <input asp-for="subcategoriaMejorVendida" class="inputBase" readonly></input>
+            </div>
+        </div>
+    </div>
+    <div class="table-list-pedidos-reportes">
+        <div class="table-list-pedidos-reportes-header">
+            <span class="headerText">Cliente</span>
+            <span class="headerText">Fecha</span>
+            <span class="headerText">Met. Pago</span>
+            <span class="headerText">Descuento</span>
+            <span class="headerText">Total</span>
+        </div>
+        <div class="table-list-pedidos-reportes-content">
+            @if (Model.ListPedidos.Count >= 0)
+            {
+                @foreach (var pedidos in Model.ListPedidos)
+                {
+                    <div class="table-list-pedidos-reportes-row">
+                        <span class="table-list-pedidos-reportes-item">@(pedidos.Usuario?.TC_Nombre + " " + pedidos.Usuario?.TC_Apellidos)</span> <span>@pedidos.TF_Fecha</span>
+                        <span class="table-list-pedidos-reportes-item">@pedidos.MetodoPago?.TB_NombreMetodo</span>
+                        <span class="table-list-pedidos-reportes-item">@((pedidos.TN_Descuento ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                        <span class="table-list-pedidos-reportes-item">@((pedidos.TN_Total ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                    </div>
+                }   
+            }
+            else
+            {
+                <div class="table-list-pedidos-reportes-row">
+                    <span class="table-list-pedidos-reportes-item">No hay pedidos en ese rango de fechas</span>
+                </div>
+
+            }
+        </div>
+    </div>
+</div>
