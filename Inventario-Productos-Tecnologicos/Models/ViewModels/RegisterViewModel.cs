@@ -5,8 +5,6 @@ namespace Inventario_Productos_Tecnologicos.Models.ViewModels;
 
 public class RegisterViewModel
 {
-    // El ID es opcional y se genera automáticamente
-    public string? Id { get; set; }
 
     //------------Campos de usuario--------------------------
     [Required(ErrorMessage = "El usuario es obligatorio.")]
@@ -69,7 +67,6 @@ public class RegisterViewModel
     public List<SelectListItem> Provincias { get; set; } = [];
     public List<SelectListItem> Cantones { get; set; } = [];
 
-    [Required(ErrorMessage = "El rol es obligatorio")]
     [Display(Name = "Rol")]
     public string Rol { get; set; } = string.Empty;
 }

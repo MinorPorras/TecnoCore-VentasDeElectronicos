@@ -34,7 +34,7 @@
                          alt="@prod.TC_Nombre"> @* Usa Url.Content para rutas relativas *@
                     <div class="carousel-caption">
                         <h5>@prod.TC_Nombre</h5>
-                        <p>Precio: @prod.TN_Precio</p>
+                        <p>Precio: @prod.TN_Precio.ToString("C", new System.Globalization.CultureInfo("es-CR"))</p>
                     </div>
                 </a>
             </div>

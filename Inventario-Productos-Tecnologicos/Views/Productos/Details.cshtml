@@ -25,7 +25,7 @@
                 <span class="DetailsText">@Model.TC_Descripcion</span>
             </div>
 
-            <div class="cantGroup">
+            @*<div class="cantGroup">
                 <label class="DetailsText-header bold">Cantidad:</label>
                 <button class="btnMinus">
                     <img src="~/img/ICO_Minus.svg" alt="-">
@@ -34,7 +34,7 @@
                 <button class="btnPlus">
                     <img src="~/img/ICO_Add.svg" alt="+">
                 </button>
-            </div>
+            </div>*@
 
             <div class="dataGroup dataType">
                 <div class="dataType-sub">
@@ -47,6 +47,11 @@
                 </div>
             </div>
 
+            <div class="dataGroup price">
+                <label class="DetailsText-Price bold">Precio:</label>
+                <span class="DetailsText-Price-red bold">@Model.TN_Precio.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
+            </div>
+            
             <div class="btnContainer">
                 @if (User.IsInRole("Administrador"))
                 {
@@ -60,11 +65,6 @@
                     </button>
                 }
                 <a onclick="window.history.back()" class="btnBack">Regresar</a>
-            </div>
-
-            <div class="dataGroup price">
-                <label class="DetailsText-Price bold">Precio:</label>
-                <span class="DetailsText-Price-red bold">@Model.TN_Precio.ToString("N2")</span>
             </div>
         </div>
     </div>

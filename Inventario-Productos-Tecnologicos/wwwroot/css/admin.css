@@ -956,6 +956,13 @@ h1 {
             justify-content: flex-end;
         }
 
+        & .dataGroup, .dataType{
+            grid-column: 1 / -1;
+        }
+        & .dataGroup.price{
+            grid-column: span 1;
+        }
+
 
         & .btnContainer {
             display: flex;
