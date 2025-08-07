@@ -162,9 +162,9 @@ function modifyElement() {
         });
 
         try {
-            console.log(values)
             const bodyRequest = JSON.stringify(values);
             const token = document.querySelector('input[name="__RequestVerificationToken"]').value;
+            
             const response = await fetch(`/${controller}/${action}`, {
                 method: "PUT",
                 headers: {
@@ -172,24 +172,38 @@ function modifyElement() {
                     'RequestVerificationToken': token
                 },
                 body: bodyRequest
-            })
-
-            // Check if the response status is 204 No Content
-            if (response.status === 204) {
-                return;
-            }
-
+            });
+            
             if (response.ok) {
-                console.log('Elemento modificado correctamente');
-                if (action !== 'EditSubcategoria') {
-                    window.location.href = `/${controller}/Index`;
+                // La petición fue exitosa (status 2xx)
+                const data = await response.json();
+                if (data.success && data.redirectUrl) {
+                    // El servidor confirma el éxito y nos da la URL para redirigir
+                    window.location.href = data.redirectUrl;
                 } else {
-                    window.history.back();
-                    window.location.reload();
+                    // Éxito, pero no hay redirección (podríamos mostrar un mensaje de éxito y quedarnos)
+                    showAlert(data.message || 'Actualización completada.', 'success');
+                }
+            } else {
+                // La petición falló (status 4xx o 5xx).
+                // Verificamos si la respuesta es JSON antes de parsearla.
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    // Si es JSON, la procesamos para obtener el mensaje de error.
+                    const errorData = await response.json();
+                    console.error('Error desde el servidor (JSON):', errorData.message);
+                    showAlert(errorData.message || 'Ocurrió un error al procesar la solicitud.', 'danger');
+                } else {
+                    // Si NO es JSON (probablemente un error de AntiForgery), mostramos la respuesta como texto.
+                    const errorText = await response.text();
+                    console.error('Error desde el servidor (No-JSON):', errorText);
+                    showAlert('Error del servidor. Es posible que la sesión haya expirado o haya un problema de seguridad. Intente recargar la página.', 'danger');
                 }
             }
         } catch (e) {
-            console.error('Error:', e);
+            // Error de red o de parsing del JSON
+            console.error('Error de conexión o en el script:', e);
+            showAlert('No se pudo conectar con el servidor. Verifique su conexión de red.', 'danger');
         }
     })
 }
