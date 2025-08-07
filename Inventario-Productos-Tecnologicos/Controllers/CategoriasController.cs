@@ -4,16 +4,19 @@ using Inventario_Productos_Tecnologicos.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static System.Text.Json.JsonSerializer;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
 public class CategoriasController : Controller
 {
     private readonly TecnoCoreDbContext _context;
+    private readonly ILogger<CategoriasController> _logger;
 
-    public CategoriasController(TecnoCoreDbContext context)
+    public CategoriasController(TecnoCoreDbContext context, ILogger<CategoriasController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     // GET: Categorias
@@ -39,13 +42,19 @@ public class CategoriasController : Controller
     {
         if (ModelState.IsValid)
         {
+            var existingCategory = await _context.TECO_M_Categoria.Where(c => c.TC_Nombre == categoria.TC_Nombre).FirstOrDefaultAsync();
+            if (existingCategory != null)
+            {
+                ViewBag.Alert = Alert.ErrorAlert("Ya existe una categoría con ese nombre");
+                return View(categoria);
+            }
             _context.Add(categoria);
             await _context.SaveChangesAsync();
-            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+            TempData["success"] = Serialize(Alert.SuccessAlert());
             return RedirectToAction(nameof(Index));
         }
 
-        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+        TempData["Alert"] = Serialize(
             Alert.ErrorAlert("Los datos ingresados no son válidos"));
         return View(categoria);
     }
@@ -74,14 +83,14 @@ public class CategoriasController : Controller
 
             var categorias = await query.ToListAsync();
             if (!categorias.Any())
-                TempData["info"] = System.Text.Json.JsonSerializer.Serialize(
+                TempData["info"] = Serialize(
                     Alert.InfoAlert("No se encontraron categorías con los criterios especificados"));
             return View("Index", categorias);
         }
         catch (Exception e)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al buscar categorías"));
+            TempData["Alert"] = Serialize(
+                Alert.ErrorAlert($"Error al buscar categorías: {e.Message}"));
             return NotFound();
         }
     }
@@ -93,7 +102,7 @@ public class CategoriasController : Controller
         var categoria = await _context.TECO_M_Categoria.FindAsync(id);
         if (categoria == null)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            TempData["Alert"] = Serialize(
                 Alert.NotFoundAlert("la categoría"));
             return NotFound();
         }
@@ -111,9 +120,21 @@ public class CategoriasController : Controller
         var existingCategory = await _context.TECO_M_Categoria.FindAsync(categoria.TN_Id);
         if (existingCategory == null)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.NotFoundAlert("la categoría"));
-            return NoContent();
+            ViewBag.Alert = Alert.NotFoundAlert("No se encontró la categoría a modificar");
+            return BadRequest(new { success = false, message = "No se encontró la categoría a modificar"});
+        }
+        
+        var existingCategoryName = await _context.TECO_M_Categoria.Where(c => c.TC_Nombre == categoria.TC_Nombre).FirstOrDefaultAsync();
+        //Si se encontró alguna categoría con el mismo nombre
+        if (existingCategoryName != null)
+        {
+            //Se verifica que no sea la misma categoría
+            if (existingCategoryName.TN_Id != categoria.TN_Id)
+            {
+                //Se devuelve un error indicando que ya existe una categoría con ese nombre
+                ViewBag.Alert = Alert.NotFoundAlert("Ya existe una categoría con ese nombre");
+                return BadRequest(new { success = false, message = "Ya existe una categoría con ese nombre"});
+            }
         }
 
         existingCategory.TC_Nombre = categoria.TC_Nombre;
@@ -130,36 +151,32 @@ public class CategoriasController : Controller
 
         if (!ModelState.IsValid)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Los datos ingresados no son válidos"));
-            return View(categoria);
+            ViewBag.Alert = Alert.ErrorAlert("Los datos ingresados no son válidos");
+            return BadRequest(new { success = false, message = "Los datos ingresados no son válidos"});
         }
 
         try
         {
             _context.Update(existingCategory);
             await _context.SaveChangesAsync();
-            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
-            return Ok();
+            TempData["success"] = Serialize(Alert.SuccessAlert());
+            return Ok(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!CategoriaExists(existingCategory.TN_Id))
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("la categoría"));
+                ViewBag.Alert = Alert.NotFoundAlert("No se encontró la categoría a actualizar");
                 return NotFound();
             }
 
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error de concurrencia al actualizar la categoría"));
-            return StatusCode(500);
+            ViewBag.Alert = Alert.ErrorAlert("Error de concurrencia al actualizar la categoría");
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: Concurrencia" });
         }
         catch (Exception ex)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al actualizar la categoría"));
-            return StatusCode(500);
+            ViewBag.Alert = Alert.ErrorAlert("Error al actualizar la categoría");
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: {ex.Message}" });
         }
     }
 
@@ -172,7 +189,7 @@ public class CategoriasController : Controller
         var categoria = await _context.TECO_M_Categoria.FindAsync(id);
         if (categoria == null)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            TempData["Alert"] = Serialize(
                 Alert.NotFoundAlert("la categoría"));
             return RedirectToAction(nameof(Index));
         }
@@ -191,7 +208,7 @@ public class CategoriasController : Controller
         await _context.SaveChangesAsync();
 
         TempData["info"] =
-            System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
+            Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
         return RedirectToAction(nameof(Index));
     }
 
@@ -206,7 +223,7 @@ public class CategoriasController : Controller
     {
         if (idCategoria == 0)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            TempData["Alert"] = Serialize(
                 Alert.ErrorAlert("Categoría no válida"));
             return RedirectToAction(nameof(Index));
         }
@@ -218,27 +235,38 @@ public class CategoriasController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Administrador")]
-    public IActionResult CreateSubcategoria(
+    public async Task<IActionResult> CreateSubcategoria(
         [Bind("TC_Nombre", "TN_CategoriaId", "TB_Activo")]
         TECO_M_Subcategoria subcategoria)
     {
         if (string.IsNullOrEmpty(subcategoria.TC_Nombre))
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("El nombre no puede estar vacío"));
+            _logger.LogCritical("El nombre no puede estar vacío");
+            ViewBag.Alert = Alert.ErrorAlert("El nombre no puede estar vacío");
+            ViewBag.CategoriaId = subcategoria.TN_CategoriaId;
             return View(subcategoria);
         }
 
         if (!ModelState.IsValid)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Los datos ingresados no son válidos"));
+            _logger.LogCritical("Los datos ingresados no son válidos");
+            _logger.LogCritical(Serialize(subcategoria));
+            ViewBag.Alert = Alert.ErrorAlert("Los datos ingresados no son válidos");
+            ViewBag.CategoriaId = subcategoria.TN_CategoriaId;
+            return View(subcategoria);
+        }
+        
+        var existingSub = await _context.TECO_M_Subcategoria.Where(s => s.TC_Nombre == subcategoria.TC_Nombre).FirstOrDefaultAsync();
+        if (existingSub != null)
+        {
+            ViewBag.Alert = Alert.ErrorAlert("Ya existe una subcategoría con ese nombre");
+            ViewBag.CategoriaId = subcategoria.TN_CategoriaId;
             return View(subcategoria);
         }
 
         _context.TECO_M_Subcategoria.Add(subcategoria);
         _context.SaveChanges();
-        TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+        TempData["success"] = Serialize(Alert.SuccessAlert());
         return RedirectToAction("Edit", new { Id = subcategoria.TN_CategoriaId });
     }
 
@@ -247,9 +275,9 @@ public class CategoriasController : Controller
     {
         var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(idSubCategoria);
         if (subcategoria != null) return View(subcategoria);
-        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+        TempData["Alert"] = Serialize(
             Alert.NotFoundAlert("la subcategoría"));
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction(nameof(Edit));
     }
 
     [HttpPut]
@@ -261,17 +289,25 @@ public class CategoriasController : Controller
         {
             if (!ModelState.IsValid)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert("Los datos ingresados no son válidos"));
-                return BadRequest();
+                ViewBag.Alert = Alert.ErrorAlert("Los datos ingresados no son válidos");
+                return BadRequest(new { success = false, message = "Los datos ingresados no son válidos"});
             }
 
             var existingSub = await _context.TECO_M_Subcategoria.FirstOrDefaultAsync(s => s.TN_Id == sub.TN_Id);
             if (existingSub == null)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("la subcategoría"));
-                return NotFound();
+                ViewBag.Alert = Alert.NotFoundAlert("la subcategoría");
+                return NotFound(new { success = false, message = "No se encontró la subcategoría a modificar"});
+            }
+            
+            var existingSubName = await _context.TECO_M_Subcategoria.Where(s => s.TC_Nombre == sub.TC_Nombre).FirstOrDefaultAsync();
+            if (existingSubName != null)
+            {
+                if (existingSubName.TN_Id != existingSub.TN_Id)
+                {
+                    ViewBag.Alert = Alert.ErrorAlert("Los datos ingresados no son válidos");
+                    return BadRequest(new { success = false, message = "Ya hay una subcategoría con el mismo nombre"});
+                }
             }
 
             var categoria = await _context.TECO_M_Categoria.Include(c => c.Subcategoria)
@@ -286,14 +322,14 @@ public class CategoriasController : Controller
             existingSub.TB_Activo = sub.TB_Activo;
             existingSub.TN_CategoriaId = sub.TN_CategoriaId;
             await _context.SaveChangesAsync();
-            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
-            return Ok();
+            TempData["success"] = Serialize(Alert.SuccessAlert());
+            return Ok(new { success = true, redirectUrl = Url.Action(nameof(Edit), new { id = sub.TN_CategoriaId }) });
         }
         catch (DbUpdateException)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            TempData["Alert"] = Serialize(
                 Alert.ErrorAlert("Error al guardar los cambios en la base de datos"));
-            return StatusCode(500);
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: Error al guardar los cambios" });
         }
     }
 
@@ -305,7 +341,7 @@ public class CategoriasController : Controller
         var subcategoria = await _context.TECO_M_Subcategoria.FindAsync(id);
         if (subcategoria == null)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            TempData["Alert"] = Serialize(
                 Alert.NotFoundAlert("la subcategoría"));
             return RedirectToAction(nameof(Index));
         }
@@ -324,7 +360,7 @@ public class CategoriasController : Controller
         await _context.SaveChangesAsync();
 
         TempData["info"] =
-            System.Text.Json.JsonSerializer.Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
+            Serialize(Alert.InfoAlert("Estado actualizado correctamente"));
         return RedirectToAction("Edit", new { Id = subcategoria.TN_CategoriaId });
     }
 }

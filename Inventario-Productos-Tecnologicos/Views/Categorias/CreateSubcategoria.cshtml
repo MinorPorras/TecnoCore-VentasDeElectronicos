@@ -23,7 +23,7 @@
             </select>
         </div>
         <div class="btngroup">
-            <a asp-action="Edit" asp-route-id="@ViewBag.CategoriaId" class="btnExit">Regresar</a>
+            <a onclick="window.history.back()" class="btnExit">Regresar</a>
             <button type="submit" class="btnCreate">Guardar</button>
         </div>
     </form>
