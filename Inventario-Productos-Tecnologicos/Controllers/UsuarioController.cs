@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Inventario_Productos_Tecnologicos.Models;
@@ -40,7 +41,7 @@ public class UsuarioController : Controller
             var usuario = await _userManager.GetUserAsync(User);
             if (usuario == null)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+                TempData["Alert"] = JsonSerializer.Serialize(
                     Alert.ErrorAlert("Debe iniciar sesión primero"));
                 return RedirectToAction("Login", "Account");
             }
@@ -134,9 +135,162 @@ public class UsuarioController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al buscar usuarios");
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al buscar usuarios"));
+            ViewBag.Alert = Alert.ErrorAlert("Error al buscar usuarios");
             return RedirectToAction(nameof(Index));
+        }
+    }
+
+    /// <summary>
+    /// Verifica si el nombre de usuario o el correo electrónico ya existen en la base de datos.
+    /// </summary>
+    /// <param name="model">El modelo de registro que contiene el nombre de usuario y el correo electrónico a verificar.</param>
+    /// <returns>Una lista de cadenas donde el primer elemento indica la validez ("Valid" o "Not valid") y el segundo elemento proporciona un mensaje descriptivo.</returns>
+    public async Task<List<string>> checkUserData(RegisterViewModel model)
+    { 
+        // Verificación de nombre de usuario existente
+        var userNameExists = await _userManager.FindByNameAsync(model.UserName);
+        if (userNameExists != null)
+        {
+            _logger.LogCritical("El nombre de usuario ya existe");
+            ViewBag.Alert = Alert.ErrorAlert($"El usuario ya existe, escoja otro");
+            model.Provincias =
+                new List<SelectListItem>(new SelectList(_context.TECO_M_Provincia.OrderBy(p => p.TC_Nombre),
+                    "TN_Id", "TC_Nombre"));
+            if (model.SelectedProvinciaId > 0)
+                model.Cantones = new List<SelectListItem>(new SelectList(
+                    _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
+                    "TN_Id", "TC_Nombre"));
+            else
+                model.Cantones =
+                    new List<SelectListItem>(
+                        new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre"));
+            return
+            [
+                "Not valid",
+                "El nombre de usuario ya existe"
+            ];
+        }
+        // Verificación de correo electrónico existente
+        var emailExists = await _userManager.FindByEmailAsync(model.Email);
+        if (emailExists != null)
+        {
+            _logger.LogCritical("El correo ya está registrado");
+            ViewBag.Alert = Alert.ErrorAlert($"El correo ya está registrado, escoja otro");
+            model.Provincias =
+                new List<SelectListItem>(new SelectList(_context.TECO_M_Provincia.OrderBy(p => p.TC_Nombre),
+                    "TN_Id", "TC_Nombre"));
+            if (model.SelectedProvinciaId > 0)
+                model.Cantones =
+                [
+                    ..new SelectList(
+                        _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
+                        "TN_Id", "TC_Nombre")
+                ];
+            else
+                model.Cantones =
+                [
+                    ..new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre")
+                ];
+            return
+            [
+                "Not valid",
+                "El correo ya está registrado"
+            ];        
+        }
+        else
+        {
+            return
+            [
+                "Valid",
+                "Datos correctos"
+            ];         
+        }
+    }
+    
+        /// <summary>
+    /// Verifica si el nombre de usuario o el correo electrónico ya existen en la base de datos.
+    /// </summary>
+    /// <param name="model">El modelo de registro que contiene el nombre de usuario y el correo electrónico a verificar.</param>
+    /// <returns>Una lista de cadenas donde el primer elemento indica la validez ("Valid" o "Not valid") y el segundo elemento proporciona un mensaje descriptivo.</returns>
+    public async Task<List<string>> checkEditUserData(EditUserViewModel model)
+    { 
+        // Verificación de nombre de usuario existente
+        var userNameExists = await _userManager.FindByNameAsync(model.UserName);
+        var actualUserData = await _userManager.FindByIdAsync(model.Id);
+        if (userNameExists != null)
+        {
+            if (userNameExists.UserName != actualUserData.UserName)
+            {
+                _logger.LogCritical("El nombre de usuario ya existe");
+                ViewBag.Alert = Alert.ErrorAlert($"El usuario ya existe, escoja otro");
+                model.Provincias =
+                    new List<SelectListItem>(new SelectList(_context.TECO_M_Provincia.OrderBy(p => p.TC_Nombre),
+                        "TN_Id", "TC_Nombre"));
+                if (model.SelectedProvinciaId > 0)
+                    model.Cantones = new List<SelectListItem>(new SelectList(
+                        _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
+                        "TN_Id", "TC_Nombre"));
+                else
+                    model.Cantones =
+                        new List<SelectListItem>(
+                            new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre"));
+                return
+                [
+                    "Not valid",
+                    "El nombre de usuario ya existe"
+                ];
+            }
+            else
+            {
+                _logger.LogCritical("El usuario nuevo y el antiguo son iguales");
+            }
+        }
+        // Verificación de correo electrónico existente
+        var emailExists = await _userManager.FindByEmailAsync(model.Email);
+        if (emailExists != null)
+        {
+            if (emailExists.Id != actualUserData?.Id)
+            {
+                _logger.LogCritical("El correo ya está registrado");
+                ViewBag.Alert = Alert.ErrorAlert($"El correo ya está registrado, escoja otro");
+                model.Provincias =
+                    new List<SelectListItem>(new SelectList(_context.TECO_M_Provincia.OrderBy(p => p.TC_Nombre),
+                        "TN_Id", "TC_Nombre"));
+                if (model.SelectedProvinciaId > 0)
+                    model.Cantones =
+                    [
+                        ..new SelectList(
+                            _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
+                            "TN_Id", "TC_Nombre")
+                    ];
+                else
+                    model.Cantones =
+                    [
+                        ..new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre")
+                    ];
+                return
+                [
+                    "Not valid",
+                    "El correo ya está registrado"
+                ];    
+            }
+            else
+            {
+                _logger.LogCritical("El correo nuevo y el antiguo son iguales");
+                return
+                [
+                    "Valid",
+                    "Datos correctos"
+                ];   
+            }
+        }
+        else
+        {
+            return
+            [
+                "Valid",
+                "Datos correctos"
+            ];         
         }
     }
 
@@ -161,8 +315,7 @@ public class UsuarioController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al cargar el formulario de creación de usuario");
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al cargar el formulario de registro"));
+            ViewBag.Alert = Alert.ErrorAlert("Error al cargar el formulario de registro");
             return RedirectToAction("Index", "Home");
         }
     }
@@ -191,8 +344,7 @@ public class UsuarioController : Controller
                 var errorMessage = string.Join("\n• ", errorMessages);
                 errorMessage = "Se encontraron los siguientes errores:\n• " + errorMessage;
 
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert(errorMessage));
+                ViewBag.Alert = Alert.ErrorAlert(errorMessage);
 
                 // Recargar los datos necesarios para el formulario
                 var roles = _roleManager.Roles.Where(r => r.TB_Activo).ToList();
@@ -201,14 +353,24 @@ public class UsuarioController : Controller
                     new List<SelectListItem>(new SelectList(_context.TECO_M_Provincia.OrderBy(p => p.TC_Nombre),
                         "TN_Id", "TC_Nombre"));
                 if (model.SelectedProvinciaId > 0)
-                    model.Cantones = new List<SelectListItem>(new SelectList(
-                        _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
-                        "TN_Id", "TC_Nombre"));
+                    model.Cantones =
+                    [
+                        ..new SelectList(
+                            _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
+                            "TN_Id", "TC_Nombre")
+                    ];
                 else
                     model.Cantones =
-                        new List<SelectListItem>(
-                            new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre"));
+                    [
+                        ..new SelectList(Enumerable.Empty<TECO_M_Canton>(), "TN_Id", "TC_Nombre")
+                    ];
+                return View(model);
+            }
 
+            var userValidation = await checkUserData(model);
+            if (userValidation[0] == "Not valid")
+            {
+                ViewBag.Alert = Alert.ErrorAlert(userValidation[1]);
                 return View(model);
             }
 
@@ -258,15 +420,13 @@ public class UsuarioController : Controller
                 _context.TECO_M_Canton.Where(c => c.TN_ProvinciaId == model.SelectedProvinciaId),
                 "TN_Id", "TC_Nombre"));
 
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Por favor, revise los datos ingresados"));
+            ViewBag.Alert = Alert.ErrorAlert("Por favor, revise los datos ingresados");
             return View(model);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al crear usuario");
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert($"Error al crear el usuario: {ex.Message}"));
+            ViewBag.Alert = Alert.ErrorAlert($"Error al crear el usuario: {ex.Message}");
             return RedirectToAction(nameof(Index));
         }
     }
@@ -435,23 +595,24 @@ public class UsuarioController : Controller
                 // Crear un mensaje combinado con todos los errores
                 var errorMessage = string.Join("\n• ", errorMessages);
                 errorMessage = "Se encontraron los siguientes errores:\n• " + errorMessage;
-
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert(errorMessage));
-
-                // Recargar los datos necesarios para el formulario
-                reloadFormElements(model);
-                return View("Edit", model);
+                
+                // Devolvemos un error 400 (Bad Request) con los mensajes
+                return BadRequest(new { success = false, message = errorMessage });
             }
 
+            var userValidation = await checkEditUserData(model);
+            if (userValidation[0] == "Not valid")
+            {
+                // Devolvemos un error 400 (Bad Request) con el mensaje de validación
+                return BadRequest(new { success = false, message = userValidation[1] });
+            }
+            
             //Busca el usuario y si no lo encuentra devuelve un mensaje de error
             var usuario = await _userManager.FindByIdAsync(model.Id);
             if (usuario == null)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("el usuario"));
-
-                return View(model);
+                // Devolvemos un error 404 (Not Found)
+                return NotFound(new { success = false, message = "Usuario no encontrado." });
             }
 
             _logger.LogCritical("Usuario encontrado: {UserName}", usuario.UserName);
@@ -513,28 +674,24 @@ public class UsuarioController : Controller
                 }
 
                 await _context.SaveChangesAsync();
+                // Guardamos el mensaje de éxito en TempData para que sobreviva a la redirección
                 TempData["success"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.SuccessAlert());
-                return RedirectToAction(nameof(Index));
+                _logger.LogCritical("Regresando al index con éxito");
+                // Devolvemos un 200 OK con la URL a la que el cliente debe redirigir
+                return Ok(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
             }
             else
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert("Error al actualizar el usuario: " +
-                                     string.Join(", ", result.Errors.Select(e => e.Description))));
-
-                // Recargar los datos necesarios para el formulario
-                reloadFormElements(model);
-                return View(model);
+                var errorDescription = string.Join(", ", result.Errors.Select(e => e.Description));
+                return BadRequest(new { success = false, message = "Error al actualizar el usuario: " + errorDescription });
             }
         }
         catch (Exception ex)
         {
-            reloadFormElements(model);
             _logger.LogError(ex, "Error al editar usuario");
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert($"Error al editar el usuario: {ex.Message}"));
-            return View(model);
+            // Devolvemos un error 500 (Internal Server Error)
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: {ex.Message}" });
         }
     }
 
