@@ -97,103 +97,123 @@ public class AccountController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register(RegisterViewModel model)
     {
-        if (ModelState.IsValid)
-            //Se inicia un proceso de transacción, este tipo de procesos ejecutan
-            //las acciones en la DB pero si una falla las demás se descartan con ella
-            //En este caso se guarda tod*o no se guarda nada
-            _logger.LogCritical(JsonSerializer.Serialize(model));
-            using (var transaction = await _context.Database.BeginTransactionAsync())
+        // Si el modelo no es válido, volvemos a mostrar el formulario con los errores.
+        if (!ModelState.IsValid)
+        {
+            ViewBag.Alert = Alert.ErrorAlert("Por favor, corrija los errores en el formulario.");
+            _logger.LogCritical("Modelo: " + JsonSerializer.Serialize(model));
+            await RellenarProvinciasCantones(model);
+            return View(model);
+        }
+        await using (var transaction = await _context.Database.BeginTransactionAsync())
+        {
+            try
             {
-                try
+                // Verificación de nombre de usuario existente
+                var userNameExists = await _userManager.FindByNameAsync(model.UserName);
+                if (userNameExists != null)
                 {
-                    var user = new TECO_A_Usuario
+                    _logger.LogCritical("El nombre de usuario ya existe");
+                    ViewBag.Alert = Alert.ErrorAlert($"El usuario ya existe, escoja otro");
+                    await RellenarProvinciasCantones(model);
+                    return View(model);
+                }
+                // Verificación de correo electrónico existente
+                var emailExists = await _userManager.FindByEmailAsync(model.Email);
+                if (emailExists != null)
+                {
+                    _logger.LogCritical("El correo ya está registrado");
+                    ViewBag.Alert = Alert.ErrorAlert($"El correo ya está registrado, escoja otro");
+                    await RellenarProvinciasCantones(model);
+                    return View(model);
+                }
+                var user = new TECO_A_Usuario
+                {
+                    UserName = model.UserName,
+                    Email = model.Email,
+                    TC_Nombre = model.Nombre,
+                    TC_Apellidos = model.Apellidos, // El campo único para apellidos
+                    PhoneNumber = model.PhoneNumber,
+                    EmailConfirmed = true, // Podrías tener un proceso de confirmación por email
+                    TB_Activo = true // Asumimos que el usuario está activo al registrarse
+                };
+
+                //Se crea el usuario
+                var result = await _userManager.CreateAsync(user, model.Password);
+
+                //EN caso de que se cree se pasa a asignarle un rol por defecto
+                if (result.Succeeded)
+                {
+                    _logger.LogInformation("Usuario Creado exitosamente");
+
+                    //Si no tienje un rol asignado se le agrega el rol de Cliente
+                    if (!await _userManager.IsInRoleAsync(user, "Cliente"))
                     {
-                        UserName = model.UserName,
-                        Email = model.Email,
-                        TC_Nombre = model.Nombre,
-                        TC_Apellidos = model.Apellidos, // El campo único para apellidos
-                        PhoneNumber = model.PhoneNumber,
-                        EmailConfirmed = true, // Podrías tener un proceso de confirmación por email
-                        TB_Activo = true // Asumimos que el usuario está activo al registrarse
-                    };
-
-                    //Se crea el usuario
-                    var result = await _userManager.CreateAsync(user, model.Password);
-
-                    //EN caso de que se cree se pasa a asignarle un rol por defecto
-                    if (result.Succeeded)
+                        await _userManager.AddToRoleAsync(user, "Cliente");
+                        _logger.LogInformation("Usuario asignado al rol cliente exitosamente");
+                    }
+                    else
                     {
-                        _logger.LogInformation("Usuario Creado exitosamente");
-
-                        //Si no tienje un rol asignado se le agrega el rol de Cliente
-                        if (!await _userManager.IsInRoleAsync(user, "Cliente"))
-                        {
-                            await _userManager.AddToRoleAsync(user, "Cliente");
-                            _logger.LogInformation("Usuario asignado al rol cliente exitosamente");
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"El usuario {user.UserName} ya tiene un rol asignado");
-                        }
-
-                        //Se obtiene la provincia y el cantón seleccionados
-                        var provincia =
-                            await _context.TECO_M_Provincia.FirstOrDefaultAsync(p =>
-                                p.TN_Id == model.SelectedProvinciaId);
-                        var canton =
-                            await _context.TECO_M_Canton.FirstOrDefaultAsync(p => p.TN_Id == model.SelectedCantonId);
-
-                        if (provincia == null && canton == null)
-                        {
-                            //Si no se ecneuntra nada se hace un rollback para quitar los cambios
-                            ModelState.AddModelError(string.Empty, "Provincia o cantón seleccionados no son válidos");
-                            await transaction.RollbackAsync();
-                            await RellenarProvinciasCantones(model);
-                            return View(model);
-                        }
-                        else
-                        {
-                            TempData["Error"] = JsonSerializer.Serialize(
-                                Alert.ErrorAlert($"No se encotró la provincia o el cantón"));
-                        }
-
-                        //Creación de la dirección del usuario
-                        var direccion = new TECO_A_Direccion
-                        {
-                            TC_Direccion = model.DireccionExacta,
-                            TC_CodigoPostal = model.CodigoPostal,
-                            TN_CantonId = canton.TN_Id,
-                            TN_UsuarioId = user.Id,
-                            TB_Activo = true
-                        };
-                        //Se agrega en la abse de datos la dirección del usuario
-                        _context.TECO_A_Direccion.Add(direccion);
-                        await _context.SaveChangesAsync();
-                        _logger.LogInformation("Dirección almacenada correctamente");
-
-                        //Se hace el commit de la transacción para guardar los cambios realizados en la DB
-                        await transaction.CommitAsync();
-
-                        await _signInManager.SignInAsync(user, false);
-                        _logger.LogInformation("Usuario registrado y ha iniciado sesión");
-
-                        TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert($"Registro exitoso"));
-
-                        return RedirectToAction("Index", "Home");
+                        _logger.LogWarning($"El usuario {user.UserName} ya tiene un rol asignado");
                     }
 
-                    foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+                    //Se obtiene la provincia y el cantón seleccionados
+                    var provincia =
+                        await _context.TECO_M_Provincia.FirstOrDefaultAsync(p =>
+                            p.TN_Id == model.SelectedProvinciaId);
+                    var canton =
+                        await _context.TECO_M_Canton.FirstOrDefaultAsync(p => p.TN_Id == model.SelectedCantonId);
 
-                    TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert($"Error al registrar el usuario"));
+                    if (provincia == null && canton == null)
+                    {
+                        ViewBag.Alert = Alert.ErrorAlert("El cantón seleccionado no es válido. La dirección no pudo ser guardada.");
+                        await transaction.RollbackAsync(); // Revertimos la creación del usuario.
+                        await RellenarProvinciasCantones(model);
+                        return View(model);
+                    }
+                    else
+                    {
+                        TempData["Error"] = JsonSerializer.Serialize(
+                            Alert.ErrorAlert($"No se encotró la provincia o el cantón"));
+                    }
+
+                    //Creación de la dirección del usuario
+                    var direccion = new TECO_A_Direccion
+                    {
+                        TC_Direccion = model.DireccionExacta,
+                        TC_CodigoPostal = model.CodigoPostal,
+                        TN_CantonId = canton.TN_Id,
+                        TN_UsuarioId = user.Id,
+                        TB_Activo = true
+                    };
+                    //Se agrega en la abse de datos la dirección del usuario
+                    _context.TECO_A_Direccion.Add(direccion);
+                    await _context.SaveChangesAsync();
+                    _logger.LogInformation("Dirección almacenada correctamente");
+
+                    //Se hace el commit de la transacción para guardar los cambios realizados en la DB
+                    await transaction.CommitAsync();
+
+                    await _signInManager.SignInAsync(user, false);
+                    _logger.LogInformation("Usuario registrado y ha iniciado sesión");
+
+                    TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert($"Registro exitoso"));
+
+                    return RedirectToAction("Index", "Home");
                 }
-                catch (Exception e)
-                {
-                    _logger.LogError(e, "Error durante el registro de usuario");
-                    var errorAlert = new Alert { Message = "Error interno del servidor", Type = "error" };
-                    TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert($"Error interno del servidor: {e.Message}"));
-                    await transaction.RollbackAsync();
-                }
+
+                foreach (var error in result.Errors) ModelState.AddModelError(string.Empty, error.Description);
+
+                TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert($"Error al registrar el usuario"));
             }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error durante el registro de usuario");
+                var errorAlert = new Alert { Message = "Error interno del servidor", Type = "error" };
+                TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert($"Error interno del servidor: {e.Message}"));
+                await transaction.RollbackAsync();
+            }
+        }
 
         // Si el ModelState no es válido o hubo errores, re-renderizar la vista
         await RellenarProvinciasCantones(model);

@@ -423,7 +423,6 @@ function removeFromCart(productId) {
     })
         .then(data => {
             if (data.success) {
-                showAlert(data.message, 'success');
                 getCartItems();
             } else {
                 showAlert(data.message, 'error');
@@ -454,7 +453,6 @@ function addToCart(productId, quantity = 1){
     })
         .then(data => {
             if (data.success) {
-                showAlert(data.message, 'success');
                 getCartItems();
             } else {
                 showAlert(data.message, 'error');

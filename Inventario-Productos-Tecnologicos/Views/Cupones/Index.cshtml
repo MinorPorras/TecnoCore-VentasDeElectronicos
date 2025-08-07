@@ -89,7 +89,7 @@
                         else
                         {
                             <span class="tableCell">Fijo</span>
-                            <span class="tableCell">₡@cupon.TN_Valor</span>
+                            <span class="tableCell">@cupon.TN_Valor.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
                         }
                         <span
                             class="tableCell">@(cupon.TF_FechaInicio.Day + "/" + cupon.TF_FechaInicio.Month + "/" + cupon.TF_FechaInicio.Year)</span>
