@@ -22,7 +22,7 @@ public class ReportesController : Controller
         // Se inicializa el ViewModel con fechas por defecto y una lista vacía
         var viewModel = new ReporteVentasViewModel
         {
-            fechaInicio = new DateTime(2000, 1, 1), // Una fecha antigua por defecto
+            fechaInicio = DateTime.Now, // Una fecha antigua por defecto
             fechaFin = DateTime.Now,                // La fecha actual por defecto
             ListPedidos = []
         };
@@ -48,6 +48,22 @@ public class ReportesController : Controller
                     .ThenInclude(prod => prod.Subcategoria)
             .Where(p => p.TF_Fecha >= fechaInicio.Date && p.TF_Fecha <= fechaFin.Date.AddDays(1).AddSeconds(-1))
             .ToListAsync();
+
+        if (pedidos.Count <= 0)
+        {
+            ViewBag.Alert = Alert.ErrorAlert("No hay pedidos para mostrar en esas fechas");
+            // Se inicializa el ViewModel con fechas por defecto y una lista vacía
+            var emptyviewModel = new ReporteVentasViewModel
+            {
+                fechaInicio = fechaInicio,
+                fechaFin = fechaFin,
+                productoMejorVendido = "Sin registros",
+                marcaMejorVendida = "Sin registros",
+                subcategoriaMejorVendida = "Sin registros",
+                ListPedidos = []
+            };
+            return View(emptyviewModel);
+        }
 
         // Lógica para calcular totales y encontrar los más vendidos
         var totalVentas = pedidos.Sum(p => p.TN_Total) ?? 0;

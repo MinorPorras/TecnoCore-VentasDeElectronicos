@@ -8,6 +8,9 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
+/// <summary>
+/// Controlador para la gestión de cupones.
+/// </summary>
 public class CuponesController : Controller
 {
     private readonly TecnoCoreDbContext _context;
@@ -19,11 +22,19 @@ public class CuponesController : Controller
         { "M", "Monto" }
     };
 
+    /// <summary>
+    /// Constructor de la clase CuponesController.
+    /// </summary>
+    /// <param name="context">Contexto de la base de datos.</param>
+    /// <param name="logger">Instancia del logger.</param>
     public CuponesController(TecnoCoreDbContext context, ILogger<CuponesController> logger)
     {
         _context = context;
         _logger = logger;
     }
+    /// <summary>
+    /// Muestra la lista de cupones.
+    /// </summary>
 
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Index()
@@ -47,43 +58,101 @@ public class CuponesController : Controller
             return RedirectToAction("Index", "Home");
         }
     }
+    
+    /// <summary>
+    /// Método privado para cargar los datos necesarios en los ViewBag.
+    /// </summary>
+    private void CargarViewBags()
+    {
+        ViewBag.TipoDescuento = new SelectList(new[]
+        {
+            new { Value = "P", Text = "Porcentaje (%)" },
+            new { Value = "M", Text = "Monto Fijo (₡)" }
+        }, "Value", "Text");
+    }
 
+    /// <summary>
+    /// Muestra el formulario para crear un nuevo cupón.
+    /// </summary>
     [Authorize(Roles = "Administrador")]
     public IActionResult Create()
     {
-        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value");
-        return View();
+         CargarViewBags(); // Llamamos al método para preparar los datos
+         var cupon = new TECO_M_Cupon()
+         {
+             TB_Activo = true
+         };
+         return View(cupon);
     }
 
+    /// <summary>
+    /// Carga los datos necesarios en los ViewBag en caso de error durante la creación.
+    /// </summary>
+    /// <param name="errorMessage">Mensaje de error a mostrar.</param>
+    /// <param name="cupon">Objeto cupón con los datos ingresados.</param>
+    private void cargarDataErrorOnCreate(string errorMessage, TECO_M_Cupon cupon)
+    {
+        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", cupon.TC_TipoDescuento);
+        ViewBag.Alert = Alert.ErrorAlert(errorMessage);
+    }
+
+    /// <summary>
+    /// Crea un nuevo cupón.
+    /// </summary>
+    /// <param name="cupon">Objeto cupón a crear.</param>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Administrador")]
-    public async Task<IActionResult> Create(
-        [Bind(
-            "TC_Codigo,TC_Descripcion,TC_TipoDescuento,TN_Valor,TF_FechaInicio,TF_FechaFin,TN_UsosActuales,TN_UsosMaximos,TB_Activo")]
-        TECO_M_Cupon cupon)
+    public async Task<IActionResult> Create(TECO_M_Cupon cupon)
     {
-        if (ModelState.IsValid)
-            try
+        if (!ModelState.IsValid)
+        {
+            cargarDataErrorOnCreate("Por favor, revise los datos ingresados", cupon);
+            return View(cupon);
+        }
+        try
+        {
+            var existingCupon = _context.TECO_M_Cupon.Where(c => c.TC_Codigo == cupon.TC_Codigo).FirstOrDefault();
+            if (existingCupon != null)
             {
-                _context.Add(cupon);
-                await _context.SaveChangesAsync();
-                TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
-                return RedirectToAction(nameof(Index));
-            }
-            catch (Exception ex)
-            {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert("Error al crear el cupón"));
-                _logger.LogError(ex, "Error al crear cupón");
+                cargarDataErrorOnCreate("Ya hay un cupón con ese código", cupon);
+                return View(cupon);
             }
 
-        ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", cupon.TC_TipoDescuento);
-        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-            Alert.ErrorAlert("Por favor, revise los datos ingresados"));
-        return View(cupon);
+            if (cupon.TF_FechaInicio > cupon.TF_FechaFin)
+            {
+                cargarDataErrorOnCreate("La fecha de inicio no puede ser posterior a la fecha de finalización", cupon);
+                return View(cupon);
+            }
+
+            if (cupon.TN_Valor <= 0 || cupon.TN_UsosMaximos <= 0)
+            {
+                cargarDataErrorOnCreate("El valor y los usos máximos deben ser mayores que cero", cupon);
+                return View(cupon);
+            }
+
+            if (cupon is { TC_TipoDescuento: "P", TN_Valor: < 0 or > 100 })
+            {
+                cargarDataErrorOnCreate("El valor del porcentaje del decuento debe de ser mayor 0 o menor a 100", cupon);
+                return View(cupon);
+            }
+            _context.Add(cupon);
+            await _context.SaveChangesAsync();
+            TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error al crear cupón");
+            cargarDataErrorOnCreate($"Error al crear el cupón: {ex.Message}", cupon);
+            return View(cupon);
+        }
     }
 
+    /// <summary>
+    /// Muestra el formulario para editar un cupón existente.
+    /// </summary>
+    /// <param name="id">ID del cupón a editar.</param>
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Edit(int id)
     {
@@ -93,13 +162,17 @@ public class CuponesController : Controller
         {
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.NotFoundAlert("el cupón"));
-            return NotFound();
+            return NotFound(new { success = false, message = "No se encontró la marca a modificar"});
         }
 
         ViewBag.TipoDescuento = new SelectList(_tipoDescuento, "Key", "Value", cupon.TC_TipoDescuento);
         return View(cupon);
     }
 
+    /// <summary>
+    /// Edita un cupón existente.
+    /// </summary>
+    /// <param name="cupon">Objeto cupón con los datos actualizados.</param>
     [HttpPut]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Administrador")]
@@ -109,58 +182,87 @@ public class CuponesController : Controller
         {
             if (!ModelState.IsValid)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert("Los datos ingresados no son válidos"));
-                return BadRequest();
+                ViewBag.Alert = Alert.ErrorAlert("Los datos ingresados no son válidos");
+                return BadRequest(new { success = false, message = "Los datos ingresados no son válidos"});
             }
 
             var cuponExistente = await _context.TECO_M_Cupon.FindAsync(cupon.TN_Id);
             if (cuponExistente == null)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("el cupón"));
-                return NotFound();
+                ViewBag.Alert =  Alert.NotFoundAlert("el cupón");
+                return NotFound(new { success = false, message = "No se encontró el cupón a modificar"});
+            }
+            
+            var codCuponExistente = await _context.TECO_M_Cupon.Where( c => c.TC_Codigo == cupon.TC_Codigo).FirstOrDefaultAsync();
+            if (codCuponExistente != null)
+            {
+                if (codCuponExistente.TN_Id != cuponExistente.TN_Id)
+                {
+                    ViewBag.Alert = Alert.ErrorAlert("Ya existe un cupón con ese código.");
+                    return BadRequest(new { success = false, message = "Ya existe un cupón con ese código."});
+                }
+            }
+            
+            if (cupon.TF_FechaInicio > cupon.TF_FechaFin)
+            {
+                cargarDataErrorOnCreate("La fecha de inicio no puede ser posterior a la fecha de finalización", cupon);
+                return BadRequest(new { success = false, message = "La fecha de inicio no puede ser posterior a la fecha de finalización."});
+            }
+            
+            if (cupon is { TC_TipoDescuento: "P", TN_Valor: < 0 or > 100 })
+            {
+                cargarDataErrorOnCreate("El valor del porcentaje del decuento debe de ser mayor 0 o menor a 100", cupon);
+                return BadRequest(new { success = false, message = "El valor del porcentaje del descuento debe de ser mayor 0 o menor a 100."});
+            }
+
+            if (cupon.TN_UsosMaximos < 1)
+            {
+                cargarDataErrorOnCreate("El valor de usos máximos debe de ser mayor a 0", cupon);
+                return BadRequest(new { success = false, message = "El valor de usos máximos debe de ser mayor a 0."});
+            }
+
+            if (cupon.TN_UsosActuales < 0)
+            {
+                cargarDataErrorOnCreate("El valor de usos actuales debe de ser mayor o igual a 0", cupon);
+                return BadRequest(new { success = false, message = "El valor de usos actuales debe de ser mayor o igual a 0."});
+            }
+            
+            if (cupon.TN_UsosActuales > cupon.TN_UsosMaximos)
+            {
+                cargarDataErrorOnCreate("El número de usos actuales no puede ser mayor o igual al número de usos máximos", cupon);
+                return BadRequest(new { success = false, message = "El número de usos actuales no puede ser mayor o igual al número de usos máximos."});
             }
 
             // Actualizar las propiedades del cupón existente
-            cuponExistente.TC_Codigo = cupon.TC_Codigo;
-            cuponExistente.TC_Descripcion = cupon.TC_Descripcion;
-            cuponExistente.TC_TipoDescuento = cupon.TC_TipoDescuento;
-            cuponExistente.TN_Valor = cupon.TN_Valor;
-            cuponExistente.TF_FechaInicio = cupon.TF_FechaInicio;
-            cuponExistente.TF_FechaFin = cupon.TF_FechaFin;
-            cuponExistente.TN_UsosActuales = cupon.TN_UsosActuales;
-            cuponExistente.TN_UsosMaximos = cupon.TN_UsosMaximos;
-            cuponExistente.TB_Activo = cupon.TB_Activo;
-
-            _context.Update(cuponExistente);
+            // Copia los valores del objeto 'cupon' (del request) al objeto 'cuponExistente' (rastreado por el context).
+            _context.Entry(cuponExistente).CurrentValues.SetValues(cupon);
             await _context.SaveChangesAsync();
-
             TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
-            return Ok();
+            return Ok(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!CuponExists(cupon.TN_Id))
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("el cupón"));
-                return NotFound();
+                ViewBag.Alert = Alert.NotFoundAlert("el cupón");
+                return NotFound(new { success = false, message = "No se encontró el cupón a modificar"});
             }
 
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error de concurrencia al actualizar el cupón"));
-            return StatusCode(500);
+            ViewBag.Alert = Alert.ErrorAlert($"Error al actualizar el cupón");
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: Error al guardar los cambios" });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error al actualizar cupón {CuponId}", cupon.TN_Id);
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al actualizar el cupón"));
-            return StatusCode(500);
+            ViewBag.Alert = Alert.ErrorAlert($"Error al actualizar el cupón: {ex.Message}");
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: Error al guardar los cambios" });
         }
     }
 
+    /// <summary>
+    /// Cambia el estado de actividad de un cupón (activo/inactivo).
+    /// </summary>
+    /// <param name="id">ID del cupón a cambiar de estado.</param>
     [HttpPost]
     [ValidateAntiForgeryToken]
     [Authorize(Roles = "Administrador")]
@@ -192,11 +294,19 @@ public class CuponesController : Controller
         return RedirectToAction(nameof(Index));
     }
     
+    /// <summary>
+    /// Verifica si un cupón existe en la base de datos.
+    /// </summary>
+    /// <param name="id">ID del cupón a verificar.</param>
+    /// <returns>True si el cupón existe, false en caso contrario.</returns>
     private bool CuponExists(int id)
     {
         return _context.TECO_M_Cupon.Any(e => e.TN_Id == id);
     }
 
+    /// <summary>
+    /// Busca cupones según criterios de búsqueda y filtro de estado.
+    /// </summary>
     [Authorize(Roles = "Administrador")]
     public async Task<IActionResult> Search(string searchElement, string activeFilter)
     {

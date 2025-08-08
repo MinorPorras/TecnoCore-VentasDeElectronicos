@@ -435,6 +435,7 @@ function handleCuponesForm(create = true) {
     const tipoDescuento = document.querySelector('#TC_TipoDescuento');
     const symbolColon = document.getElementById('symbolColon');
     const symbolPorc = document.getElementById('symbolPorc');
+    const valorInput = document.querySelector('#TN_Valor');
 
     // Verificar que todos los elementos necesarios existen
     if (!fechaInicio || !fechaFin || !tipoDescuento || !symbolColon || !symbolPorc) {
@@ -483,4 +484,12 @@ function handleCuponesForm(create = true) {
 
     // Agregar listener para cambios
     tipoDescuento.addEventListener('change', updateSymbols);
+
+    //Forzar que el input de valor solo acepte números ***
+    if (valorInput) {
+        valorInput.addEventListener('input', function (e) {
+            // Reemplaza cualquier caracter que no sea un dígito con una cadena vacía
+            e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+    }
 }

@@ -10,10 +10,12 @@ namespace Inventario_Productos_Tecnologicos.Controllers;
 public class MarcasController : Controller
 {
     private readonly TecnoCoreDbContext _context;
+    private readonly ILogger<MarcasController> _logger;
 
-    public MarcasController(TecnoCoreDbContext context)
+    public MarcasController(TecnoCoreDbContext context, ILogger<MarcasController> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [Authorize(Roles = "Administrador")]
@@ -43,10 +45,18 @@ public class MarcasController : Controller
     [Authorize(Roles = "Administrador")]
     public IActionResult Create([Bind("TC_Nombre", "TB_Activo")] TECO_M_Marca marca)
     {
+        
         if (!ModelState.IsValid)
         {
             TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                 Alert.ErrorAlert("Los datos ingresados no son válidos"));
+            return View(marca);
+        }
+        
+        var existingMarcas = _context.TECO_M_Marca.FirstOrDefault(m => m.TC_Nombre == marca.TC_Nombre);
+        if (existingMarcas != null)
+        {
+            ViewBag.Alert = Alert.ErrorAlert("Ya existe una marca con ese nombre");
             return View(marca);
         }
 
@@ -87,7 +97,7 @@ public class MarcasController : Controller
 
             var marcas = await query.ToListAsync();
 
-            if (!marcas.Any())
+            if (marcas.Count == 0)
                 TempData["info"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.InfoAlert("No se encontraron marcas con los criterios especificados"));
 
@@ -105,14 +115,11 @@ public class MarcasController : Controller
     public async Task<IActionResult> Edit(int id)
     {
         var marca = await _context.TECO_M_Marca.FindAsync(id);
-        if (marca == null)
-        {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.NotFoundAlert("la marca"));
-            return RedirectToAction(nameof(Index));
-        }
+        if (marca != null) return View(marca);
+        TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
+            Alert.NotFoundAlert("la marca"));
+        return RedirectToAction(nameof(Index));
 
-        return View(marca);
     }
 
     [HttpPut]
@@ -126,7 +133,7 @@ public class MarcasController : Controller
             {
                 TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.ErrorAlert("Los datos ingresados no son válidos"));
-                return BadRequest();
+                return BadRequest(new { success = false, message = "Los datos ingresados no son válidos"});
             }
 
             var marcaExistente = await _context.TECO_M_Marca.FindAsync(marca.TN_Id);
@@ -134,7 +141,14 @@ public class MarcasController : Controller
             {
                 TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.NotFoundAlert("la marca"));
-                return NotFound();
+                return NotFound(new { success = false, message = "No se encontró la marca a modificar"});
+            }
+            
+            var existingMarcasName = _context.TECO_M_Marca.FirstOrDefault(m => m.TC_Nombre == marca.TC_Nombre);
+            if (existingMarcasName != null && existingMarcasName.TN_Id != marcaExistente.TN_Id)
+            {
+                ViewBag.Alert = Alert.ErrorAlert("Ya existe una marca con ese nombre");
+                return BadRequest(new { success = false, message = "Ya existe una marca con ese nombre"});
             }
 
             marcaExistente.TC_Nombre = marca.TC_Nombre;
@@ -142,13 +156,12 @@ public class MarcasController : Controller
 
             await _context.SaveChangesAsync();
             TempData["success"] = System.Text.Json.JsonSerializer.Serialize(Alert.SuccessAlert());
-            return Ok();
+            return Ok(new { success = true, redirectUrl = Url.Action(nameof(Index)) });
         }
         catch (Exception ex)
         {
-            TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                Alert.ErrorAlert("Error al actualizar la marca"));
-            return StatusCode(500);
+            ViewBag.Alert = Alert.ErrorAlert($"Error al actualizar la marca: {ex.Message}");
+            return StatusCode(500, new { success = false, message = $"Error interno del servidor: Error al guardar los cambios" });
         }
     }
 
