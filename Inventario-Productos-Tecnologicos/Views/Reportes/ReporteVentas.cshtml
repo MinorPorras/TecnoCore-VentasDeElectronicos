@@ -53,7 +53,7 @@
             <span class="headerText">Total</span>
         </div>
         <div class="table-list-pedidos-reportes-content">
-            @if (Model.ListPedidos.Count >= 0)
+            @if (Model.ListPedidos.Count > 0)
             {
                 @foreach (var pedidos in Model.ListPedidos)
                 {
@@ -63,14 +63,12 @@
                         <span class="table-list-pedidos-reportes-item">@((pedidos.TN_Descuento ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
                         <span class="table-list-pedidos-reportes-item">@((pedidos.TN_Total ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
                     </div>
-                }   
-            }
-            else
+                }
+            } else
             {
                 <div class="table-list-pedidos-reportes-row">
                     <span class="table-list-pedidos-reportes-item">No hay pedidos en ese rango de fechas</span>
                 </div>
-
             }
         </div>
     </div>

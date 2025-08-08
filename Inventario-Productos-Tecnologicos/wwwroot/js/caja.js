@@ -56,6 +56,26 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        $('body').on('input', '.caja-item-quantity', function() {
+            const input = $(this);
+            // Obtenemos el stock máximo desde el atributo 'max' del input
+            const maxStock = parseInt(input.attr('max'));
+
+            // Solo validamos si el campo tiene un valor
+            if (input.val()) {
+                let currentQuantity = parseInt(input.val());
+
+                // Comprobamos si la cantidad ingresada supera el stock
+                if (currentQuantity > maxStock) {
+                    // 1. Mostramos una alerta indicando el problema
+                    showAlert(`La cantidad no puede superar el stock disponible (${maxStock}).`, 'warning');
+
+                    // 2. Corregimos el valor en el campo al máximo permitido
+                    input.val(maxStock);
+                }
+            }
+        });
+
 
         //Se asigna el evento de eliminar del carrito a todos los botones con la clase remove-from-cart-btn
         $('body').on('click', '.remove-from-caja-btn', function () {
@@ -80,15 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event listener for the "plus" button (increase quantity)
         $('body').on('click', '.btnPlus', function () {
             const productId = $(this).data('productid');
-            const numericProductId = parseInt(productId);
-
-
-            if (!isNaN(numericProductId)) {
-                // Call addToCart with quantity 1 to increment
-                AddProductToCaja(numericProductId, 1);
-            } else {
-                console.error("Error: Product ID is not a valid number for increasing quantity.");
-            }
+            tryIncrementCajaItem(productId);
         });
 
         // Event listener for the "minus" button (decrease quantity)
@@ -274,6 +286,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     })
 })
+
+function tryIncrementCajaItem(productId) {
+    const numericProductId = parseInt(productId);
+    if (isNaN(numericProductId)) {
+        console.error("tryIncrementCajaItem: Invalid product ID provided:", productId);
+        showAlert('Error: ID de producto no válido.', 'error');
+        return; // Detener la ejecución
+    }
+
+    // Revisa si el producto ya está en la caja buscando su campo de cantidad
+    const quantityInput = $(`.caja-item-quantity[data-productid="${numericProductId}"]`);
+
+
+    if (quantityInput.length > 0) {
+        // El producto ya está en la caja. Validar el stock.
+        const currentQuantity = parseInt(quantityInput.val());
+        const maxStock = parseInt(quantityInput.attr('max'));
+
+
+        if (currentQuantity >= maxStock) {
+            showAlert(`No se pueden agregar más unidades. Stock máximo (${maxStock}) alcanzado.`, 'warning');
+            return; // Detener la ejecución
+        }
+    }
+
+    // Si el producto no está en la caja, o si hay stock disponible, se procede a agregarlo.
+    AddProductToCaja(numericProductId, 1);
+}
 
 function decreaseCajaItemQuantity(productId, quantityToDecrease = 1) {
     fetch("/Caja/DecreaseCajaItem", {
@@ -587,7 +627,6 @@ function AddProductToCaja(productId, quantity = 1) {
 
     }).then(data =>{
         if (data.success){
-            showAlert(data.message, 'success');
             getCajaItems()
             
         }else{
@@ -623,8 +662,3 @@ function emptyCart() {
             showAlert('Error al vaciar el carrito.', 'error');
         });
 }
-
-
-
-
-
