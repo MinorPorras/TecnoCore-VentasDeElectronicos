@@ -1,5 +1,84 @@
-﻿################################################################################
-# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
-################################################################################
+﻿### Archivo .gitignore para un proyecto ASP.NET Core ###
+# Este archivo está optimizado para proyectos desarrollados con Visual Studio y JetBrains Rider.
 
-/.vs
+# 1. Archivos de configuración y secretos locales
+# -------------------------------------------------
+# ¡MUY IMPORTANTE! Evita subir tus contraseñas y configuraciones locales.
+# Cualquiera que clone el repo debe crear su propio appsettings.Development.json.
+appsettings.Development.json
+secrets.json
+*.env
+
+# 2. Carpetas de compilación y artefactos de .NET
+# -------------------------------------------------
+# Estas carpetas se generan cada vez que compilas el proyecto.
+[Bb]in/
+[Oo]bj/
+
+# 3. Archivos de configuración de IDEs y editores
+# -------------------------------------------------
+# Específicos de tu máquina, no deben estar en el repositorio.
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.sln.docstates
+
+# JetBrains Rider (como en tu caso)
+.idea/
+*.sln.iml
+
+# 4. Archivos de usuario y temporales de Visual Studio
+# -------------------------------------------------
+*.user
+*.suo
+
+# 5. Archivos de registro (Logs)
+# -------------------------------------------------
+# Los logs se generan en tiempo de ejecución y pueden ser muy grandes.
+*.log
+logs/
+
+# 6. Archivos de base de datos locales
+# -------------------------------------------------
+# Si usas una base de datos local como SQL Server Express.
+*.mdf
+*.ldf
+
+# 7. Archivos de publicación y paquetes
+# -------------------------------------------------
+Publish/
+publish/
+*.nupkg
+*.snk
+
+# 8. Archivos de dependencias de frontend
+# -------------------------------------------------
+# Si en el futuro usas npm, yarn, etc.
+node_modules/
+wwwroot/lib/
+
+# 9. Archivos del sistema operativo
+# -------------------------------------------------
+# Archivos basura generados por Windows, macOS y Linux.
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# 10. Archivos de herramientas de testing y cobertura
+# -------------------------------------------------
+TestResults/
+*.coverage
+*.coverlet.json
+
+# 11. Excepciones (si son necesarias)
+# -------------------------------------------------
+# Si por alguna razón necesitas incluir un archivo que normalmente se ignora,
+# puedes usar el signo de exclamación. Por ejemplo, para forzar la inclusión
+# de un archivo de log específico:
+# !/logs/special-log-to-keep.log
