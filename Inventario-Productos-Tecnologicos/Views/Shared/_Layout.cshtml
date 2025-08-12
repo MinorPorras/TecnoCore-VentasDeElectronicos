@@ -26,9 +26,17 @@
                     if (User.IsInRole("Administrador"))
                     {
                         <li><a asp-action="Mantenimiento" asp-controller="Home">Mantenimiento</a></li>
+                        <li><a asp-action="index" asp-controller="Home">Inicio</a></li>
+                    }
+                    else
+                    {
+                        <li class="inicio-cliente"><a asp-action="index" asp-controller="Home">Inicio</a></li>
                     }
                 }
-                <li><a asp-action="index" asp-controller="Home">Inicio</a></li>
+                else
+                {
+                    <li class="inicio-cliente"><a asp-action="index" asp-controller="Home">Inicio</a></li>
+                }
                 @await Component.InvokeAsync("Categories")
             </ul>
             @if (User.Identity.IsAuthenticated)

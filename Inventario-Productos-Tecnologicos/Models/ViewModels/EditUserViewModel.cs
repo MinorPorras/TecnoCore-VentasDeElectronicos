@@ -38,7 +38,7 @@ public class EditUserViewModel
     public string DireccionExacta { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El código postal es obligatorio.")]
-    [StringLength(20)]
+    [StringLength(5, ErrorMessage = "El código postal no puede tener más de 5 dígitos.")]
     [Display(Name = "Código Postal")]
     public string CodigoPostal { get; set; } = string.Empty;
 

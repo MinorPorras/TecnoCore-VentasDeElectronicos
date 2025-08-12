@@ -37,20 +37,20 @@ public class RegisterViewModel
     public string Apellidos { get; set; } = string.Empty;
 
     [DataType(DataType.PhoneNumber)] // Sigue siendo útil para el input type="tel"
-    [RegularExpression(@"^\d{8}$", // Debe de tener exactamente 8 digitos
-        ErrorMessage = "El número de teléfono debe contener exactamente 8 dígitos.")]
+    [RegularExpression(@"^\d{8}$", // Valida que la cadena contenga exactamente 8 dígitos numéricos.
+        ErrorMessage = "El número de teléfono debe contener 8 dígitos.")]
     [Required(ErrorMessage = "El número de telefono es obligatorio.")]
     [Display(Name = "Número de Teléfono")]
     public string PhoneNumber { get; set; } = string.Empty;
 
     // --- Campos de Dirección ---
     [Required(ErrorMessage = "La dirección exacta es obligatoria.")]
-    [StringLength(200)]
+    [StringLength(200, ErrorMessage = "La dirección no puede exceder los 200 caracteres.")]
     [Display(Name = "Dirección Exacta")]
     public string DireccionExacta { get; set; } = string.Empty;
 
     [Required(ErrorMessage = "El código postal es obligatorio.")]
-    [StringLength(20)]
+    [StringLength(5, ErrorMessage = "El código postal no puede tener más de 5 dígitos.")]
     [Display(Name = "Código Postal")]
     public string CodigoPostal { get; set; } = string.Empty;
 

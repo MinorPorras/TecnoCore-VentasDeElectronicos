@@ -4,7 +4,7 @@
 {
     @if (categoria.Subcategoria.Any())
     {
-        <li class="dropdown-container">
+        <li class="dropdown-container categories">
             <a asp-controller="Productos"
                asp-action="ListaProductos"
                asp-route-categoriaId="@categoria.TN_Id"

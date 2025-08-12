@@ -133,7 +133,7 @@ public class AccountController : Controller
                     Email = model.Email,
                     TC_Nombre = model.Nombre,
                     TC_Apellidos = model.Apellidos, // El campo único para apellidos
-                    PhoneNumber = model.PhoneNumber,
+                    PhoneNumber = model.PhoneNumber.Replace("-", ""),
                     EmailConfirmed = true, // Podrías tener un proceso de confirmación por email
                     TB_Activo = true // Asumimos que el usuario está activo al registrarse
                 };
@@ -329,8 +329,15 @@ public class AccountController : Controller
     {
         try
         {
+            _logger.LogCritical("Datos nuevos: " + JsonSerializer.Serialize(model));
             _logger.LogInformation("Editing usuario");
             _logger.LogCritical("{ModelStateIsValid}", ModelState.IsValid);
+            
+            _logger.LogCritical("UserName encontrado: {UserName}", model.UserName);
+            _logger.LogCritical("Email encontrado: {Email}", model.Email);
+            _logger.LogCritical("Nombre encontrado: {Nombre}", model.Nombre);
+            _logger.LogCritical("Apellidos encontrado: {Apellidos}", model.Apellidos);
+            _logger.LogCritical("PhoneNumber encontrado: {PhoneNumber}", model.PhoneNumber);
 
             if (!ModelState.IsValid)
             {
@@ -344,12 +351,9 @@ public class AccountController : Controller
                 var errorMessage = string.Join("\n• ", errorMessages);
                 errorMessage = "Se encontraron los siguientes errores:\n• " + errorMessage;
 
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.ErrorAlert(errorMessage));
-
                 // Recargar los datos necesarios para el formulario
                 reloadFormElements(model);
-                return View("EditAccountInfo", model);
+                return BadRequest(new { success = false, message = errorMessage});
             }
 
             //Busca el usuario y si no lo encuentra devuelve un mensaje de error
@@ -358,10 +362,7 @@ public class AccountController : Controller
             var usuario = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if (usuario == null)
             {
-                TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
-                    Alert.NotFoundAlert("el usuario"));
-
-                return View(model);
+                return NotFound(new { success = false, message = "No se encontró el usuario a modificar"});
             }
 
 
@@ -414,8 +415,7 @@ public class AccountController : Controller
                 await _context.SaveChangesAsync();
                 TempData["success"] = System.Text.Json.JsonSerializer.Serialize(
                     Alert.SuccessAlert());
-                return RedirectToAction("Informacion_personal", "Usuario");
-            }
+                 return Ok(new { success = true, redirectUrl = Url.Action("Informacion_personal", "Usuario") });            }
             else
             {
                 TempData["Alert"] = System.Text.Json.JsonSerializer.Serialize(
