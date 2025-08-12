@@ -4,27 +4,27 @@
     ViewBag.Title = "Editar Rol";
     Layout = "_LayoutAdmin";
 }
-<div>
-    <h2>Editar Rol</h2>
-    <form asp-action="Edit" method="post" class="modifyElement">
+<div class="createContainer">
+    <h2 class="pageTitle">Editar Rol</h2>
+    <form asp-action="Edit" method="post" class="modifyElement createRolesForm">
         @Html.AntiForgeryToken()
         <input type="hidden" name="controller" id="controller" value="Roles">
         <input type="hidden" name="action" id="action" value="Edit">
         <input type="hidden" id="Id" name="Id" value="@Model.Id">
         <div class="formgroup">
             <label for="Name">Nombre:</label>
-            <input type="text" name="Name" id="Name" value="@Model.Name">
+            <input type="text" name="Name" id="Name" value="@Model.Name" class="inputBase">
         </div>
         <div class="formgroup">
             <label for="TB_Activo">Estado:</label>
-            <select name="TB_Activo" id="TB_Activo">
+            <select name="TB_Activo" id="TB_Activo" class="inputBase">
                 <option value="true" selected="@(Model.TB_Activo ? "selected" : null)">Activo</option>
                 <option value="false" selected="@(Model.TB_Activo ? null : "selected")">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
-            <button type="submit" id="updateBtn">Actualizar</button>
-            <a type="button" asp-action="Index">Regresar</a>
+            <a asp-action="Index" class="btnExit">Regresar</a>
+            <button type="submit" id="updateBtn" class="btnEdit">Actualizar</button>
         </div>
     </form>
 </div>

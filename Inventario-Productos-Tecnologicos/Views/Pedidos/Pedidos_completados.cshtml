@@ -9,7 +9,7 @@
 <div class="seePedidosContainer">
     <h3>Pedidos completados: @Model.Count</h3>
     <form asp-action="SearchPedidosCompletados" method="get" class="seePedidosSearchContainer">
-        <div class="form-group">
+        <div class="form-group search-form-group">
             <label for="">Buscar:</label>
             <input type="text" name="searchTerm" class="inputBase" placeholder="Ingrese el código de pedido o nombre del cliente" value="@ViewBag.searchTerm"/>
             <button type="submit" class="btnBase">Buscar</button>
@@ -53,6 +53,7 @@ else{
                                 <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
                                 <span class="tableCell centerTextCell">@detalle.TN_Cantidad.ToString()</span>
                                 <span class="tableCell centerTextCell">
+                                    @((detalle?.TN_PrecioUnitario ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
                                 </span>
                                 <span class="tableCell centerTextCell">
                                     @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))

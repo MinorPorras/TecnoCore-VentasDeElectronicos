@@ -19,8 +19,8 @@
             <a asp-action="Index" asp-controller="Home" class="Logo">
                 <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="imgLogo"/>
             </a>
-            <ul>
-                <li><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
+            <ul class="nav-principal-seccion">
+                <li class="nav-principal-Inicio"><a asp-action="Mantenimiento" asp-controller="Home">Inicio</a></li>
                 <li class="dropdown-container">
                     <a class="dropbtn" asp-action="Index" asp-controller="Usuario">Usuarios</a>
                     <div class="dropdown-content">
@@ -41,7 +41,7 @@
                         <a asp-action="Index" asp-controller="Cupones">Cupones</a>
                     </div>
                 </li>
-                <li><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
+                <li class="nav-principal-Pedidos"><a class="dropbtn" asp-action="Index" asp-controller="Pedidos">Pedidos</a></li>
             </ul>
             <a class="nav-account tooltipContainer btnLogOut" asp-action="Logout" asp-controller="Account">
                 <img

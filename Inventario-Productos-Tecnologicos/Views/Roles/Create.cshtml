@@ -4,25 +4,25 @@
     ViewBag.Title = "Crear Roles";
     Layout = "_LayoutAdmin";
 }
-<div>
-    <h2>Crear Roles</h2>
+<div class="createContainer">
+    <h2 class="pageTitle">Crear Roles</h2>
 
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" class="createRolesForm">
         @Html.AntiForgeryToken()
         <div class="formgroup">
             <label for="Name">Nombre:</label>
-            <input type="text" name="Name" id="Name">
+            <input type="text" name="Name" id="Name" class="inputBase">
         </div>
         <div class="formgroup">
             <label for="TB_Activo">Estado:</label>
-            <select name="TB_Activo" id="TB_Activo">
+            <select name="TB_Activo" id="TB_Activo" class="inputBase">
                 <option value="true">Activo</option>
                 <option value="false">Inactivo</option>
             </select>
         </div>
         <div class="btngroup">
-            <button type="submit">Guardar</button>
-            <button type="button" asp-action="Index">Regresar</button>
+            <a type="button" asp-action="Index" class="btnExit">Regresar</a>
+            <button type="submit" class="btnCreate">Guardar</button>
         </div>
     </form>
 </div>
