@@ -62,21 +62,23 @@
                 }
             </div>
         </div>
-        <div>
-            <p><strong>Total de productos:</strong> <span id="total-Cart-details" data-product-total="@Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario)">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
-            <div class="couponContainer">
-                <p>Cupones:</p>
-                <input type="text" id="discountCode" class="inputBase" placeholder="Ingrese el código del cupón"/>
-                <button id="btnAplicarCupon" class="btnAplicarCupon">Aplicar</button>
-                <button id="btnLimpiarCupon" class="btnLimpiarCupon">Limpiar</button>
+        <div class="Caja-details-footer">
+            <div>
+                <p><strong>Total de productos:</strong> <span id="total-Cart-details" data-product-total="@Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario)">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
+                <div class="couponContainer">
+                    <p>Cupones:</p>
+                    <input type="text" id="discountCode" class="inputBase" placeholder="Ingrese el código del cupón"/>
+                    <button id="btnAplicarCupon" class="btnAplicarCupon">Aplicar</button>
+                    <button id="btnLimpiarCupon" class="btnLimpiarCupon">Limpiar</button>
+                </div>
             </div>
-        </div>
-        <div class="cart-details-footer-Terminar">
-            <p><strong>Total:</strong> <span id="total-Cart-details-Final">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
-            <p><strong>Descuento:</strong><span id="total-cart-descuento" data-discountValue="0">₡ 0.00</span></p>
-            <div class="btnContainer">
-                <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
-                <a class="btnEndCompra" id="showCheckoutModalBtn">Terminar compra</a>
+            <div class="cart-details-footer-Terminar">
+                <p><strong>Descuento:</strong><span id="total-cart-descuento" data-discountValue="0">₡ 0.00</span></p>
+                <p><strong>Total:</strong> <span id="total-Cart-details-Final">₡ @(Model?.Sum(item => item.TN_Cantidad * item.TN_PrecioUnitario).ToString("N2") ?? "0.00")</span></p>
+                <div class="btnContainer">
+                    <button type="button" class="btnClose" onclick="window.history.back()">Cerrar</button>
+                    <a class="btnEndCompra" id="showCheckoutModalBtn">Terminar compra</a>
+                </div>
             </div>
         </div>
     </div>
@@ -108,7 +110,7 @@
                 <button type="submit" class="btnSubmit">Pagar</button>
             </div>
         </form>
-        <p>Recuerde actualizar los datos de su localización para el envío <a asp-action="EditInformation" asp-controller="Account">¡Actualizar la información ahora!</a></p>
+        <p>Recuerde actualizar los datos de su localización para el envío <a asp-action="EditAccountInfo" asp-controller="Account">¡Actualizar la información ahora!</a></p>
     </div>
 </dialog>
 

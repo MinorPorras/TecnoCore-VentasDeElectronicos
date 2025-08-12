@@ -34,7 +34,11 @@
             </div>
             <div class="form-group">
                 <label asp-for="PhoneNumber"></label>
-                <label class="infoLabel">@Model.PhoneNumber</label>
+                <label class="infoLabel">
+                    @(!string.IsNullOrEmpty(Model.PhoneNumber) && Model.PhoneNumber.Length == 8
+                        ? Model.PhoneNumber.Insert(4, "-")
+                        : Model.PhoneNumber)
+                </label>
             </div>
         </div>
 

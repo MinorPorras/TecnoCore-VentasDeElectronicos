@@ -2314,6 +2314,12 @@ input[type="number"] {
     }
 }
 
-
+@media (width <= 760px) {
+    & .productDetailsContainer{
+        display: grid;
+        grid-template-columns: 100%;
+        grid-auto-rows: auto;
+    }
+}
 
 

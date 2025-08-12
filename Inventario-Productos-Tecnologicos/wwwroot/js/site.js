@@ -56,6 +56,9 @@ function modifyElement() {
                     case 'TN_MarcaId':
                         values[el.name] = parseInt(el.value);
                         break;
+                    case 'PhoneNumber':
+                        values[el.name] = el.value.replace('-', '');
+                        break;
                     case 'TB_Activo':
                         console.log('Activo:', el.value);
                         values[el.name] = el.value === "true";

@@ -477,9 +477,9 @@ public class VentasController : Controller
             .Where(c => c.TN_UsuarioId == User.FindFirstValue(ClaimTypes.NameIdentifier))
             .ToList();
         if (carritoCompras.Count != 0) return View(carritoCompras);
-        ViewBag.Alert = JsonSerializer.Serialize(
-            Alert.InfoAlert("El carrito de compras está vacío."));
-        return RedirectToAction("Index");
+        TempData["Alert"] = JsonSerializer.Serialize(
+            Alert.InfoAlert("El carrito de compras está vacío, para proceder debe primero de agregar al menos un producto."));
+        return RedirectToAction("Index", "Home");
     }
     
     [Authorize(Roles = "Cliente")]
