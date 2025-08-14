@@ -293,6 +293,18 @@ nav {
         justify-content: center;
         align-items: center;
         height: fit-content;
+        
+        & .nav-principal-seccion {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(50px, 1fr));
+            & .nav-principal-Inicio, .nav-principal-Pedidos{
+                grid-column: span 3;
+                grid-row: 1;
+            }   
+            & .dropdown-container{
+                grid-column: span 2;
+            }
+        }
     }
 
     .Logo {

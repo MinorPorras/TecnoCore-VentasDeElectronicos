@@ -7,7 +7,7 @@
 
 <div class="pageIndexContainer">
     <h2 class="pageTitle">Cupones</h2>
-    <form asp-action="Search" method="GET">
+    <form asp-action="Search" method="GET" class="searchCuponForm">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por código o descripción:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>
@@ -58,7 +58,6 @@
         <div class="tbl-header TCupon">
             <span class="headerText">Código</span>
             <span class="headerText">Descripción</span>
-            <span class="headerText">Tipo de descuento</span>
             <span class="headerText">Valor</span>
             <span class="headerText">Fecha Inicio</span>
             <span class="headerText">Fecha Fin</span>
@@ -83,12 +82,10 @@
                         <span class="tableCell">@cupon.TC_Descripcion</span>
                         @if (cupon.TC_TipoDescuento == "P")
                         {
-                            <span class="tableCell">Porcentaje</span>
                             <span class="tableCell">@cupon.TN_Valor%</span>
                         }
                         else
                         {
-                            <span class="tableCell">Fijo</span>
                             <span class="tableCell">@cupon.TN_Valor.ToString("C", new System.Globalization.CultureInfo("es-CR"))</span>
                         }
                         <span

@@ -8,22 +8,22 @@
     <h2>@ViewBag.Title</h2>
     <form asp-action="Create" method="Post" class="formCrudCupon"> 
         @Html.AntiForgeryToken()
-        <div class="form-group">
+        <div class="form-group codigo">
             <label for="TC_Codigo" class="control-label">Código:</label>
             <input class="inputBase" asp-for="TC_Codigo" placeholder="Código que usaran los clientes"
                    type="text"/>
             <span asp-validation-for="TC_Codigo" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group fechaInicio">
             <label for="TF_FechaInicio">Fecha de inicio:</label>
             <input type="date" asp-for="TF_FechaInicio" class="inputBase" required/>
             <span asp-validation-for="TF_FechaInicio" class="text-danger"></span>
         </div>
-        <div class="form-group">
+        <div class="form-group fechafin">
             <label for="TF_FechaFin">Fecha de finalización:</label>
             <input type="date" asp-for="TF_FechaFin" class="inputBase" required/>
         </div>
-        <div class="form-group">
+        <div class="form-group tipoDescuento">
             <label for="TC_TipoDescuento">Tipo de Descuento:</label>
             <select asp-for="TC_TipoDescuento" class="inputBase"
                     asp-items="@ViewBag.TipoDescuento" required>
@@ -36,7 +36,7 @@
             <input type="number" class="inputBase" asp-for="TN_Valor"/>
             <span id="symbolPorc" class="symbolValue">%</span>
         </div>
-        <div class="form-group">
+        <div class="form-group usosMaximos">
             <label for="TN_UsosMaximos">Usos máximos:</label>
             <input asp-for="TN_UsosMaximos" class="inputBase" type="number" min="1"/>
             <span asp-validation-for="TN_UsosMaximos" class="text-danger"></span>

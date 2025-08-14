@@ -7,7 +7,7 @@
 <div class="pageIndexContainer">
     <h2 class="pageTitle">Kardex General</h2>
 
-    <form asp-action="Search" method="GET">
+    <form asp-action="Search" method="GET" class="formIndexKardex">
         <input type="text" id="searchElement" name="searchElement" placeholder="Buscar por nombre de producto:"
                value="@ViewBag.SearchString"/>
         <button type="submit" asp-action="Search" class="btnSearch">Buscar</button>

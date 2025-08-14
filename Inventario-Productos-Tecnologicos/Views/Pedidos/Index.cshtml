@@ -52,8 +52,8 @@ else{
                 <p><strong>Teléfono:</strong> @pedido.Usuario?.PhoneNumber</p>
             </div>
             <div class="infoPedido">
-                <p><strong>Código de pedido: </strong>@pedido.TN_TransaccionId</p>
-                <p><strong>Fecha:</strong> @pedido.TF_Fecha</p>
+                <p class="codigopedido"><strong>Código de pedido: </strong>@pedido.TN_TransaccionId</p>
+                <p class="fechaPedido"><strong>Fecha:</strong> @pedido.TF_Fecha</p>
                 <div class="estadoPedidoSeccion">
                     <label for="estadoPedido_@pedido.TN_Id"><strong>Estado del pedido</strong></label> @* ID único para cada select *@
                     <select name="estadoPedido" id="estadoPedido_@pedido.TN_Id" class="inputBase"
@@ -62,7 +62,7 @@ else{
                     </select>
                 </div>
                 <p class="direcionExactaLabel"><strong>Dirección de Envío:</strong> @pedido.Usuario?.Direccion?.TC_Direccion</p>
-                <button type="submit" class="btnCreate">Actualizar Estado</button>
+                <button type="submit" class="btnCreate updateStatePedido">Actualizar Estado</button>
 
             </div>
             <div class="detallesPedido">
@@ -70,7 +70,7 @@ else{
                 <div class="tableContainer">
                     <div class="tbl-header TPedido">
                         <span class="headerText">Nombre</span>
-                        <span class="headerText">Cantidad</span>
+                        <span class="headerText">Cant.</span>
                         <span class="headerText">Precio</span>
                         <span class="headerText">Total</span>
                     </div>
@@ -81,6 +81,7 @@ else{
                                 <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
                                 <span class="tableCell centerTextCell">@detalle.TN_Cantidad</span>
                                 <span class="tableCell centerTextCell">
+                                    @((detalle?.TN_PrecioUnitario ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
                                 </span>
                                 <span class="tableCell centerTextCell">
                                     @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))

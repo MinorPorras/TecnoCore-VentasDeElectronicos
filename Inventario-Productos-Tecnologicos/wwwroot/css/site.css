@@ -500,6 +500,8 @@ section {
 /* Estilo para los indicadores */
 #NewsCarousel .carousel-indicators {
     margin-bottom: 0.5rem;
+    margin-right: 0;
+    margin-left: 0;
 }
 
 #NewsCarousel .carousel-indicators button {
@@ -1018,7 +1020,8 @@ section {
 
 .card-producto {
     position: relative;
-    width: 100%;
+    width: 100%; /* CAMBIO: Hace la tarjeta flexible */
+    max-width: 250px; /* CAMBIO: Mantiene un tamaño máximo razonable */
     height: fit-content;
     border: 1px solid var(--dBlueEnphasis2);
     border-radius: 0.8rem;
@@ -1030,13 +1033,11 @@ section {
     gap: .5rem;
     overflow-x: auto;
     overflow-y: visible;
-    scroll-snap-align: start; /* Hace que los elementos se ajusten al scroll */
+    scroll-snap-align: start;
     transition: transform 0.3s ease;
     transform-origin: center;
     z-index: 1;
     margin-bottom: 5rem;
-    max-width: 250px;
-    justify-self: left;
 
     & header {
         background: var(--dBlueEnphasis2);
@@ -1048,7 +1049,7 @@ section {
 
         & img {
             position: relative;
-            width: 12rem;
+            width: 100%; /* CAMBIO: Hace la imagen flexible */
             height: 12rem;
             object-fit: cover;
             border-radius: 0.8rem;
@@ -1533,13 +1534,14 @@ section {
     & .sidebar {
         position: sticky;
         top: 0;
-        height: 100vh;
+        height: 100%;
         background: var(--dBlueEnphasis1);
         padding: 1rem;
         border-right: 1px solid var(--dBlueEnphasis2);
         overflow-y: auto;
         display: grid;
         grid-template-columns: 1fr 1fr;
+        grid-auto-rows: auto;
         width: fit-content;
         gap: .5rem;
 
@@ -1622,6 +1624,7 @@ section {
         grid-template-rows: auto;
         gap: 1rem;
         padding: 1rem;
+        justify-items: center;
 
         & .card-producto {
             justify-self: center;
@@ -2139,14 +2142,14 @@ section {
     }
 
     & .tbl-header.TCajaDetails, .tableRow.TCajaDetails {
-        grid-template-columns: minmax(200px, 1fr) minmax(60px, .5fr) minmax(130px, 1fr) 
-        minmax(60px, .5fr) minmax(50px, .5fr);
+        grid-template-columns: minmax(200px, 2fr) minmax(150px, 1fr) minmax(200px, 1fr) 
+        minmax(120px, 1fr) minmax(200px, 2fr);
     }
 
     /*----Tablas con 4 columnas----*/
     & .tbl-header.tSearchProduct, .tableRow.tSearchProduct {
-        grid-template-columns: minmax(60px, .5fr) minmax(130px, 2fr) minmax(60px, .5fr) 
-        minmax(50px, .5fr);
+        grid-template-columns: minmax(50px, .5fr) minmax(250px, 3fr) minmax(60px, .5fr) 
+        minmax(100px, 1fr);
     }
 
     & .tbl-header.TPedido, .tableRow.TPedido {
@@ -2807,6 +2810,10 @@ section {
     }
 }
 
+.btn-toggle-filters {
+    display: none; /* Oculto por defecto en escritorio */
+}
+
 @media (width <= 760px) {
     main {
         grid-template-columns: minmax(190px, 1fr);
@@ -2876,13 +2883,40 @@ section {
         }   
     }
     
-    & .pageListProdContainer{
-        & section{
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            padding: 0;
-            align-items: center;
-            & .card-producto{
-            }
+    .pageListProdContainer {
+        grid-template-columns: 1fr;
+
+        & .sidebar {
+            position: static;
+            height: auto;
+            width: 100%;
+            border-right: none;
+            border-bottom: 1px solid var(--dBlueEnphasis2);
+            display: none; /* Ocultar por defecto en móvil */
         }
+
+        & .sidebar.active {
+            display: grid; /* Mostrar cuando la clase .active esté presente */
+        }
+
+        & section {
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            justify-items: center;
+            padding: 1rem;
+        }
+    }
+
+    .btn-toggle-filters {
+        display: block; /* Mostrar el botón en móvil */
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--dBlueEnphasis2);
+        color: var(--TiffBlue);
+        font-weight: bold;
+        border: none;
+        border-bottom: 1px solid var(--dBlueEnphasis3);
+        text-align: center;
+        font-size: 1.2rem;
+        cursor: pointer;
     }
 }

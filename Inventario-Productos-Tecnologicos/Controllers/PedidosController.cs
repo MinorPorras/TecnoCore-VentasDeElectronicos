@@ -179,63 +179,52 @@ public class PedidosController : Controller
         }
     }
     
-            /// <summary>
-    /// Realiza la búsqueda de pedidos basándose en el término de búsqueda y el estado del pedido.
+    /// <summary>
+    /// Realiza la búsqueda de pedidos completados basándose en el término de búsqueda.
     /// Solo accesible para usuarios con el rol "Administrador".
     /// </summary>
     /// <param name="searchTerm">Término para buscar en código de pedido o nombre de cliente.</param>
-    /// <param name="estadoPedidoBusqueda">ID del estado de pedido para filtrar.</param>
-    /// <returns>La vista Index con los pedidos filtrados.</returns>
+    /// <returns>La vista Pedidos_completados con los pedidos filtrados.</returns>
     [Authorize(Roles = "Administrador")]
-    public async Task<IActionResult> SearchPedidosCompletados(string? searchTerm, int? estadoPedidoBusqueda)
+    public async Task<IActionResult> SearchPedidosCompletados(string? searchTerm)
     {
         try
         {
-            // Inicializa la consulta base con todas las inclusiones necesarias
-            IQueryable<TECO_P_Pedido> query = _context.TECO_P_Pedido
+            // Inicializa la consulta base filtrando por pedidos completados
+            var query = _context.TECO_P_Pedido
                 .Include(p => p.Cupon)
                 .Include(p => p.EstadoPedido)
                 .Include(p => p.MetodoPago)
                 .Include(p => p.DetallePedidos)
                 .ThenInclude(dp => dp.Producto)
                 .Include(p => p.Usuario)
-                .ThenInclude(u => u.Direccion);
+                .ThenInclude(u => u.Direccion)
+                .Where(p => p.TN_EstadoPedidoId == 5);
 
             // Filtro por término de búsqueda (si se proporcionó uno)
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                var upperSearchTerm = searchTerm.ToUpper().Trim(); // Convertir a mayúsculas para la comparación LIKE
-
+                var upperSearchTerm = searchTerm.ToUpper().Trim();
                 query = query.Where(p =>
-                    (p.TN_TransaccionId != null &&
-                     EF.Functions.Like(p.TN_TransaccionId.ToUpper(), $"%{upperSearchTerm}%")) ||
+                    (p.TN_TransaccionId != null && EF.Functions.Like(p.TN_TransaccionId.ToUpper(), $"%{upperSearchTerm}%")) ||
                     (p.Usuario != null && EF.Functions.Like(p.Usuario.TC_Nombre.ToUpper(), $"%{upperSearchTerm}%")) ||
-                    (p.Usuario != null &&
-                     EF.Functions.Like(p.Usuario.TC_Apellidos.ToUpper(), $"%{upperSearchTerm}%")) &&
-                    (p.TN_EstadoPedidoId == 5) // Asegurarse de que solo se busquen pedidos completados
-                );
-            }
-            else
-            {
-                query = query.Where(p => p.TN_EstadoPedidoId == 5); // Filtrar solo pedidos completados
+                    (p.Usuario != null && EF.Functions.Like(p.Usuario.TC_Apellidos.ToUpper(), $"%{upperSearchTerm}%")));
             }
 
-            var pedidos = await query.ToListAsync();
+            // CAMBIO: Ordenar siempre por fecha descendente para mostrar los más recientes primero
+            var pedidos = await query.OrderByDescending(p => p.TF_Fecha).ToListAsync();
 
             ViewBag.searchTerm = searchTerm;
-            
-            ViewBag.estad = searchTerm;
-            
-            // Retorna la misma vista Index con los resultados filtrados
+
+            // Retorna la misma vista con los resultados filtrados
             return View("Pedidos_completados", pedidos);
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Error al buscar pedidos con término '{SearchTerm}' y estado '{EstadoId}'.", searchTerm, estadoPedidoBusqueda);
+            _logger.LogError(e, "Error al buscar pedidos completados con término '{SearchTerm}'.", searchTerm);
             TempData["Error"] = JsonSerializer.Serialize(
-                Alert.ErrorAlert("Ocurrió un error al realizar la búsqueda de pedidos."));
-            // En caso de error, puedes redirigir a la vista Index sin filtros o a una página de error
-            return RedirectToAction(nameof(Index));
+                Alert.ErrorAlert("Ocurrió un error al realizar la búsqueda de pedidos completados."));
+            return RedirectToAction(nameof(Pedidos_completados));
         }
     }
 
@@ -288,6 +277,7 @@ public class PedidosController : Controller
             .Include(p => p.Usuario)
             .ThenInclude(u => u.Direccion)
             .Where(p => p.TN_EstadoPedidoId == 5) // Filtrar por estado completado
+            .OrderByDescending(p => p.TF_Fecha) // CAMBIO: Ordenar por fecha para mostrar los más recientes primero
             .ToListAsync();
         if (pedidosCompletados.Count == 0)
         {
