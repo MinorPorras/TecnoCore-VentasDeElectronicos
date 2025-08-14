@@ -139,7 +139,7 @@
 }
 
 .stats-title{
-    font-size: clamp(1vw, 1.5rem, 1.8vw);
+    font-size: clamp(1vw, 1.2rem, 1.8vw);
     font-weight: bold;
     text-align: center;
     align-self: center;
@@ -148,7 +148,7 @@
 .stats-item-text{
     display: flex;
     align-items: center;
-    font-size: clamp(.8vw, 1.3rem, 1.6vw);
+    font-size: clamp(.8vw, .9rem, 1.6vw);
     
     &.stats-cont{
         font-weight: bold;
@@ -169,7 +169,7 @@
         grid-template-columns: 1fr 5fr 3fr;
 
         & .stats-table-hearder-text {
-            font-size: clamp(1vw, 1.5rem, 1.7vw);
+            font-size: clamp(1vw, 1rem, 1.7vw);
             font-weight: bold;
             
             &.stats-cont{
@@ -194,36 +194,96 @@
     }
 }
 
-@media (width <= 760px) {
-    .dashboard{
+@media (width <= 940px) and (width >= 561px) {
+    .dashboard {
         grid-template-columns: 1fr;
+
         & .MasComprados {
             grid-row-start: 3;
             grid-row-end: 4;
         }
-        
-        & .seccionProductStats{
+
+        & .seccionProductStats {
             grid-row-start: 4;
             grid-row-end: 5;
-        
+
         }
-        
-        & .seccionReportesVentasStats{
+
+        & .seccionReportesVentasStats {
             grid-row-start: 1;
             grid-row-end: 2;
 
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-template-rows: auto;
-            
-            & .btnReportesSection{
+
+            & .btnReportesSection {
                 grid-column: 1 / -1;
                 grid-row: 1 / 2;
             }
         }
-        
-        & .seccionProductStats{
+
+        & .seccionProductStats {
 
         }
+    }
+
+    & .stats-item-text {
+        font-size: clamp(.8vw, 1rem, 2.2vw)
+    }
+    & .stats-table .stats-table-header{
+        & .stats-table-hearder-text {
+            clamp(1vw, 1.2rem, 2.2vw)
+        }   
+    }
+    .stats-title {
+        font-size: clamp(1vw, 1.2rem, 2.5vw);
+    }
+}
+
+@media (width <= 560px){
+    .dashboard {
+        grid-template-columns: 1fr;
+
+        & .MasComprados {
+            grid-row-start: 3;
+            grid-row-end: 4;
+        }
+
+        & .seccionProductStats {
+            grid-row-start: 4;
+            grid-row-end: 5;
+
+        }
+
+        & .seccionReportesVentasStats {
+            grid-row-start: 1;
+            grid-row-end: 2;
+
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-template-rows: auto;
+
+            & .btnReportesSection {
+                grid-column: 1 / -1;
+                grid-row: 1 / 2;
+            }
+        }
+
+        & .seccionProductStats {
+
+        }
+    }
+
+    & .stats-item-text {
+        font-size: clamp(.8vw, 1rem, 2.2vw)
+    }
+    & .stats-table .stats-table-header{
+        & .stats-table-hearder-text {
+        clamp(1vw, 1.2rem, 2.2vw)
+        }
+    }
+    .stats-title {
+        font-size: clamp(1vw, 1.2rem, 2.5vw);
     }
 }

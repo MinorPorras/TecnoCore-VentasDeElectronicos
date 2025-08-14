@@ -335,6 +335,7 @@ nav {
         gap: 0;
         justify-self: center;
         align-self: center;
+        width: 100%;
 
         & > li {
             border-radius: 10px;
