@@ -413,7 +413,79 @@ nav {
 }
 
 
-@media (width <= 760px) {
+@media (width <= 1040px) {
+    .nav-principal {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(50px, 1fr));
+        justify-content: center;
+        align-items: center;
+        height: fit-content;
+    }
+
+    .Logo {
+        grid-row: 1;
+        justify-self: center;
+        align-self: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .imgLogo {
+        height: 100%;
+        scale: 2;
+        max-width: 70px;
+    }
+
+    .nav-account {
+        grid-row: 1;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .nav-principal > ul {
+        display: grid;
+        grid-template-columns: repeat(5, minmax(50px, 1fr));
+        grid-column: 1 / -1;
+        grid-row: 2;
+        gap: 0;
+        justify-self: center;
+        align-self: center;
+
+        & > li {
+            border-radius: 10px;
+            width: 100%;
+
+
+            &::after {
+                border-radius: 10px;
+            }
+            
+            &.categories{
+
+            }
+
+            /* Clase especial para el link de Inicio cuando el usuario es un cliente */
+            &.inicio-cliente {
+                grid-column: 1 / -1; /* Ocupa todo el ancho */
+            }
+        }
+    }
+
+    .search-bar {
+        grid-template-columns: 3fr 1fr 1fr;
+        width: 100%;
+        height: auto;
+        padding: 10px;
+        grid-row: 2;
+        grid-column: 1/-1;
+        & .nav-cart .tooltipContainer .TooltipText{
+            translate: -20% 30%;
+        }
+    }
+}
+
+@media (width <= 750px) {
     .nav-principal {
         display: grid;
         grid-template-columns: repeat(3, minmax(50px, 1fr));
@@ -451,6 +523,7 @@ nav {
         gap: 0;
         justify-self: center;
         align-self: center;
+        width: 100%;
 
         & > li {
             border-radius: 10px;
@@ -460,7 +533,7 @@ nav {
             &::after {
                 border-radius: 10px;
             }
-            
+
             &.categories{
                 grid-column: span 2;
             }
@@ -483,15 +556,4 @@ nav {
             translate: -20% 30%;
         }
     }
-}
-
-.footer {
-    position: relative;
-    width: 100%;
-    background-color: var(--dBlueEnphasis1);
-    color: var(--Azure);
-    text-align: center;
-    padding: 10px 0;
-    font-size: clamp(.6rem, 2vw, .9rem);
-    z-index: 999;
 }

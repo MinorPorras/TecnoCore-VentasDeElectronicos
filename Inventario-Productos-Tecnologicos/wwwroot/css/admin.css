@@ -170,6 +170,7 @@ h1 {
             grid-template-rows: 1fr;
             justify-items: left;
             grid-column: 1/-1;
+            gap: .5rem;
 
             & .selectGroup {
                 display: grid;
@@ -582,7 +583,7 @@ h1 {
     text-align: left;
 }
 
-& .btnSwicthActive.greenHighlight:hover {
+.btnSwicthActive.greenHighlight:hover {
     color: var(--okGreen);
     background: var(--darkBlueOpacity);
     border: 1px solid var(--okGreen);
@@ -591,12 +592,12 @@ h1 {
     transition: all 0.3s ease;
 }
 
-& .btnSwicthActive.greenHighlight:active {
+.btnSwicthActive.greenHighlight:active {
     scale: .8;
     transition: all 0.3s ease;
 }
 
-& .btnSwicthActive.redHighlight:hover {
+.btnSwicthActive.redHighlight:hover {
     color: var(--indianRed);
     background: var(--darkBlueOpacity);
     border: 1px solid var(--indianRed);
@@ -605,7 +606,7 @@ h1 {
     transition: all 0.3s ease;
 }
 
-& .btnSwicthActive.redHighlight:active {
+.btnSwicthActive.redHighlight:active {
     scale: .8;
     transition: all 0.3s ease;
 }
@@ -2033,7 +2034,7 @@ input[type="number"] {
     
     & .seePedidosSearchContainer{
         display: grid;
-        grid-template-columns: 3fr 1fr;
+        grid-template-columns: 3fr 1fr 1fr;
         gap: 1rem;
 
         & .search-form-group{
@@ -2046,7 +2047,7 @@ input[type="number"] {
             gap: 1rem;
         }
         
-        & .btnCreate{
+        & .btnCreate, .btnExit{
             max-width: 300px;
             align-self: flex-end;
         }
@@ -2157,7 +2158,7 @@ input[type="number"] {
     }
 }
 
-& .cuponesForm, .cuponesFormEdit{
+.cuponesForm, .cuponesFormEdit{
     display: flex;
     flex-direction: column;
     gap: .5rem;
@@ -2203,7 +2204,7 @@ input[type="number"] {
     }
 }
 
-& .radio-group {
+.radio-group {
     display: flex;
     justify-content: left;
     align-items: center;
@@ -2335,20 +2336,20 @@ input[type="number"] {
     }
 }
 
-@media (width <= 760px) {
-    & .productDetailsContainer{
+@media (max-width: 760px) and (min-width: 751px) {
+    .productDetailsContainer{
         display: grid;
         grid-template-columns: 100%;
         grid-auto-rows: auto;
     }
     
-    & .pageIndexContainer .formIndexKardex .KardexFilters{
+    .pageIndexContainer .formIndexKardex .KardexFilters{
         & .filter-group, .btnCreateContainer{
             grid-column: 1/-1;
         }
     }
     
-    & .kardexForm .createKardexEntryForm{
+    .kardexForm .createKardexEntryForm{
         display: flex;
         flex-direction: column;
         
@@ -2360,7 +2361,7 @@ input[type="number"] {
         }
     }
     
-    & .kardexMovementDetails .kardexMovementDetailsCard{
+    .kardexMovementDetails .kardexMovementDetailsCard{
         display: grid;
         grid-template-columns: 1fr;
         grid-auto-rows: auto;
@@ -2374,7 +2375,7 @@ input[type="number"] {
         }
     }
     
-    & .createFormContainer.product{
+    .createFormContainer.product{
         & .createFormGroup{
             &.descripcion{
                 grid-column: 1/-1;
@@ -2451,7 +2452,7 @@ input[type="number"] {
         }
     }
     
-    & .pageIndexContainer .searchCuponForm{
+    .pageIndexContainer .searchCuponForm{
         & .radio-group-grid {
             gap: .5rem;
             & .selectGroup{
@@ -2463,7 +2464,7 @@ input[type="number"] {
         }
     }
     
-    & .cuponesForm, .cuponesFormEdit{
+    .cuponesForm, .cuponesFormEdit{
         & .formCrudCupon {
             grid-template-columns: repeat(2, 1fr);
             
@@ -2485,7 +2486,7 @@ input[type="number"] {
         }
     }
     
-    & .pedidoContainer{
+    .pedidoContainer{
         & .infoPedido{
             & .codigopedido{
                 grid-column: span 2;
@@ -2504,7 +2505,19 @@ input[type="number"] {
         }
     }
     
-    & .caja-details-page-container {
+    .seePedidosSearchContainer{
+        & .form-group{
+            &.estadoPedidoBusqueda{
+                grid-column: 1/-1;
+            }
+            &.seccionBtnSeeEspecificStates{
+                grid-column: 1/-1;
+            }
+            
+        }
+    }
+    
+    .caja-details-page-container {
         & .Caja-header{
             & .addProduct-container{
                 grid-column: 1/-1;
@@ -2549,7 +2562,7 @@ input[type="number"] {
         }
     }
     
-    & #searchProductDialog{
+    #searchProductDialog{
         & .searchProductDialogContent {
             width: 90%;
             & .searchProductDialog-header{
@@ -2561,7 +2574,7 @@ input[type="number"] {
         }
     }
     
-    & #EndCompraModal{
+    #EndCompraModal{
         & .EndCompraModalContent{
             width: 90%;
             
@@ -2573,7 +2586,7 @@ input[type="number"] {
         }
     }
     
-    & .reporteContainer{
+    .reporteContainer{
         & .formCreateReporte{
             grid-template-columns: repeat(2, 1fr);
             
@@ -2597,4 +2610,312 @@ input[type="number"] {
     }
 }
 
+@media (width <= 840px) {
+    
+    .pageIndexContainer form{
+        & .radio-group-grid{
+            grid-template-columns: repeat(2, 1fr);
+            gap: .5rem;
+            
+            & .radio-group{
+                grid-column: 1/-1;
+            }
+            
+            & .selectGroup{
+                grid-column: 1/-1;
+                display: flex;
+                flex-direction: row;
+                width: 100%;
+                flex-grow: 1;
+                align-items: center;
+                justify-content: space-evenly;
+                
+                & .form-group{
+                    & .searchSelect{
+                        width: 100%;
+                    }   
+                }
+            }
+            & .btnCreateContainer{
+                grid-column: 1/-1;
+                grid-row: 3;
+                
+                & .btnCreate{
+                    max-width: 100%;
+                }
+            }
+        }
+    }
+    
+    .productDetailsContainer{
+        display: grid;
+        grid-template-columns: 100%;
+        grid-auto-rows: auto;
+    }
 
+    .pageIndexContainer .formIndexKardex .KardexFilters{
+        & .filter-group, .btnCreateContainer{
+            grid-column: 1/-1;
+        }
+    }
+
+    .kardexForm .createKardexEntryForm{
+        display: flex;
+        flex-direction: column;
+
+        & .formGroup{
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: .5rem;
+            text-align: right;
+        }
+    }
+
+    .kardexMovementDetails .kardexMovementDetailsCard{
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
+        gap: .2rem;
+
+        & .kardexMovementDetailsCardGroup {
+            & span, h4 {
+                font-size: clamp(1vw, 1.2rem, 2.3vw);
+
+            }
+        }
+    }
+
+    .createFormContainer.product{
+        & .createFormGroup{
+            &.descripcion{
+                grid-column: 1/-1;
+            }
+            &.precio, &.stock{
+                grid-column: span 2;
+            }
+
+            &.novedad{
+                grid-row: 4/4;
+                grid-column-end: -1;
+            }
+            &.marca{
+                grid-column: span 3;
+            }
+            &.subcategoria{
+                grid-column: span 3;
+                grid-row: 7/7;
+            }
+
+            &.imagen{
+                grid-column: 1/-1;
+                grid-row:8/8;
+            }
+
+            &.previewProductImageContainer{
+                grid-column: span 2;
+                grid-row: span 3;
+                grid-row-start: 5;
+                grid-row-end: 8;
+                grid-column-end: -1;
+            }
+
+            &.CreatebuttonGroup{
+                grid-row: 10/10;
+            }
+        }
+        &.EditProduct{
+            & .createFormGroup{
+                &.novedad{
+                    grid-row: 8/8;
+                    grid-row-start: 9;
+                }
+                &.gestionInventario{
+                    grid-column: span 2;
+                    grid-row: span 3;
+                    grid-row-start: 4;
+                    grid-row-end: 6;
+                    grid-column-end: -1;
+                }
+                &.precio{
+                    grid-column: span 2;
+                    grid-row-start: 7;
+                }
+                &.subcategoria{
+                    grid-row-start: 5;
+                }
+                &.previewProductImageContainer{
+                    grid-row: span 3;
+                    grid-row-start: 6;
+                    grid-row-end: 10;
+                }
+                &.imagen{
+                    grid-row: 11;
+                }
+                &.novedad{
+                    grid-column: 1;
+                }
+
+                &.CreatebuttonGroup{
+                    grid-row: 12;
+                }
+            }
+        }
+    }
+
+    .pageIndexContainer .searchCuponForm{
+        & .radio-group-grid {
+            gap: .5rem;
+            & .selectGroup{
+                grid-column: span 2;
+            }
+            & .btnCreateContainer{
+                grid-column: 1/-1;
+            }
+        }
+    }
+
+    .cuponesForm, .cuponesFormEdit{
+        & .formCrudCupon {
+            grid-template-columns: repeat(2, 1fr);
+
+            & .form-group{
+                grid-template-columns: 1fr 5fr;
+                &.codigo, &.fechafin, &.fechaInicio{
+                    grid-column: 1/-1;
+                }
+
+                &.valueGroup{
+                    grid-column: 1/-1;
+                    grid-row-start: 5;
+                }
+
+                &.usosMaximos{
+                    grid-column-start: 2;
+                }
+            }
+        }
+    }
+
+    .pedidoContainer{
+        & .infoPedido{
+            & .codigopedido{
+                grid-column: span 2;
+            }
+            & .estadoPedidoSeccion{
+                grid-column: span 2;
+            }
+            & .btnCreate.updateStatePedido{
+                grid-row-start: 2;
+                grid-column-end: -1;
+            }
+
+            & .direcionExactaLabel{
+                grid-column: 1/-1;
+            }
+        }
+    }
+
+    .seePedidosSearchContainer{
+        & .form-group{
+            &.estadoPedidoBusqueda{
+                grid-column: 1/-1;
+            }
+            &.seccionBtnSeeEspecificStates{
+                grid-column: 1/-1;
+            }
+
+        }
+    }
+
+    .caja-details-page-container {
+        & .Caja-header{
+            & .addProduct-container{
+                grid-column: 1/-1;
+                display: grid;
+                grid-template-columns: .5fr 3fr;
+
+                & .btnAddToCaja
+                {
+                    grid-column: -1;
+                }
+            }
+            & .btnClearCaja{
+                grid-column: 1/-1;
+            }
+        }
+
+        & .cajafooter{
+            & .divProductTotalAndCupons {
+                grid-column: 1/-1;
+                & p{
+                    font-size: clamp(1vw, 1.2rem, 2.8vw);
+                }
+                & .couponContainer-caja{
+                    grid-column: 1/-1;
+                    display: grid;
+                    grid-template-columns: .5fr 4fr 1fr;
+
+                    & .btnLimpiarCupon{
+                        grid-column: 1/-1;
+                        max-width: 100%;
+                    }
+                }
+            }
+
+            & .Caja-details-footer-Terminar{
+                grid-column: 1/-1;
+                flex-direction: row;
+                & p{
+                    font-size: clamp(1vw, 1.2rem, 2.8vw);
+                }
+            }
+        }
+    }
+
+    #searchProductDialog{
+        & .searchProductDialogContent {
+            width: 90%;
+            & .searchProductDialog-header{
+                & .search-input-container {
+                    display: grid;
+                    grid-template-columns: 3fr 1fr;
+                }
+            }
+        }
+    }
+
+    #EndCompraModal{
+        & .EndCompraModalContent{
+            width: 90%;
+
+            & form{
+                & .EndCompraSeccion{
+
+                }
+            }
+        }
+    }
+
+    .reporteContainer{
+        & .formCreateReporte{
+            grid-template-columns: repeat(2, 1fr);
+
+            & .btnCreate{
+                grid-column: 1/-1;
+                max-width: 100%;
+            }
+        }
+
+        & .seccionReporte{
+            & .seccionPrincipalInfo{
+                & .productoMejorVendido{
+                    grid-column: 1/-1;
+                }
+
+                & .marcaMejorVendida, .subcategoriaMejorVendida{
+                    grid-column: span 3;
+                }
+            }
+        }
+    }
+}

@@ -47,7 +47,7 @@ public class PedidosController : Controller
                 .ThenInclude(dp => dp.Producto)
                 .Include(p => p.Usuario)
                 .ThenInclude(u => u.Direccion)
-                .Where(p => p.TN_EstadoPedidoId != 5) // Excluir pedidos completados
+                .Where(p => p.TN_EstadoPedidoId != 5 && p.TN_EstadoPedidoId != 6) // Excluir pedidos completados y cancelados
                 .ToListAsync();
             var estadosPedidos = new SelectList(await _context.TECO_M_EstadoPedido.ToListAsync(),
                 "TN_Id", "TC_NombreEstado");
@@ -291,5 +291,81 @@ public class PedidosController : Controller
         }
         return View(pedidosCompletados);
 
+    }
+
+    public async Task<IActionResult> Pedidos_cancelados()
+    {
+        //Obtener todos los pedidos ya completados
+        var pedidosCancelados = await _context.TECO_P_Pedido
+            .Include(p => p.Cupon)
+            .Include(p => p.EstadoPedido)
+            .Include(p => p.MetodoPago)
+            .Include(p => p.DetallePedidos)
+            .ThenInclude(dp => dp.Producto)
+            .Include(p => p.Usuario)
+            .ThenInclude(u => u.Direccion)
+            .Where(p => p.TN_EstadoPedidoId == 6) // Filtrar por estado completado
+            .OrderByDescending(p => p.TF_Fecha) // CAMBIO: Ordenar por fecha para mostrar los más recientes primero
+            .ToListAsync();
+        if (pedidosCancelados.Count == 0)
+        {
+            _logger.LogInformation("No se encontraron pedidos cancelados.");
+            TempData["Info"] = JsonSerializer.Serialize(
+                Alert.InfoAlert("No hay pedidos cancelados en el sistema."));
+        }
+        else
+        {
+            _logger.LogInformation("Cantidad de pedidos cancelados encontrados: {Count}", pedidosCancelados.Count);
+        }
+        return View(pedidosCancelados);
+    }
+    
+        /// <summary>
+    /// Realiza la búsqueda de pedidos cancelados basándose en el término de búsqueda.
+    /// Solo accesible para usuarios con el rol "Administrador".
+    /// </summary>
+    /// <param name="searchTerm">Término para buscar en código de pedido o nombre de cliente.</param>
+    /// <returns>La vista Pedidos_cancelados con los pedidos filtrados.</returns>
+    [Authorize(Roles = "Administrador")]
+    public async Task<IActionResult> SearchPedidosCancelados(string? searchTerm)
+    {
+        try
+        {
+            // Inicializa la consulta base filtrando por pedidos completados
+            var query = _context.TECO_P_Pedido
+                .Include(p => p.Cupon)
+                .Include(p => p.EstadoPedido)
+                .Include(p => p.MetodoPago)
+                .Include(p => p.DetallePedidos)
+                .ThenInclude(dp => dp.Producto)
+                .Include(p => p.Usuario)
+                .ThenInclude(u => u.Direccion)
+                .Where(p => p.TN_EstadoPedidoId == 6);
+
+            // Filtro por término de búsqueda (si se proporcionó uno)
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                var upperSearchTerm = searchTerm.ToUpper().Trim();
+                query = query.Where(p =>
+                    (p.TN_TransaccionId != null && EF.Functions.Like(p.TN_TransaccionId.ToUpper(), $"%{upperSearchTerm}%")) ||
+                    (p.Usuario != null && EF.Functions.Like(p.Usuario.TC_Nombre.ToUpper(), $"%{upperSearchTerm}%")) ||
+                    (p.Usuario != null && EF.Functions.Like(p.Usuario.TC_Apellidos.ToUpper(), $"%{upperSearchTerm}%")));
+            }
+
+            // CAMBIO: Ordenar siempre por fecha descendente para mostrar los más recientes primero
+            var pedidos = await query.OrderByDescending(p => p.TF_Fecha).ToListAsync();
+
+            ViewBag.searchTerm = searchTerm;
+
+            // Retorna la misma vista con los resultados filtrados
+            return View("Pedidos_cancelados", pedidos);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "Error al buscar pedidos cancelados con término '{SearchTerm}'.", searchTerm);
+            TempData["Error"] = JsonSerializer.Serialize(
+                Alert.ErrorAlert("Ocurrió un error al realizar la búsqueda de pedidos cancelados."));
+            return RedirectToAction(nameof(Pedidos_cancelados));
+        }
     }
 }
