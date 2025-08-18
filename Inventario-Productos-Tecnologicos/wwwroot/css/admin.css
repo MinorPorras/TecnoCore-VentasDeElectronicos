@@ -986,6 +986,7 @@ h1 {
             text-align: center;
             width: 100%;
             display: block;
+            max-width: 100%;
 
             &:hover {
                 background: var(--indianRed);
@@ -1008,6 +1009,7 @@ h1 {
         }
 
         & .btnEdit {
+            width: 100%;
             border: 5px solid var(--yellowWarning);
 
             &:hover {
@@ -2034,7 +2036,7 @@ input[type="number"] {
     
     & .seePedidosSearchContainer{
         display: grid;
-        grid-template-columns: 3fr 1fr 1fr;
+        grid-template-columns: 3fr 1fr;
         gap: 1rem;
 
         & .search-form-group{

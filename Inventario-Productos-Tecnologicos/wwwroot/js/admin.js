@@ -53,25 +53,6 @@ function mostrarImagen(input) {
     }
 }
 
-function showAlert(message, type = 'success') {
-    const alertContainer = document.getElementById('alertContainer');
-    const alert = document.createElement('div');
-    console.log(type)
-    alert.className = `alert alert-${type} alert-dismissible fade show`;
-    alert.role = 'alert';
-    alert.innerHTML = `
-        ${message}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    `;
-    alertContainer.appendChild(alert);
-
-    // Auto-cerrar la alerta después de 5 segundos
-    setTimeout(() => {
-        alert.classList.remove('show');
-        setTimeout(() => alert.remove(), 150);
-    }, 5000);
-}
-
 function modifyProduct(){
     const updateBtn = document.getElementById('updateBtn');
     updateBtn.addEventListener('click', async (e) => {

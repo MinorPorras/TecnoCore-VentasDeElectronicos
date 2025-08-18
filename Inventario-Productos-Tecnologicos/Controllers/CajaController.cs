@@ -56,9 +56,19 @@ public class CajaController : Controller
         {
             // Manejar el caso en que el producto no existe
             ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.ErrorAlert("Debe iniciar sesión primero"));
+                Alert.ErrorAlert("El producto no existe."));
             return Json(new { success = false, message = "El producto no existe." });
         }
+
+        if (producto.TN_Stock <= 0)
+        {
+            // Manejar el caso en que el producto no tiene el stock suficiente
+            ViewBag.Alert = JsonSerializer.Serialize(
+                Alert.ErrorAlert("El producto no tiene stock suficiente para ejecutar esta acción"));
+            return Json(new { success = false, message = "El producto no tiene stock suficiente para ejecutar esta acción" });
+        }
+        
+        
         var usuarioId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
         // Verificar si el usuario está autenticado
