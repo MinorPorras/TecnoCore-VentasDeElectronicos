@@ -4,67 +4,69 @@
     ViewBag.Title = "Pedidos";
     Layout = "_Layout";
 }
-<div class="container-fluid">
+<div class="pedidosContainer">
     <h1>Pedidos</h1>
 
+<div class="seePedidosContainer">
     @foreach(var pedido in Model)
-    {
-    
-        <div class="pedidoContainer" asp-action="ActualizarEstado" method="post">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="pedidoId" value="@pedido.TN_Id"/>
-            <div class="datosCliente">
-                <p><strong>Nombre:</strong> @pedido.Usuario?.TC_Nombre @pedido.Usuario?.TC_Apellidos</p>
-                <p><strong>Email:</strong> @pedido.Usuario?.Email</p>
-                <p><strong>Teléfono:</strong> @pedido.Usuario?.PhoneNumber</p>
-                <p><strong>Teléfono:</strong> @pedido.Usuario?.UserName</p>
-                <p><strong>Método de pago:</strong> @pedido.MetodoPago?.TB_NombreMetodo</p>
-            </div>
-            <div class="infoPedido">
-                <p><strong>Código de pedido: </strong>@pedido.TN_TransaccionId</p>
-                <p><strong>Fecha:</strong> @pedido.TF_Fecha</p>
-                <p class="direcionExactaLabel"><strong>Dirección de Envío:</strong> @pedido.Usuario?.Direccion?.TC_Direccion</p>
-            </div>
-            <div class="detallesPedido">
-                <h4>Detalles del Pedido:</h4>
-                <div class="tableContainer">
-                    <div class="tbl-header TPedido">
-                        <span class="headerText">Nombre</span>
-                        <span class="headerText">Cantidad</span>
-                        <span class="headerText">Precio</span>
-                        <span class="headerText">Total</span>
-                    </div>
-                    <div class="tbl-content">
-                        @foreach (var detalle in pedido.DetallePedidos)
-                        {
-                            <div class="tableRow TPedido">
-                                <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
-                                <span class="tableCell centerTextCell">@detalle.TN_Cantidad.ToString()</span>
-                                <span class="tableCell centerTextCell">@((detalle.Producto?.TN_Precio ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
-                                <span class="tableCell centerTextCell">
-                                    @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
-                                </span>                            
-                            </div>
-                        }
-                    </div>
+{
+
+    <div class="pedidoContainer" asp-action="ActualizarEstado" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="pedidoId" value="@pedido.TN_Id"/>
+        <div class="datosCliente">
+            <p><strong>Nombre:</strong> @pedido.Usuario?.TC_Nombre @pedido.Usuario?.TC_Apellidos</p>
+            <p><strong>Email:</strong> @pedido.Usuario?.Email</p>
+            <p><strong>Teléfono:</strong> @pedido.Usuario?.PhoneNumber</p>
+            <p><strong>Teléfono:</strong> @pedido.Usuario?.UserName</p>
+            <p><strong>Método de pago:</strong> @pedido.MetodoPago?.TB_NombreMetodo</p>
+        </div>
+        <div class="infoPedido">
+            <p><strong>Código de pedido: </strong>@pedido.TN_TransaccionId</p>
+            <p><strong>Fecha:</strong> @pedido.TF_Fecha</p>
+            <p class="direcionExactaLabel"><strong>Dirección de Envío:</strong> @pedido.Usuario?.Direccion?.TC_Direccion</p>
+        </div>
+        <div class="detallesPedido">
+            <h4>Detalles del Pedido:</h4>
+            <div class="tableContainer">
+                <div class="tbl-header TPedido">
+                    <span class="headerText">Nombre</span>
+                    <span class="headerText">Cantidad</span>
+                    <span class="headerText">Precio</span>
+                    <span class="headerText">Total</span>
                 </div>
-                <div class="detallesPedidoFooter">
-                    @if (pedido is { TN_CuponId: > 0, Cupon: not null })
+                <div class="tbl-content">
+                    @foreach (var detalle in pedido.DetallePedidos)
                     {
-                        <p><strong>Cupon Aplicado:</strong> @pedido.Cupon.TC_Codigo</p>
+                        <div class="tableRow TPedido">
+                            <span class="tableCell">@detalle.Producto?.TC_Nombre</span>
+                            <span class="tableCell centerTextCell">@detalle.TN_Cantidad.ToString()</span>
+                            <span class="tableCell centerTextCell">@((detalle.Producto?.TN_Precio ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))</span>
+                            <span class="tableCell centerTextCell">
+                                @((detalle?.TN_PrecioUnitario * detalle?.TN_Cantidad ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                            </span>                            
+                        </div>
                     }
-                    <p><strong>Subtotal:</strong> 
-                        @((pedido.TN_Subtotal ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
-                    </p>
-                    <p><strong>Descuento:</strong> 
-                        @((pedido.TN_Descuento ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
-                    </p>
-                    <p><strong>Total:</strong> 
-                        @((pedido.TN_Total ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
-                    </p>
                 </div>
+            </div>
+            <div class="detallesPedidoFooter">
+                @if (pedido is { TN_CuponId: > 0, Cupon: not null })
+                {
+                    <p><strong>Cupon Aplicado:</strong> @pedido.Cupon.TC_Codigo</p>
+                }
+                <p><strong>Subtotal:</strong> 
+                    @((pedido.TN_Subtotal ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                </p>
+                <p><strong>Descuento:</strong> 
+                    @((pedido.TN_Descuento ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                </p>
+                <p><strong>Total:</strong> 
+                    @((pedido.TN_Total ?? 0).ToString("C", new System.Globalization.CultureInfo("es-CR")))
+                </p>
             </div>
         </div>
-        <hr/>
-    }   
+    </div>
+    <hr/>
+}   
+</div>
 </div>

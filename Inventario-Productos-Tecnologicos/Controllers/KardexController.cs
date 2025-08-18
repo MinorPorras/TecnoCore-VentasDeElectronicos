@@ -177,7 +177,7 @@ public class KardexController : Controller
             {
                 Fecha = DateTime.Now,
                 ProductosDisponibles = await _context.TECO_A_Producto
-                    .Where(p => p.TB_Activo == true)
+                    .Where(p => p.TB_Activo == true && p.TN_Stock > 0)
                     .ToListAsync()
             };
 

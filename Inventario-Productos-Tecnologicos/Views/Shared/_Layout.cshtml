@@ -21,7 +21,7 @@
                 <img src="~/img/LightLogo.png" alt="Tecno_Core Logo" class="imgLogo"/>
             </a>
             <ul>
-                @if (User.Identity.IsAuthenticated)
+                @if (User.Identity is { IsAuthenticated: true })
                 {
                     if (User.IsInRole("Administrador"))
                     {
@@ -131,13 +131,17 @@
     }
 
     // Para alertas dentro de la misma pestaña (e.g., ViewBag)
-    @if (ViewBag.Alert is Inventario_Productos_Tecnologicos.Models.ViewModels.Alert alertModel) // Use the actual namespace
+    @if (ViewBag.Alert != null)
     {
-        <text>
-            document.addEventListener('DOMContentLoaded', function () {
-                showAlert(@Json.Serialize(alertModel.Message), @Json.Serialize(alertModel.Type));
-            });
-        </text>
+        var alert = ViewBag.Alert as Alert;
+        if (alert != null)
+        {
+            <text>
+                document.addEventListener('DOMContentLoaded', function () {
+                    showAlert(@Json.Serialize(alert.Message), @Json.Serialize(alert.Type));
+                });
+            </text>
+        }
     }
 
     // Para alertas donde se realizan redirecciones (e.g., TempData)

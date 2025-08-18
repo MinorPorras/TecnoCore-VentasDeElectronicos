@@ -6,6 +6,7 @@ using Inventario_Productos_Tecnologicos.Models;
 using Inventario_Productos_Tecnologicos.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using static System.Int32;
 
 namespace Inventario_Productos_Tecnologicos.Controllers;
 
@@ -588,6 +589,28 @@ public class VentasController : Controller
         if (!ModelState.IsValid)
         {
             _logger.LogCritical("Modelo recibido es nulo o inválido.");
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("Datos incorrectos enviados"));
+            return RedirectToAction("Carro_Compras");
+        }
+        
+        if (string.IsNullOrEmpty(cardNumber) || string.IsNullOrEmpty(expirationDate) || string.IsNullOrEmpty(cardHolderName))
+        {
+            _logger.LogCritical("Se debe de ingresar toda la información de la tarjeta.");
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("Se debe de ingresar toda la información de la tarjeta."));
+            return RedirectToAction("Carro_Compras");
+        }
+
+        if (!TryParse(expirationDate.AsSpan(0, 2), out var monthExpirationDate))
+        {
+            _logger.LogCritical("La fecha de expiración deben de ser valores numéricos.");
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("La fecha de expiración deben de ser valores numéricos."));
+            return RedirectToAction("Carro_Compras"); 
+        }
+        
+        if (monthExpirationDate > 12)
+        {
+            _logger.LogCritical("Fecha Incorrecta: EL mes debe de estar entre 1 y 12.");
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("Fecha Incorrecta: El mes debe de estar entre 1 y 12."));
             return RedirectToAction("Carro_Compras");
         }
         
@@ -599,7 +622,7 @@ public class VentasController : Controller
         if (fechaExpiracion < DateTime.Now)
         {
             _logger.LogCritical("La fecha de expiración de la tarjeta es inválida: {FechaExpiracion}", fechaExpiracion);
-            ViewBag.Alert = JsonSerializer.Serialize(Alert.ErrorAlert("La fecha de expiración de la tarjeta es inválida."));
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("La fecha de expiración de la tarjeta es inválida."));
             return RedirectToAction("Carro_Compras");
         }
         
@@ -609,8 +632,7 @@ public class VentasController : Controller
         if (string.IsNullOrEmpty(usuarioId))
         {
             // Manejar el caso en que el usuario no está autenticado
-            ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.ErrorAlert("Debe iniciar sesión para realizar la compra."));
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("Debe iniciar sesión para realizar la compra."));
             return RedirectToAction("Carro_Compras");
         }
         _logger.LogCritical("ID del usuario autenticado: {UsuarioId}", usuarioId);
@@ -623,20 +645,16 @@ public class VentasController : Controller
         
         if (carritoCompras.Count == 0)
         {
-            ViewBag.Alert = JsonSerializer.Serialize(
-                Alert.InfoAlert("El carrito de compras está vacío."));
+            TempData["Alert"] = JsonSerializer.Serialize(Alert.InfoAlert("El carrito de compras está vacío."));
             return RedirectToAction("Carro_Compras");
         }
-        _logger.LogCritical("Cantidad de productos en el carrito: {CantidadCarrito}", carritoCompras.Count);
-
+        
         try
         {
 
             var totalCarrito = carritoCompras.Sum(c => c.TN_Cantidad * c.Producto.TN_Precio);
-            _logger.LogCritical("Total del carrito antes de aplicar cupones: {TotalCarrito}", totalCarrito);
             var cuponId = HttpContext.Session.GetInt32("AppliedCouponId");
-            _logger.LogCritical("ID del cupón aplicado: {CuponId}", cuponId);
-            var cupon = new TECO_M_Cupon();
+            TECO_M_Cupon? cupon;
             if (cuponId != null)
             {
                 cupon = await _context.TECO_M_Cupon.FirstOrDefaultAsync(c => c.TN_Id == cuponId && c.TB_Activo 
@@ -660,7 +678,7 @@ public class VentasController : Controller
                     if (cupon.TN_UsosActuales >= cupon.TN_UsosMaximos)
                     {
                         _logger.LogCritical("El cupón ha alcanzado el máximo de usos permitidos.");
-                        TempData["error"] = JsonSerializer.Serialize(Alert.ErrorAlert("El cupón ha alcanzado el máximo de usos permitidos."));
+                        TempData["Alert"] = JsonSerializer.Serialize(Alert.ErrorAlert("El cupón ha alcanzado el máximo de usos permitidos."));
                         return RedirectToAction("Carro_Compras");
                     }
                     
@@ -749,7 +767,6 @@ public class VentasController : Controller
             // Eliminar el carrito de compras del usuario después de crear el pedido
             _context.TECO_P_CarritoCompras.RemoveRange(carritoCompras);
             await _context.SaveChangesAsync();
-            TempData.Clear();
             TempData["success"] = JsonSerializer.Serialize(Alert.InfoAlert("Pedido creado correctamente."));
             HttpContext.Session.Remove("AppliedCouponId"); // Limpiar el cupón aplicado de la sesión
             return RedirectToAction("Index", "Home");
