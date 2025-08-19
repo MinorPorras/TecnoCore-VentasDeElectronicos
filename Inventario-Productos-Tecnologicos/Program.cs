@@ -2,6 +2,7 @@ using Inventario_Productos_Tecnologicos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Inventario_Productos_Tecnologicos.Models;
+using Microsoft.AspNetCore.StaticFiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -69,7 +70,23 @@ if (!app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
-app.UseStaticFiles();
+
+// Se crea un proveedor de tipos de contenido para poder añadir nuevos.
+var provider = new FileExtensionContentTypeProvider
+{
+    Mappings =
+    {
+        // Se añade el mapeo para la extensión .avif, asociándola con el tipo MIME image/avif.
+        [".avif"] = "image/avif"
+    }
+};
+
+// Se aplican las opciones al middleware de archivos estáticos.
+app.UseStaticFiles(new StaticFileOptions
+{
+    ContentTypeProvider = provider
+});
+
 app.UseRouting();
 
 app.UseSession();
