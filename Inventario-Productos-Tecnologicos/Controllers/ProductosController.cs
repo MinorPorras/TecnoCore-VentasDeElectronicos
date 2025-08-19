@@ -177,7 +177,7 @@ public class ProductosController : Controller
         [Bind(
             "TN_Id,TC_Codigo,TC_Nombre,TC_Descripcion,TN_Precio,TC_Imagen,TB_Novedad,TN_MarcaId,TN_SubcategoriaId,TB_Activo")]
         TECO_A_Producto producto,
-        IFormFile? TC_Imagen)
+        IFormFile? newImageFile)
     {
         if (TN_Id != producto.TN_Id)
         {
@@ -189,30 +189,41 @@ public class ProductosController : Controller
         if (ModelState.IsValid)
             try
             {
-                if (TC_Imagen != null && TC_Imagen.Length > 0)
+                // Si se subió un nuevo archivo de imagen
+                if (newImageFile != null && newImageFile.Length > 0)
                 {
-                    // Genera un nombre único para el archivo
-                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(TC_Imagen.FileName);
-                    var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/img/productos");
-                    var rutaGuardado = Path.Combine(uploadPath, fileName);
-                    _logger.LogInformation("Ruta de guardado: {RutaGuardado}", rutaGuardado);
+                    // Eliminar la imagen anterior si no es la imagen por defecto.
+                    // Usamos producto.TC_Imagen que viene del campo oculto del formulario.
+                    if (!string.IsNullOrEmpty(producto.TC_Imagen) &&
+                        producto.TC_Imagen != "/img/productos/default-image.jpg")
+                    {
+                        var oldImagePath = Path.Combine(_webHostEnvironment.WebRootPath,
+                            producto.TC_Imagen.TrimStart('/'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                            _logger.LogInformation("Imagen anterior eliminada: {OldImagePath}", oldImagePath);
+                        }
+                    }
+
+                    // Guardar la nueva imagen
+                    var fileName = Guid.NewGuid().ToString() + Path.GetExtension(newImageFile.FileName);
+                    var uploadPath = Path.Combine(_webHostEnvironment.WebRootPath, "img/productos");
+                    var filePath = Path.Combine(uploadPath, fileName);
+
                     if (!Directory.Exists(uploadPath))
                         Directory.CreateDirectory(uploadPath);
 
-                    await using (var stream = new FileStream(rutaGuardado, FileMode.Create))
+                    await using (var stream = new FileStream(filePath, FileMode.Create))
                     {
-                        await TC_Imagen.CopyToAsync(stream);
+                        await newImageFile.CopyToAsync(stream);
                     }
 
+                    // Actualizar la ruta de la imagen en el modelo
                     producto.TC_Imagen = "/img/productos/" + fileName;
                 }
-                else
-                {
-                    var existingProduct = await _context.TECO_A_Producto.AsNoTracking()
-                        .FirstOrDefaultAsync(p => p.TN_Id == producto.TN_Id);
-                    if (existingProduct != null)
-                        producto.TC_Imagen = existingProduct.TC_Imagen;
-                }
+                // Si no se subió una nueva imagen, producto.TC_Imagen ya tiene el valor correcto
+                // del campo oculto, por lo que no se necesita un bloque 'else'.
 
                 _context.Update(producto);
                 await _context.SaveChangesAsync();
