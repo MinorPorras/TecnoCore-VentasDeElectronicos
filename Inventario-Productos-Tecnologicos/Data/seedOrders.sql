@@ -11,8 +11,8 @@ SET NOCOUNT ON;
 -- CONFIGURACIÓN
 -- Modifica estas variables para cambiar la cantidad de datos generados
 -- =================================================================
-DECLARE @NumeroDePedidosACrear INT = 50; -- ¿Cuántos pedidos quieres crear?
-DECLARE @MaxItemsPorPedido INT = 8;      -- ¿Cuál es el número máximo de productos diferentes por pedido?
+DECLARE @NumeroDePedidosACrear INT = 20; -- ¿Cuántos pedidos quieres crear?
+DECLARE @MaxItemsPorPedido INT = 5;      -- ¿Cuál es el número máximo de productos diferentes por pedido?
 DECLARE @MaxCantidadPorItem INT = 3;     -- ¿Cuál es la cantidad máxima de unidades por cada producto en un pedido?
 DECLARE @DiasAntiguedadMax INT = 365;    -- ¿Qué tan antiguos pueden ser los pedidos (en días)?
 

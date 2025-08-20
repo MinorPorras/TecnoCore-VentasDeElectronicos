@@ -308,21 +308,22 @@ public class ProductosController : Controller
         var query = _context.TECO_A_Producto
             .Include(p => p.Marca)
             .Include(p => p.Subcategoria)
-            .Where(p => p.TB_Activo == true); // Filtro inicial de productos activos
+            .AsQueryable(); // Iniciar la consulta base. El filtrado de estado se hace más abajo.
 
         // Aplicar filtro de búsqueda si existe
         if (!string.IsNullOrEmpty(searchElement))
             query = query.Where(p => p.TC_Nombre.ToLower().Contains(searchElement.ToLower())
                                      || p.TN_Id.ToString().Contains(searchElement));
 
-        // Aplicar filtro de estado si no es "all"
+        // Aplicar filtro de marca si no es "all"
         if (marcas != "all" && !string.IsNullOrEmpty(marcas))
             query = query.Where(p => p.TN_MarcaId == int.Parse(marcas));
 
-        // Aplicar filtro de rol si no es "all"
+        // Aplicar filtro de subcategoría si no es "all"
         if (subcategorias != "all" && !string.IsNullOrEmpty(subcategorias))
             query = query.Where(p => p.TN_SubcategoriaId == int.Parse(subcategorias));
 
+        // Aplicar filtro de estado si no es "all"
         if (activeFilter != "all" && !string.IsNullOrEmpty(activeFilter))
         {
             var isActive = activeFilter == "true";
