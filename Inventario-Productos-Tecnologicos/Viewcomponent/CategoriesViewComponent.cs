@@ -16,8 +16,8 @@ public class CategoriesViewComponent : ViewComponent
     public async Task<IViewComponentResult> InvokeAsync()
     {
         var categorias = await _context.TECO_M_Categoria
-            .Include(c => c.Subcategoria)
-            .Where(c => c.TB_Activo == true)
+            .Include(c => c.Subcategoria.Where(s => s.TB_Activo))
+            .Where(c => c.TB_Activo)
             .ToListAsync();
         return View(categorias);
     }
