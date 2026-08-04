@@ -1,3 +1,15 @@
+![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet)  
+![ASP.NET Core MVC](https://img.shields.io/badge/ASP.NET%20Core-MVC-blue?logo=dotnet)  
+![Entity Framework Core](https://img.shields.io/badge/EF%20Core-9.0.5-purple?logo=dotnet)  
+![SQL Server](https://img.shields.io/badge/Database-SQL%20Server-CC2927?logo=microsoftsqlserver)  
+![Bootstrap](https://img.shields.io/badge/Bootstrap-5-purple?logo=bootstrap)  
+![jQuery](https://img.shields.io/badge/jQuery-blue?logo=jquery)  
+![C#](https://img.shields.io/badge/Language-C%23-239120?logo=csharp)
+![License](https://img.shields.io/badge/license-unspecified-lightgrey)
+![Last Commit](https://img.shields.io/github/last-commit/MinorPorras/TecnoCore-VentasDeElectronicos)
+![GitHub repo size](https://img.shields.io/github/repo-size/MinorPorras/TecnoCore-VentasDeElectronicos)  
+![GitHub issues](https://img.shields.io/github/issues/MinorPorras/TecnoCore-VentasDeElectronicos)  
+![GitHub stars](https://img.shields.io/github/stars/MinorPorras/TecnoCore-VentasDeElectronicos)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/MinorPorras/TecnoCore-VentasDeElectronicos)
 
 # TecnoCore-VentasDeElectronicos
